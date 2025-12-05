@@ -1,0 +1,22 @@
+# CodeNest Agency - robots.txt
+# Allows search engines to crawl and index the website
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://codenest.hu/sitemap.xml
+
+# Crawl delay settings
+Crawl-delay: 1
+
+# Specific user agents
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
