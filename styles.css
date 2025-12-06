@@ -392,6 +392,84 @@ a {
     align-items: center;
 }
 
+/* Mobile-only language switch placed inside the mobile nav overlay */
+.mobile-language-switch {
+    display: none;
+}
+
+/* Ensure mobile switch is hidden by default inside nav and only shown when nav overlay is active */
+.nav-menu .mobile-language-switch {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    .mobile-language-switch {
+        display: none;
+    }
+
+    .nav-menu .mobile-language-switch {
+        display: none;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-menu.active .mobile-language-switch {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-menu.active .mobile-language-switch .language-switch {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        padding: 1rem;
+        border-top: 1px solid var(--color-light-gray);
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+    /* Keep the desktop language-switch hidden on small screens (we show the mobile one) */
+    .nav-actions .language-switch {
+        display: none;
+    }
+
+    /* Make the lang buttons look like menu items */
+    .nav-menu.active .mobile-language-switch .lang-btn {
+        padding: 0;
+        color: var(--color-text-secondary);
+        font-weight: 500;
+        display: inline;
+        font-size: 0.95rem;
+    }
+
+    .nav-menu.active .mobile-language-switch .lang-btn:hover {
+        color: var(--color-accent-blue);
+    }
+
+    .nav-menu.active .mobile-language-switch .lang-btn.active {
+        color: var(--color-accent-blue);
+        font-weight: 600;
+    }
+
+    .nav-menu.active .mobile-language-switch .lang-divider {
+        color: var(--color-text-secondary);
+    }
+
+    .nav-menu.active .mobile-language-switch svg {
+        color: var(--color-text-secondary);
+        flex-shrink: 0;
+    }
+}
+
 /* .menu-toggle span {
     width: 1.5rem;
     height: 2px;
@@ -703,7 +781,7 @@ a {
 
 /* Process Connector Line */
 .process-connector {
-    display: none;
+    display: block;
     position: absolute;
     top: 50%;
     right: -2rem;
@@ -712,9 +790,6 @@ a {
     background: linear-gradient(to right, var(--color-accent-blue), transparent);
 }
 
-.process-card:not(:last-child) .process-connector {
-    display: block;
-}
 
 /* ========================================
    SERVICES SECTION
@@ -887,6 +962,11 @@ a {
     overflow-y: auto;
 }
 
+/* Ensure the mobile language switch is visible when the overlay menu is active */
+.nav-menu.active .mobile-language-switch {
+    display: flex;
+}
+
 /* Responsive grids: auto-fit columns for larger screens */
 @media (min-width: 600px) {
     .hero-grid {
@@ -899,6 +979,8 @@ a {
     .team-grid {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
+   
+
 }
 
 @media (min-width: 1024px) {
@@ -1265,6 +1347,41 @@ a {
    WHY CHOOSE US SECTION
    ======================================== */
 
+/* ========================================
+   SHOW INDIVIDUAL MEMBER SOCIAL ICONS
+   - Make the LinkedIn/social button always visible on each team member image
+   - Remove the blue full-image overlay that appeared on hover
+======================================== */
+.team-card .team-social {
+    /* Position the single-icon cluster at the bottom-right of each member image */
+    position: absolute;
+    inset: auto; /* override full-cover inset:0 from default */
+    bottom: 0.75rem;
+    right: 0.75rem;
+    background: none; /* remove blue overlay */
+    opacity: 1; /* always visible */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    pointer-events: auto;
+    padding: 0;
+}
+
+/* Disable the old hover behaviour that showed the blue overlay across the image */
+.team-card:hover .team-social {
+    opacity: 1;
+}
+
+/* Ensure the image scaling on hover doesn't reveal an overlay color behind the icon */
+.team-card .team-image img {
+    transition: transform var(--transition-slow), filter var(--transition-base);
+}
+
+.team-card:hover .team-image img {
+    transform: scale(1.05);
+}
+
 .why-section {
     background-color: var(--color-white);
 }
@@ -1553,7 +1670,46 @@ a {
 .footer-lang {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.footer-lang .lang-btn {
+    color: white;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    backdrop-filter: blur(10px);
+}
+
+.footer-lang .lang-btn:hover {
+    color: white;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.25));
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+}
+
+.footer-lang .lang-btn.active {
+    color: white;
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    border-color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+.footer-lang .lang-divider {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .lang-link {
@@ -1751,6 +1907,13 @@ a {
     
     .cta-wrapper {
         grid-template-columns: 1fr;
+        padding: 2.5rem;
+        gap: 2.5rem;
+    }
+
+    .cta-form {
+        width: 100%;
+        padding: 2rem;
     }
     
     .footer-content {
@@ -1903,24 +2066,121 @@ a {
     h2 {
         font-size: 1.5rem;
     }
-    
+
+    /* Header & Navigation */
+    .logo {
+        font-size: 1rem;
+        gap: 0.35rem;
+    }
+
+    .logo-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .nav-actions {
+        gap: 0.75rem;
+    }
+
+    .language-switch {
+        font-size: 0.75rem;
+        gap: 0.35rem;
+    }
+
+    .btn.btn-outline {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn.btn-outline svg {
+        width: 16px;
+        height: 16px;
+    }
+    .btn-primary {
+        background-color: var(--color-accent-blue);
+        color: var(--color-white);
+        border-color: var(--color-accent-blue);
+        width: 85%;
+        height: auto;
+        margin: 0 auto;
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+.cta-form {
+    background-color: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.cta-wrapper {
+    padding: 1.5rem;
+    gap: 2rem;
+}
+
+.cta-title {
+    font-size: 1.5rem;
+}
+
+.cta-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form {
+    gap: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.75rem 0.875rem;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    min-height: 80px;
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    margin-left: 0;
+    height: auto;
+}
+
     .hero-badge,
     .featured-badge {
         font-size: 0.8rem;
         padding: 0.4rem 1rem;
     }
      .hero-title {
-        font-size: 2rem;
+        font-size: 1.9rem;
         line-height: 1.12;
         letter-spacing: -0.01em;
     }
     
-
+.lang-btn{
+    color: var(--color-text-secondary);
+}
     .stat-number {
         font-size: 1.5rem;
     }
+    .process-connector {
+        display: none;
+    }
+
+    
 }
 
+@media (max-width: 380px) {
+        .hero-title {
+        font-size: 1.7rem;
+        line-height: 1.12;
+        letter-spacing: -0.01em;
+    }}
 /* Print Styles */
 @media print {
     .header,
@@ -1953,6 +2213,9 @@ a {
 @media (min-width: 768px) {
     .team-photo {
         height: 360px;
+    }
+    .process-connector {
+        display: block;
     }
 }
 

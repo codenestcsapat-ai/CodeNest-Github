@@ -140,8 +140,8 @@
             gdpr: 'GDPR',
             terms: 'Terms of Service',
             copyright: '© 2025 CodeNest. All rights reserved.',
-            english: 'English',
-            hungarian: 'Magyar'
+            english: 'Switch to English',
+            hungarian: 'Magyarra váltás'
         },
         hu: {
             // Meta
@@ -377,6 +377,8 @@
         localStorage.setItem('preferredLanguage', lang);
         window.location.hash = lang;
         updateTexts();
+        // Update footer/mobile language switch displays as well
+        try { updateLanguageSwitchDisplays(); } catch (e) { /* ignore if not ready */ }
         
         // Visszajelzés a konzolra
         console.log(`Nyelv beállítva: ${lang === 'hu' ? 'Magyar' : 'English'}`);
@@ -540,6 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize language from saved preference (ensure currentLang is set)
     currentLang = detectLanguage() || currentLang;
     updateTexts();
+    try { updateLanguageSwitchDisplays(); } catch (e) { /* ignore */ }
 
     const submitBtn = contactForm.querySelector('button[type="submit"]');
 
@@ -720,16 +723,83 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ========================================
        LANGUAGE SWITCHER
        ======================================== */
-    
+
     const langButtons = document.querySelectorAll('.lang-btn');
-    
+
+    // Helper: map common button text to language code
+    function inferLangFromText(text) {
+        if (!text) return null;
+        const s = text.trim().toLowerCase();
+        if (s === 'en' || s === 'english') return 'en';
+        if (s === 'hu' || s === 'magyar') return 'hu';
+        // fallback: if starts with 'e' -> en, 'm' or 'h' -> hu
+        if (s.startsWith('e')) return 'en';
+        if (s.startsWith('m') || s.startsWith('h')) return 'hu';
+        return null;
+    }
+
     langButtons.forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            const lang = this.textContent.toLowerCase();
-            setLanguage(lang);
+
+            // Prefer explicit data-lang attribute if present
+            let lang = btn.getAttribute('data-lang') || btn.dataset.lang || null;
+
+            // Fallback to inferring from button text/content
+            if (!lang) lang = inferLangFromText(btn.textContent);
+
+            if (lang) setLanguage(lang);
         });
     });
+
+    // Update footer and mobile switcher to show the target language (the one user will switch TO)
+    function updateLanguageSwitchDisplays() {
+        const opposite = currentLang === 'en' ? 'hu' : 'en';
+
+        // Determine label text: when site is EN show 'Magyarra váltás', when HU show 'Switch to English'
+        const label = opposite === 'hu' ? 'Magyarra váltás' : 'Switch to English';
+
+        // Footer switcher
+        const footerLang = document.querySelector('.footer-lang');
+        if (footerLang) {
+            footerLang.innerHTML = `
+                <a href="#" class="lang-switch-footer lang-btn" data-lang="${opposite}" aria-label="Switch language">${label}</a>
+            `;
+            const fbtn = footerLang.querySelector('.lang-switch-footer');
+            if (fbtn) {
+                fbtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    setLanguage(this.getAttribute('data-lang'));
+                });
+            }
+        }
+
+        // Mobile menu switcher (we inserted .mobile-language-switch container)
+        const mobileSwitch = document.querySelector('.mobile-language-switch');
+        if (mobileSwitch) {
+            mobileSwitch.innerHTML = `
+                <div class="language-switch" aria-label="Language switcher (mobile)">
+                  <a href="#" class="mobile-switch-btn lang-btn" data-lang="${opposite}" role="button" aria-pressed="false">${label}</a>
+                </div>
+            `;
+            const mbtn = mobileSwitch.querySelector('.mobile-switch-btn');
+            if (mbtn) {
+                mbtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    setLanguage(this.getAttribute('data-lang'));
+                });
+            }
+        }
+
+        // Also update any other explicit footer link variants (defensive)
+        document.querySelectorAll('.footer-lang .lang-btn, .mobile-language-switch .lang-btn').forEach(btn => {
+            btn.setAttribute('data-lang', opposite);
+        });
+    }
+
+    // Ensure displays update after texts change
+    const originalUpdateTexts = updateTexts;
+    // We will call updateLanguageSwitchDisplays at end of updateTexts by wrapping calls where updateTexts is called.
 
     /* ========================================
        ACTIVE NAVIGATION LINK HIGHLIGHT (EREDETI KÓD)

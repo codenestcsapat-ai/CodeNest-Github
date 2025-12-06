@@ -135,16 +135,46 @@
             
             // Check if consent exists
             const consent = this.getConsent();
-            
-            if (consent && consent.version === CONFIG.VERSION) {
-                // Consent exists - apply it silently
-                console.log('✅ Existing consent found:', consent);
+
+            // Determine if banner should be shown:
+            // - show if there is no consent
+            // - show if stored consent version differs from current CONFIG.VERSION
+            // - show if consent timestamp is older than EXPIRY_DAYS
+            let shouldShowBanner = false;
+
+            if (!consent) {
+                shouldShowBanner = true;
+            } else {
+                // If version mismatch, require re-consent
+                if (consent.version !== CONFIG.VERSION) {
+                    console.log('⚠️ Consent version mismatch, prompting re-consent');
+                    shouldShowBanner = true;
+                }
+
+                // If timestamp exists and expiry configured, check expiry
+                if (consent.timestamp && CONFIG.EXPIRY_DAYS) {
+                    const ageMs = Date.now() - consent.timestamp;
+                    const expiryMs = CONFIG.EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+                    if (ageMs > expiryMs) {
+                        console.log('⏳ Consent expired, prompting re-consent');
+                        shouldShowBanner = true;
+                    }
+                }
+            }
+
+            if (consent && consent.version === CONFIG.VERSION && !shouldShowBanner) {
+                // Consent exists and is valid - apply it silently
+                console.log('✅ Existing consent found and valid:', consent);
                 this.applyConsent(consent);
             }
-            
-            // Always show banner on page load
-            console.log('📢 Showing cookie consent banner');
-            this.showBanner();
+
+            if (shouldShowBanner) {
+                console.log('📢 Showing cookie consent banner');
+                // small delay to avoid jank on load
+                setTimeout(() => this.showBanner(), CONFIG.AUTO_SHOW_DELAY || 0);
+            } else {
+                console.log('✅ Consent present — banner will not be shown');
+            }
             
             // Attach event listeners
             this.attachEventListeners();
