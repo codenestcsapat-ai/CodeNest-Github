@@ -465,7 +465,7 @@
                 const header = document.getElementById('header');
                 const headerHeight = header ? header.offsetHeight : 0;
                 
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                const targetPosition = targetElement.offsetTop - headerHeight;
                 
                 window.scrollTo({
                     top: targetPosition,

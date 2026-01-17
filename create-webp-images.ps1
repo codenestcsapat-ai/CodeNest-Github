@@ -108,6 +108,10 @@ Write-Host "Processing Hero Image..." -ForegroundColor Cyan
 Write-Host ""
 
 if (Test-Path "i_b_l.jpg") {
+    Write-Host "Hero Image 400x300:" -ForegroundColor Yellow
+    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-400.webp" -Width 400 -Height 300 -Quality $Quality
+    Write-Host ""
+    
     Write-Host "Hero Image 600x450:" -ForegroundColor Yellow
     Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-600.webp" -Width 600 -Height 450 -Quality $Quality
     Write-Host ""

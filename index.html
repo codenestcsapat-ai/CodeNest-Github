@@ -226,7 +226,8 @@
                             <picture>
                                 <source
                                     type="image/webp"
-                                    srcset="public_optimized/i_b_l-600.webp 600w,
+                                    srcset="public_optimized/i_b_l-400.webp 400w,
+                                            public_optimized/i_b_l-600.webp 600w,
                                             public_optimized/i_b_l-800.webp 800w"
                                     sizes="(max-width: 768px) 100vw, 600px">
                                 <img
@@ -1270,7 +1271,12 @@
         "@type": "Organization",
         "name": "CodeNest Agency",
         "url": "https://codenest.hu/",
-        "logo": "https://codenest.hu/logo_png.png",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://codenest.hu/logo_png.png",
+            "width": 400,
+            "height": 400
+        },
         "description": "Professional web development and design agency. Custom websites, web applications, UI/UX design.",
         "founder": {
             "@type": "Person",
