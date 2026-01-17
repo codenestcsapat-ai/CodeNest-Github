@@ -154,6 +154,7 @@ body::before {
 /* ===== HEADER ===== */
 .header {
     text-align: center;
+    background-color: rgba(255, 255, 255);
 }
 
 /* QR Page Header Styling */
