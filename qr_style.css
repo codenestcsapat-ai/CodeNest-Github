@@ -79,7 +79,7 @@ body::before {
     padding: 10px 18px;
     border: none;
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     cursor: pointer;
     border-radius: 8px;
     font-weight: 600;
@@ -169,7 +169,7 @@ body::before {
 }
 
 .qr-generator-page .header .nav-link {
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .qr-generator-page .header .nav-link:hover {

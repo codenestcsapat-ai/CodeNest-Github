@@ -319,7 +319,7 @@ a {
 }
 
 .nav-link {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     font-weight: 500;
     transition: color var(--transition-base);
     position: relative;
@@ -362,16 +362,22 @@ a {
     font-weight: 600;
 }
 
-/* .lang-btn {
-    color: var(--color-text-secondary);
+.lang-btn {
+    color: var(--color-text-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
     transition: color var(--transition-base);
     text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .lang-btn:hover,
 .lang-btn.active {
     color: var(--color-accent-blue);
-} */
+}
 
 .lang-divider {
     color: var(--color-text-secondary);
