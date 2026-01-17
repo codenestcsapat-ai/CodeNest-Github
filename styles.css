@@ -1413,6 +1413,7 @@ a {
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .tool-icon {

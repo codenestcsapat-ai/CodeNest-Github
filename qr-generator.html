@@ -38,20 +38,33 @@
     <!-- Performance & Prefetch -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="qr_style.css">
-    <link rel="stylesheet" href="cookie-consent.css">
+    <!-- Critical CSS inlined below -->
+    <style>
+        /* Critical CSS for above-the-fold rendering */
+        *{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.6;min-height:100vh}.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1);transition:all .3s ease}.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}.nav{display:flex;align-items:center;justify-content:space-between;height:80px;gap:2rem}.logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;font-weight:700;font-size:1.5rem;color:#fff;transition:transform .3s ease}.logo img{height:48px;width:auto}.brand{color:#fff}.skip-link{position:absolute;left:-9999px;top:0;z-index:9999;padding:1rem;background:#3b82f6;color:#fff;text-decoration:none}.skip-link:focus{left:0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}main{padding-top:80px;min-height:calc(100vh - 80px)}.qr-page-header{padding:3rem 0 2rem;text-align:center}.section-title{font-size:2.5rem;font-weight:800;color:#fff;margin-bottom:1rem}.section-subtitle{font-size:1.125rem;color:#94a3b8;max-width:600px;margin:0 auto}@media(min-width:1024px){.section-title{margin-top:10rem}}
+    </style>
+    
+    <!-- Defer non-critical CSS -->
+    <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="qr_style.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="cookie-consent.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="qr_style.css">
+        <link rel="stylesheet" href="cookie-consent.css">
+    </noscript>
     
     <!-- QR Code Styling Library -->
-    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js" defer></script>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo_png.png">
@@ -73,9 +86,12 @@
             <nav class="nav" role="navigation" aria-label="Main navigation">
                 <!-- Logo -->
                 <a href="index.html" class="logo" title="CodeNest - Web Development Agency">
-                    <img src="logo_png.png" alt="CodeNest Logo - Web Development Agency" height="64" title="CodeNest Agency">
+                    <picture>
+                        <source type="image/webp" srcset="public_optimized/logo_png.webp">
+                        <img src="logo_png.png" alt="CodeNest Logo - Web Development Agency" width="112" height="112" title="CodeNest Agency">
+                    </picture>
                     <span class="brand">
-                        Code<i style="color: gray; font-style: normal;">Nest</i>
+                        <i style="color: rgb(0, 0, 0); font-style: normal;">Code</i><i style="color: gray; font-style: normal;">Nest</i>
                     </span>
                 </a>
 
@@ -320,16 +336,16 @@
                                 <!-- Colors -->
                                 <div class="qr-color-section">
                                     <div class="color-picker-group">
-                                        <label data-i18n="colorFg">Foreground</label>
+                                        <label for="colorFg" data-i18n="colorFg">Foreground</label>
                                         <div class="color-input-wrapper">
-                                            <input type="color" id="colorFg" value="#000000">
+                                            <input type="color" id="colorFg" name="colorFg" value="#000000" aria-label="Foreground color picker">
                                             <span id="colorFgValue">#000000</span>
                                         </div>
                                     </div>
                                     <div class="color-picker-group">
-                                        <label data-i18n="colorBg">Background</label>
+                                        <label for="colorBg" data-i18n="colorBg">Background</label>
                                         <div class="color-input-wrapper">
-                                            <input type="color" id="colorBg" value="#ffffff">
+                                            <input type="color" id="colorBg" name="colorBg" value="#ffffff" aria-label="Background color picker">
                                             <span id="colorBgValue">#FFFFFF</span>
                                         </div>
                                     </div>
@@ -337,10 +353,10 @@
 
                                 <!-- Size -->
                                 <div class="qr-size-section">
-                                    <label data-i18n="sizeLabel">Size</label>
+                                    <label for="qrSize" data-i18n="sizeLabel">Size</label>
                                     <div class="size-input-wrapper">
-                                        <input type="range" id="qrSize" min="200" max="600" value="300">
-                                        <span id="sizeValue">300px</span>
+                                        <input type="range" id="qrSize" name="qrSize" min="200" max="600" value="300" aria-label="QR code size in pixels">
+                                        <span id="sizeValue" aria-live="polite">300px</span>
                                     </div>
                                 </div>
 
@@ -429,7 +445,10 @@
                 <!-- Column 1: Logo & Description -->
                 <div class="footer-column footer-brand">
                     <a href="index.html" class="footer-logo" title="CodeNest - Web Development Agency">
-                        <img src="logo_footer-modified.png" alt="CodeNest Logo - Professional Web Development and Design" height="96" title="CodeNest Agency Footer Logo">
+                        <picture>
+                            <source type="image/webp" srcset="public_optimized/logo_footer-modified.webp">
+                            <img src="logo_footer-modified.png" alt="CodeNest Logo - Professional Web Development and Design" width="168" height="168" title="CodeNest Agency Footer Logo">
+                        </picture>
                         <span class="brand">
                             <i style="color: rgb(255, 255, 255); font-style: normal;">Code</i><i style="color: rgb(255, 255, 255); font-style: normal;">Nest</i>
                         </span>
@@ -500,9 +519,9 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="qr_app.js"></script>
-    <script src="script.js"></script>
-    <script src="cookie-consent.js"></script>
+    <script src="qr_app.js" defer></script>
+    <script src="script.js" defer></script>
+    <script src="cookie-consent.js" defer></script>
 </body>
 
 </html>

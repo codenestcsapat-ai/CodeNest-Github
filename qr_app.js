@@ -1,3 +1,10 @@
+// ===========================
+// QR CODE GENERATOR APP
+// Wrapped in IIFE to prevent global scope pollution
+// ===========================
+(function() {
+'use strict';
+
 // ===== TRANSLATIONS =====
 const translations = {
     hu: {
@@ -1136,3 +1143,5 @@ function initDesignToggle() {
         }, 250);
     });
 }
+
+})(); // End of IIFE
