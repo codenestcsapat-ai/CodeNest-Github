@@ -1,167 +1,138 @@
 # =============================================
 # CodeNest - Apache Configuration
-# Performance Optimization & Caching
+# Optimized for Performance, SEO, & Security
 # =============================================
 
-# Hide index.html from URL - serve directly when accessing directory
+# 1. GENERAL SETTINGS
+# ---------------------------------------------
+Options -Indexes
 <IfModule mod_dir.c>
     DirectoryIndex index.html index.htm
 </IfModule>
 
-# Enable Rewrite Engine
+# 2. URL CLEANING & REWRITES
+# ---------------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
-</IfModule>
+    RewriteBase /
 
-# =============================================
-# GZIP Compression
-# =============================================
-<IfModule mod_deflate.c>
-    # Compress HTML, CSS, JavaScript, Text, XML and fonts
-    AddOutputFilterByType DEFLATE application/javascript
-    AddOutputFilterByType DEFLATE application/json
-    AddOutputFilterByType DEFLATE application/rss+xml
-    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-    AddOutputFilterByType DEFLATE application/x-font-ttf
-    AddOutputFilterByType DEFLATE application/x-javascript
-    AddOutputFilterByType DEFLATE application/xhtml+xml
-    AddOutputFilterByType DEFLATE application/xml
-    AddOutputFilterByType DEFLATE font/opentype
-    AddOutputFilterByType DEFLATE font/otf
-    AddOutputFilterByType DEFLATE font/ttf
-    AddOutputFilterByType DEFLATE image/svg+xml
-    AddOutputFilterByType DEFLATE image/x-icon
-    AddOutputFilterByType DEFLATE text/css
-    AddOutputFilterByType DEFLATE text/html
-    AddOutputFilterByType DEFLATE text/javascript
-    AddOutputFilterByType DEFLATE text/plain
-    AddOutputFilterByType DEFLATE text/xml
+    # Redirect /index.html to /
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+    RewriteRule ^index\.html$ / [R=301,L]
 
-    # Remove browser bugs (only needed for really old browsers)
-    BrowserMatch ^Mozilla/4 gzip-only-text/html
-    BrowserMatch ^Mozilla/4\.0[678] no-gzip
-    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-    Header append Vary User-Agent
-</IfModule>
+    # Redirect /example.html to /example
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^/]+)\.html\ HTTP/
+    RewriteRule ^(.+)\.html$ /$1 [R=301,L]
 
-# =============================================
-# Browser Caching with Cache-Control Headers
-# =============================================
-<IfModule mod_expires.c>
-    ExpiresActive On
-    
-    # Default expiration: 1 hour
-    ExpiresDefault "access plus 1 hour"
-    
-    # HTML - No caching for dynamic content
-    ExpiresByType text/html "access plus 0 seconds"
-    
-    # CSS and JavaScript - 1 year (immutable for /public_optimized/*)
-    ExpiresByType text/css "access plus 1 year"
-    ExpiresByType application/javascript "access plus 1 year"
-    ExpiresByType text/javascript "access plus 1 year"
-    
-    # WebP images - 1 year (immutable)
-    ExpiresByType image/webp "access plus 1 year"
-    
-    # Images - 1 year
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/x-icon "access plus 1 year"
-    
-    # Fonts - 1 year
-    ExpiresByType font/ttf "access plus 1 year"
-    ExpiresByType font/otf "access plus 1 year"
-    ExpiresByType font/woff "access plus 1 year"
-    ExpiresByType font/woff2 "access plus 1 year"
-    ExpiresByType application/font-woff "access plus 1 year"
-    
-    # Data files
-    ExpiresByType application/json "access plus 0 seconds"
-    ExpiresByType application/xml "access plus 0 seconds"
-    ExpiresByType text/xml "access plus 0 seconds"
-</IfModule>
+    # Internal Mapping: Load /example.html when user visits /example
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^([^/]+)$ $1.html [L]
 
-# =============================================
-# Cache-Control Headers for Immutable Assets
-# =============================================
-<IfModule mod_headers.c>
-    # Add immutable to /public_optimized/* for long-term caching
-    <FilesMatch "\.(webp|jpg|jpeg|png|gif|css|js|woff|woff2|ttf|otf|svg)$">
-        <If "%{REQUEST_URI} =~ m#^/public_optimized/#">
-            Header set Cache-Control "public, max-age=31536000, immutable"
-        </If>
-    </FilesMatch>
-    
-    # No cache for HTML
-    <FilesMatch "\.(html|htm)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
-    </FilesMatch>
-    
-    # Security headers
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # CORS headers for fonts
-    <FilesMatch "\.(ttf|otf|woff|woff2|eot)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
-</IfModule>
-
-# =============================================
-# Preload & HTTP/2 Server Push (optional)
-# =============================================
-<IfModule mod_headers.c>
-    # Preload critical CSS
-    <FilesMatch "\.html$">
-        Header add Link "</styles.css>; rel=preload; as=style"
-    </FilesMatch>
-</IfModule>
-
-# =============================================
-# WebP Image Support
-# =============================================
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Serve WebP images if browser supports it and file exists
+    # WebP Image Support
     RewriteCond %{HTTP_ACCEPT} image/webp
     RewriteCond %{REQUEST_FILENAME} \.(jpe?g|png)$ [NC]
     RewriteCond %{REQUEST_FILENAME}\.webp -f
     RewriteRule ^(.+)\.(jpe?g|png)$ $1.$2.webp [T=image/webp,E=accept:1,L]
 </IfModule>
 
-<IfModule mod_headers.c>
-    Header append Vary Accept env=REDIRECT_accept
+# 3. GZIP COMPRESSION
+# ---------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/javascript \
+                                  application/json \
+                                  application/rss+xml \
+                                  application/vnd.ms-fontobject \
+                                  application/x-font-ttf \
+                                  application/x-javascript \
+                                  application/xhtml+xml \
+                                  application/xml \
+                                  font/opentype \
+                                  font/otf \
+                                  font/ttf \
+                                  image/svg+xml \
+                                  image/x-icon \
+                                  text/css \
+                                  text/html \
+                                  text/javascript \
+                                  text/plain \
+                                  text/xml
+
+    Header append Vary User-Agent
 </IfModule>
 
-# Add WebP MIME type
+# 4. BROWSER CACHING (EXPIRES)
+# ---------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 hour"
+    
+    # Dynamic Content
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/json "access plus 0 seconds"
+    
+    # Static Assets (1 Year)
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# 5. SECURITY & CUSTOM HEADERS
+# ---------------------------------------------
+<IfModule mod_headers.c>
+    # Immutable Assets
+    <FilesMatch "\.(webp|jpg|jpeg|png|gif|css|js|woff|woff2|ttf|otf|svg)$">
+        <If "%{REQUEST_URI} =~ m#^/public_optimized/#">
+            Header set Cache-Control "public, max-age=31536000, immutable"
+        </If>
+    </FilesMatch>
+    
+    # HTML Cache Control
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+    
+    # Security Headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # WebP / Accept Varying
+    Header append Vary Accept env=REDIRECT_accept
+
+    # Preload critical CSS
+    <FilesMatch "\.html$">
+        Header add Link "</styles.css>; rel=preload; as=style"
+    </FilesMatch>
+
+    # CORS for fonts
+    <FilesMatch "\.(ttf|otf|woff|woff2|eot)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# 6. MIME TYPES & ETAGS
+# ---------------------------------------------
 <IfModule mod_mime.c>
     AddType image/webp .webp
 </IfModule>
 
-# =============================================
-# ETags Configuration
-# =============================================
 <IfModule mod_headers.c>
-    # Enable ETags for efficient caching
     FileETag MTime Size
 </IfModule>
 
-# =============================================
-# Security: Prevent Directory Listing
-# =============================================
-Options -Indexes
-
-# =============================================
-# Error Pages (optional)
-# =============================================
 # ErrorDocument 404 /404.html
-# ErrorDocument 500 /500.html
