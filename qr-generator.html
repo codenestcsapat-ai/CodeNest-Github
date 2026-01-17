@@ -233,7 +233,7 @@
                                     <form class="qr-input-form active" data-form="url">
                                         <label data-i18n="urlLabel">Website URL</label>
                                         <span class="qr-input-helper-text" data-i18n="urlHelper">Enter a web address (https://example.com) to create a link QR code</span>
-                                        <input type="text" id="urlInput" data-i18n-placeholder="urlPlaceholder" placeholder="https://www.example.com" required>
+                                        <input type="text" id="urlInput" data-i18n-placeholder="urlPlaceholder" placeholder="https://www.example.com" required autocomplete="url">
                                     </form>
 
                                     <!-- Text Form -->
@@ -247,9 +247,9 @@
                                     <form class="qr-input-form" data-form="email">
                                         <label data-i18n="emailAddressLabel">Email address</label>
                                         <span class="qr-input-helper-text" data-i18n="emailHelper">Required. The email address where people can reach you</span>
-                                        <input type="email" id="emailAddress" data-i18n-placeholder="emailAddressPlaceholder" placeholder="example@email.com" required>
+                                        <input type="email" id="emailAddress" data-i18n-placeholder="emailAddressPlaceholder" placeholder="example@email.com" required autocomplete="email">
                                         <label data-i18n="emailSubjectLabel">Subject (optional)</label>
-                                        <input type="text" id="emailSubject" data-i18n-placeholder="emailSubjectPlaceholder" placeholder="Email subject">
+                                        <input type="text" id="emailSubject" data-i18n-placeholder="emailSubjectPlaceholder" placeholder="Email subject" autocomplete="off">
                                         <label data-i18n="emailBodyLabel">Message (optional)</label>
                                         <textarea id="emailBody" data-i18n-placeholder="emailBodyPlaceholder" placeholder="Email body..."></textarea>
                                     </form>
@@ -258,14 +258,14 @@
                                     <form class="qr-input-form" data-form="phone">
                                         <label data-i18n="phoneLabel">Phone number</label>
                                         <span class="qr-input-helper-text" data-i18n="phoneHelper">Enter a full phone number with country code (e.g., +1 234 567 8900)</span>
-                                        <input type="tel" id="phoneNumber" data-i18n-placeholder="phonePlaceholder" placeholder="+1 234 567 8900" required>
+                                        <input type="tel" id="phoneNumber" data-i18n-placeholder="phonePlaceholder" placeholder="+1 234 567 8900" required autocomplete="tel">
                                     </form>
 
                                     <!-- SMS Form -->
                                     <form class="qr-input-form" data-form="sms">
                                         <label data-i18n="smsNumberLabel">Phone number</label>
                                         <span class="qr-input-helper-text" data-i18n="smsHelper">Phone number is required. Message text is optional</span>
-                                        <input type="tel" id="smsNumber" data-i18n-placeholder="smsNumberPlaceholder" placeholder="+1 234 567 8900" required>
+                                        <input type="tel" id="smsNumber" data-i18n-placeholder="smsNumberPlaceholder" placeholder="+1 234 567 8900" required autocomplete="tel">
                                         <label data-i18n="smsMessageLabel">Message</label>
                                         <textarea id="smsMessage" data-i18n-placeholder="smsMessagePlaceholder" placeholder="SMS text..."></textarea>
                                     </form>
