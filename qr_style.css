@@ -154,7 +154,7 @@ body::before {
 /* ===== HEADER ===== */
 .header {
     text-align: center;
-    background-color: rgba(255, 255, 255);
+    background-color: white;
 }
 
 /* QR Page Header Styling */
@@ -276,6 +276,7 @@ body::before {
 .qr-design-content {
     overflow: hidden;
     transition: max-height 0.4s ease, opacity 0.3s ease;
+    padding-right: 5px;
 }
 
 @media (max-width: 850px) {
@@ -344,6 +345,7 @@ body::before {
 /* ===== QR TYPE TABS ===== */
 .qr-types {
     margin-bottom: 30px;
+    padding-right: 5px;
 }
 
 .qr-types h3 {
