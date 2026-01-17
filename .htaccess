@@ -91,14 +91,12 @@ Options -Indexes
 # 5. SECURITY & CUSTOM HEADERS
 # ---------------------------------------------
 <IfModule mod_headers.c>
-    # Immutable Assets
+    # ALL Static Assets - Immutable (1 year)
     <FilesMatch "\.(webp|jpg|jpeg|png|gif|css|js|woff|woff2|ttf|otf|svg)$">
-        <If "%{REQUEST_URI} =~ m#^/public_optimized/#">
-            Header set Cache-Control "public, max-age=31536000, immutable"
-        </If>
+        Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
     
-    # HTML Cache Control
+    # HTML Cache Control - NO CACHING
     <FilesMatch "\.(html|htm)$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
