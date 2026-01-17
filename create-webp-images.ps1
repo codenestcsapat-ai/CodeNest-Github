@@ -21,7 +21,8 @@ function Convert-ToWebP {
         [string]$OutputFile,
         [int]$Width,
         [int]$Height,
-        [int]$Quality = 90
+        [int]$Quality = 90,
+        [bool]$RotateRight = $false
     )
     
     if (-not (Test-Path $InputFile)) {
@@ -31,7 +32,15 @@ function Convert-ToWebP {
     
     try {
         $Arguments = @(
-            $InputFile,
+            $InputFile
+        )
+        
+        # Add rotation if needed (rotate 90 degrees clockwise = -90)
+        if ($RotateRight) {
+            $Arguments += @("-rotate", "-90")
+        }
+        
+        $Arguments += @(
             "-resize", "$($Width)x$($Height)^",
             "-gravity", "center",
             "-background", "none",
@@ -109,15 +118,15 @@ Write-Host ""
 
 if (Test-Path "i_b_l.jpg") {
     Write-Host "Hero Image 400x300:" -ForegroundColor Yellow
-    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-400.webp" -Width 400 -Height 300 -Quality $Quality
+    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-400.webp" -Width 400 -Height 300 -Quality $Quality -RotateRight $true
     Write-Host ""
     
     Write-Host "Hero Image 600x450:" -ForegroundColor Yellow
-    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-600.webp" -Width 600 -Height 450 -Quality $Quality
+    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-600.webp" -Width 600 -Height 450 -Quality $Quality -RotateRight $true
     Write-Host ""
     
     Write-Host "Hero Image 800x602:" -ForegroundColor Yellow
-    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-800.webp" -Width 800 -Height 602 -Quality $Quality
+    Convert-ToWebP -InputFile "i_b_l.jpg" -OutputFile "$OutputDir/i_b_l-800.webp" -Width 800 -Height 602 -Quality $Quality -RotateRight $true
     Write-Host ""
 }
 
