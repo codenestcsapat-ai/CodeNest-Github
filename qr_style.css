@@ -42,6 +42,7 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     position: relative;
+    contain: layout style;
 }
 
 /* Animated background overlay */
@@ -110,18 +111,17 @@ body::before {
 .container {
     max-width: 1400px;
     margin: 0 auto;
- 
     position: relative;
     z-index: 1;
+    contain: layout style;
 }
 
 /* ===== PAGE HEADER ===== */
 .qr-page-header {
-
     text-align: center;
     position: relative;
     z-index: 1;
-   
+    contain: layout style paint;
 }
 
 .section-header {
@@ -314,6 +314,7 @@ body::before {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    contain: layout style paint;
 }
 
 .qr-preview-card:hover,
@@ -424,10 +425,12 @@ body::before {
     margin-bottom: 30px;
     border-top: 1px solid rgba(99, 102, 241, 0.1);
     padding-top: 25px;
+    contain: layout style paint;
 }
 
 .qr-input-form {
     display: none;
+    contain: layout style paint;
 }
 
 .qr-input-form.active {
@@ -446,6 +449,7 @@ body::before {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.6px;
+    min-height: 1.2em;
 }
 
 .qr-input-form input[type="text"],
@@ -467,6 +471,12 @@ body::before {
     resize: vertical;
     transition: var(--transition);
     margin-bottom: 12px;
+}
+
+.qr-input-form input,
+.qr-input-form select,
+.qr-input-form textarea {
+    contain: content;
 }
 
 .qr-input-form input:focus,
@@ -756,6 +766,8 @@ body::before {
     gap: 20px;
     position: relative;
     z-index: 1;
+    contain: layout style paint;
+    min-height: 140px;
 }
 
 .error-message svg {
