@@ -130,7 +130,6 @@
             // Create UI elements
             this.createBanner();
             this.createModal();
-            this.createFixedButton();
             this.updateFooterIndicator();
             
             // Check if consent exists
@@ -324,24 +323,7 @@
         },
         
         createFixedButton: function() {
-            const btn = document.createElement('button');
-            btn.className = 'cookie-settings-btn-fixed';
-            btn.id = 'cookieSettingsFixed';
-            btn.setAttribute('title', this.t('btnSettings'));
-            btn.setAttribute('aria-label', this.t('btnSettings'));
-            
-            // Add SVG cookie icon
-            btn.innerHTML = `
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
-                    <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
-                    <circle cx="16" cy="8" r="1.5" fill="currentColor"></circle>
-                    <circle cx="8" cy="16" r="1.5" fill="currentColor"></circle>
-                </svg>
-            `;
-            
-            document.body.appendChild(btn);
+            // REMOVED: Fixed cookie settings button - no longer needed
         },
         
         // ========================================
@@ -362,11 +344,6 @@
             
             document.getElementById('btnSettings')?.addEventListener('click', () => {
                 that.hideBanner();
-                that.showModal();
-            });
-            
-            // Fixed cookie settings button
-            document.getElementById('cookieSettingsFixed')?.addEventListener('click', () => {
                 that.showModal();
             });
             
@@ -596,12 +573,6 @@
         
         applyConsent: function(consent) {
             console.log('🔧 Applying consent settings...');
-            
-            // Show fixed settings button after consent is given
-            const fixedBtn = document.getElementById('cookieSettingsFixed');
-            if (fixedBtn) {
-                fixedBtn.classList.add('show');
-            }
             
             // Essential cookies are always active
             console.log('✅ Essential cookies: ACTIVE (always)');

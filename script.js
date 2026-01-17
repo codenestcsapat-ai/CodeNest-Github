@@ -520,16 +520,18 @@
         observer.observe(element);
     });
 
-   /* ========================================
-   EMAILJS CONFIG
-   ======================================== */
+    /* ========================================
+       EMAILJS CONFIG
+       ======================================== */
 
-const EMAILJS_PUBLIC_KEY = "l6VpSyq4uewrDcg_u";
-const EMAILJS_SERVICE_ID = "service_mkhy8en";
-const EMAILJS_TEMPLATE_ID = "template_hdly37v";
+    const EMAILJS_PUBLIC_KEY = "l6VpSyq4uewrDcg_u";
+    const EMAILJS_SERVICE_ID = "service_mkhy8en";
+    const EMAILJS_TEMPLATE_ID = "template_hdly37v";
 
-// EmailJS indítása
-emailjs.init(EMAILJS_PUBLIC_KEY);
+    // EmailJS indítása
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
 
 /* ========================================
    FORM HANDLER (EGYETLEN SUBMIT HANDLER)
@@ -1090,68 +1092,59 @@ document.addEventListener("DOMContentLoaded", () => {
   const cMarketing = document.getElementById("cookie-marketing");
 
   const saved = localStorage.getItem("cookieConsent");
-    if (!saved && banner) banner.classList.remove("hidden");
 
-    // Open modal
-    if (btnSettings) {
-        btnSettings.addEventListener("click", () => {
-            if (modal) modal.classList.remove("hidden");
-        });
-    }
+  if (!saved) banner.classList.remove("hidden");
 
-    // Close modal
-    if (btnClose) {
-        btnClose.addEventListener("click", () => {
-            if (modal) modal.classList.add("hidden");
-        });
-    }
+  // Open modal
+  btnSettings.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  });
 
-    // Accept only essential
-    if (btnEssential) {
-        btnEssential.addEventListener("click", () => {
-            saveConsent({
-                essential: true,
-                functional: false,
-                analytics: false,
-                marketing: false
-            });
-        });
-    }
+  // Close modal
+  btnClose.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
 
-    // Accept all
-    if (btnAll) {
-        btnAll.addEventListener("click", () => {
-            saveConsent({
-                essential: true,
-                functional: true,
-                analytics: true,
-                marketing: true
-            });
-        });
-    }
+  // Accept only essential
+  btnEssential.addEventListener("click", () => {
+    saveConsent({
+      essential: true,
+      functional: false,
+      analytics: false,
+      marketing: false
+    });
+  });
 
-    // Save from modal
-    if (btnSave) {
-        btnSave.addEventListener("click", () => {
-            saveConsent({
-                essential: true,
-                functional: cFunctional ? !!cFunctional.checked : false,
-                analytics: cAnalytics ? !!cAnalytics.checked : false,
-                marketing: cMarketing ? !!cMarketing.checked : false
-            });
-        });
-    }
+  // Accept all
+  btnAll.addEventListener("click", () => {
+    saveConsent({
+      essential: true,
+      functional: true,
+      analytics: true,
+      marketing: true
+    });
+  });
 
-    function saveConsent(data) {
-        localStorage.setItem("cookieConsent", JSON.stringify(data));
+  // Save from modal
+  btnSave.addEventListener("click", () => {
+    saveConsent({
+      essential: true,
+      functional: cFunctional.checked,
+      analytics: cAnalytics.checked,
+      marketing: cMarketing.checked
+    });
+  });
 
-        if (banner) banner.classList.add("hidden");
-        if (modal) modal.classList.add("hidden");
+  function saveConsent(data) {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
 
-        console.log("Cookie preferences saved:", data);
+    banner.classList.add("hidden");
+    modal.classList.add("hidden");
 
-        loadAllowedScripts(data);
-    }
+    console.log("Cookie preferences saved:", data);
+
+    loadAllowedScripts(data);
+  }
 
   // Optional: Blocking & loading cookies based on consent
   function loadAllowedScripts(consent) {

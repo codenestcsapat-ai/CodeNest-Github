@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Kód Generátor - CodeNest</title>
+    <link rel="stylesheet" href="qr_style.css">
+    <!-- QR Code Styling Library -->
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+    <script>
+        // Library betöltés ellenőrzése
+        window.addEventListener('load', function() {
+            if (typeof QRCodeStyling === 'undefined') {
+                console.error('❌ QRCodeStyling library nem töltődött be!');
+                alert('QR library hiba! Ellenőrizd az internet kapcsolatot.');
+            } else {
+                console.log('✅ QRCodeStyling library sikeresen betöltve');
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Nyelvválasztó -->
+    <div class="language-switcher">
+        <button class="lang-btn" data-lang="hu">HU</button>
+        <button class="lang-btn active" data-lang="en">EN</button>
+    </div>
+
+    <div class="container">
+        <!-- Fejléc -->
+        <header class="header">
+            <h1 data-i18n="title">QR Kód Generátor</h1>
+            <p data-i18n="subtitle">Professzionális QR kód készítő minden célra</p>
+        </header>
+
+        <!-- Fő tartalmi terület -->
+        <main class="main-content">
+            <!-- BAL OLDAL - Beállítások -->
+            <section class="settings-panel">
+                <div class="settings-card">
+                    <!-- QR típus választó (tabs) -->
+                    <div class="qr-types">
+                        <h3 data-i18n="typeTitle">QR kód típusa</h3>
+                        <div class="type-tabs">
+                            <button class="type-tab active" data-type="url">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                                <span data-i18n="typeUrl">URL</span>
+                            </button>
+                            <button class="type-tab" data-type="text">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <span data-i18n="typeText">Szöveg</span>
+                            </button>
+                            <button class="type-tab" data-type="email">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                <span data-i18n="typeEmail">Email</span>
+                            </button>
+                            <button class="type-tab" data-type="phone">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                                <span data-i18n="typePhone">Telefon</span>
+                            </button>
+                            <button class="type-tab" data-type="sms">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                <span data-i18n="typeSms">SMS</span>
+                            </button>
+                            <button class="type-tab" data-type="wifi">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                </svg>
+                                <span data-i18n="typeWifi">WiFi</span>
+                            </button>
+                            <button class="type-tab" data-type="vcard">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span data-i18n="typeVcard">vCard</span>
+                            </button>
+                            <button class="type-tab" data-type="location">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <span data-i18n="typeLocation">Helyszín</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dinamikus input mezők (típusonként más) -->
+                    <div class="qr-inputs" id="qrInputs">
+                        <!-- URL -->
+                        <div class="input-form active" data-form="url">
+                            <div class="input-group">
+                                <label for="urlInput" data-i18n="urlLabel">Weboldal URL</label>
+                                <input type="url" id="urlInput" data-i18n-placeholder="urlPlaceholder" 
+                                    placeholder="https://www.example.com">
+                            </div>
+                        </div>
+
+                        <!-- Text -->
+                        <div class="input-form" data-form="text">
+                            <div class="input-group">
+                                <label for="textInput" data-i18n="textLabel">Szöveg</label>
+                                <textarea id="textInput" rows="4" data-i18n-placeholder="textPlaceholder"
+                                    placeholder="Írj ide bármilyen szöveget..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="input-form" data-form="email">
+                            <div class="input-group">
+                                <label for="emailAddress" data-i18n="emailAddressLabel">Email cím</label>
+                                <input type="email" id="emailAddress" data-i18n-placeholder="emailAddressPlaceholder"
+                                    placeholder="pelda@email.com">
+                            </div>
+                            <div class="input-group">
+                                <label for="emailSubject" data-i18n="emailSubjectLabel">Tárgy (opcionális)</label>
+                                <input type="text" id="emailSubject" data-i18n-placeholder="emailSubjectPlaceholder"
+                                    placeholder="Email tárgya">
+                            </div>
+                            <div class="input-group">
+                                <label for="emailBody" data-i18n="emailBodyLabel">Üzenet (opcionális)</label>
+                                <textarea id="emailBody" rows="3" data-i18n-placeholder="emailBodyPlaceholder"
+                                    placeholder="Email szövege..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="input-form" data-form="phone">
+                            <div class="input-group">
+                                <label for="phoneNumber" data-i18n="phoneLabel">Telefonszám</label>
+                                <input type="tel" id="phoneNumber" data-i18n-placeholder="phonePlaceholder"
+                                    placeholder="+36 30 123 4567">
+                            </div>
+                        </div>
+
+                        <!-- SMS -->
+                        <div class="input-form" data-form="sms">
+                            <div class="input-group">
+                                <label for="smsNumber" data-i18n="smsNumberLabel">Telefonszám</label>
+                                <input type="tel" id="smsNumber" data-i18n-placeholder="smsNumberPlaceholder"
+                                    placeholder="+36 30 123 4567">
+                            </div>
+                            <div class="input-group">
+                                <label for="smsMessage" data-i18n="smsMessageLabel">Üzenet</label>
+                                <textarea id="smsMessage" rows="3" data-i18n-placeholder="smsMessagePlaceholder"
+                                    placeholder="SMS szövege..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- WiFi -->
+                        <div class="input-form" data-form="wifi">
+                            <div class="input-group">
+                                <label for="wifiSsid" data-i18n="wifiSsidLabel">Hálózat neve (SSID)</label>
+                                <input type="text" id="wifiSsid" data-i18n-placeholder="wifiSsidPlaceholder"
+                                    placeholder="WiFi_neve">
+                            </div>
+                            <div class="input-group">
+                                <label for="wifiPassword" data-i18n="wifiPasswordLabel">Jelszó</label>
+                                <input type="text" id="wifiPassword" data-i18n-placeholder="wifiPasswordPlaceholder"
+                                    placeholder="jelszó123">
+                            </div>
+                            <div class="input-group">
+                                <label for="wifiEncryption" data-i18n="wifiEncryptionLabel">Titkosítás</label>
+                                <select id="wifiEncryption">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">Nincs (nyílt)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>
+                                    <input type="checkbox" id="wifiHidden">
+                                    <span data-i18n="wifiHiddenLabel">Rejtett hálózat</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- vCard -->
+                        <div class="input-form" data-form="vcard">
+                            <div class="input-group">
+                                <label for="vcardName" data-i18n="vcardNameLabel">Teljes név</label>
+                                <input type="text" id="vcardName" data-i18n-placeholder="vcardNamePlaceholder"
+                                    placeholder="Kiss János">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardOrg" data-i18n="vcardOrgLabel">Cég (opcionális)</label>
+                                <input type="text" id="vcardOrg" data-i18n-placeholder="vcardOrgPlaceholder"
+                                    placeholder="CodeNest Kft.">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardPhone" data-i18n="vcardPhoneLabel">Telefon</label>
+                                <input type="tel" id="vcardPhone" data-i18n-placeholder="vcardPhonePlaceholder"
+                                    placeholder="+36 30 123 4567">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardEmail" data-i18n="vcardEmailLabel">Email</label>
+                                <input type="email" id="vcardEmail" data-i18n-placeholder="vcardEmailPlaceholder"
+                                    placeholder="pelda@email.com">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardUrl" data-i18n="vcardUrlLabel">Weboldal (opcionális)</label>
+                                <input type="url" id="vcardUrl" data-i18n-placeholder="vcardUrlPlaceholder"
+                                    placeholder="https://www.example.com">
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="input-form" data-form="location">
+                            <div class="input-group">
+                                <label for="locationLat" data-i18n="locationLatLabel">Szélesség (latitude)</label>
+                                <input type="text" id="locationLat" data-i18n-placeholder="locationLatPlaceholder"
+                                    placeholder="47.4979">
+                            </div>
+                            <div class="input-group">
+                                <label for="locationLng" data-i18n="locationLngLabel">Hosszúság (longitude)</label>
+                                <input type="text" id="locationLng" data-i18n-placeholder="locationLngPlaceholder"
+                                    placeholder="19.0402">
+                            </div>
+                            <p class="input-hint" data-i18n="locationHint">Google Maps koordináták (Budapest példa)</p>
+                        </div>
+                    </div>
+
+                    <!-- Design beállítások -->
+                    <div class="design-section">
+                        <h3 data-i18n="designTitle">Design</h3>
+                        
+                        <!-- Preset stílusok -->
+                        <div class="input-group">
+                            <label data-i18n="designLabel">Stílus</label>
+                            <div class="preset-grid">
+                                <button class="preset-btn active" data-preset="classic">
+                                    <span data-i18n="presetClassic">Classic</span>
+                                </button>
+                                <button class="preset-btn" data-preset="rounded">
+                                    <span data-i18n="presetRounded">Rounded</span>
+                                </button>
+                                <button class="preset-btn" data-preset="dots">
+                                    <span data-i18n="presetDots">Dots</span>
+                                </button>
+                                <button class="preset-btn" data-preset="gradient">
+                                    <span data-i18n="presetGradient">Gradient</span>
+                                </button>
+                               
+                            </div>
+                        </div>
+
+                        <!-- Színek -->
+                        <div class="color-group">
+                            <div class="color-item">
+                                <label for="colorFg" data-i18n="colorFg">Előtér</label>
+                                <div class="color-picker">
+                                    <input type="color" id="colorFg" value="#000000">
+                                    <span class="color-value" id="colorFgValue">#000000</span>
+                                </div>
+                            </div>
+                            <div class="color-item">
+                                <label for="colorBg" data-i18n="colorBg">Háttér</label>
+                                <div class="color-picker">
+                                    <input type="color" id="colorBg" value="#ffffff">
+                                    <span class="color-value" id="colorBgValue">#ffffff</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gradient irány -->
+                        <div class="input-group" id="gradientDirectionGroup" style="display: none;">
+                            <label data-i18n="gradientDirection">Gradiens irány</label>
+                            <div class="gradient-direction-grid">
+                                <button class="gradient-direction-btn active" data-rotation="0" title="Left to right">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                    <span data-i18n="gradientLeftRight">Balról jobbra</span>
+                                </button>
+                                <button class="gradient-direction-btn" data-rotation="90" title="Top to bottom">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <polyline points="5 12 12 19 19 12"></polyline>
+                                    </svg>
+                                    <span data-i18n="gradientTopBottom">Felülről alulra</span>
+                                </button>
+                                <button class="gradient-direction-btn" data-rotation="45" title="Diagonal">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="5" x2="19" y2="19"></line>
+                                        <polyline points="12 5 19 12 19 19"></polyline>
+                                    </svg>
+                                    <span data-i18n="gradientDiagonal1">Átlós (↘)</span>
+                                </button>
+                                <button class="gradient-direction-btn" data-rotation="135" title="Diagonal">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="19" y1="5" x2="5" y2="19"></line>
+                                        <polyline points="12 5 5 12 5 19"></polyline>
+                                    </svg>
+                                    <span data-i18n="gradientDiagonal2">Átlós (↙)</span>
+                                </button>
+                                <button class="gradient-direction-btn" data-rotation="radial" title="Center to outside">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <circle cx="12" cy="12" r="6"></circle>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <span data-i18n="gradientRadial">Középről kifelé</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Méret -->
+                        <div class="input-group">
+                            <label for="qrSize" data-i18n="sizeLabel">Méret</label>
+                            <div class="range-group">
+                                <input type="range" id="qrSize" min="200" max="600" value="300" step="50">
+                                <span class="range-value" id="sizeValue">300px</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reset gomb -->
+                    <button class="btn-reset" id="resetBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span data-i18n="reset">Alaphelyzet</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- JOBB OLDAL - QR Preview -->
+            <section class="preview-panel">
+                <div class="preview-card">
+                    <h3 data-i18n="preview">Előnézet</h3>
+                    <div class="qr-container" id="qrCode" role="img" aria-label="Generated QR Code"></div>
+                    <div class="error-message" id="errorMessage" role="alert">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <p data-i18n="errorEmpty">Töltsd ki a mezőket a QR kód generálásához</p>
+                    </div>
+                    <button class="btn-download" id="downloadBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span data-i18n="download">Letöltés (PNG)</span>
+                    </button>
+                    <button class="btn-copy" id="copyBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                        </svg>
+                        <span data-i18n="copy">Másolás vágólapra</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Lábléc -->
+        <footer class="footer">
+            <p>&copy; 2026 CodeNest - <span data-i18n="footerText">Professzionális QR kód generátor</span></p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span class="toast-message" id="toastMessage">Copied!</span>
+    </div>
+
+    <script src="qr_app.js"></script>
+</body>
+</html>

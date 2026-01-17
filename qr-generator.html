@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Professional QR Code Generator by CodeNest. Create custom QR codes for URLs, text, email, phone, SMS, WiFi, vCard, and GPS locations. Free tool with real-time preview and download.">
+    <meta name="keywords" content="QR code generator, free QR code maker, create QR codes, WiFi QR, vCard generator, QR code design, QR code customization">
+    <meta name="author" content="CodeNest Agency">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="language" content="English, Hungarian">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codenest.hu/qr-generator">
+    <meta property="og:title" content="Professional QR Code Generator - CodeNest">
+    <meta property="og:description" content="Create custom QR codes for any purpose - URLs, text, email, phone, SMS, WiFi, vCard, GPS. Professional design presets included.">
+    <meta property="og:image" content="https://codenest.hu/logo_png.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="CodeNest Agency">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="hu_HU">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://codenest.hu/qr-generator">
+    <meta name="twitter:title" content="Professional QR Code Generator - CodeNest">
+    <meta name="twitter:description" content="Create custom QR codes for any purpose with professional design presets.">
+    <meta name="twitter:image" content="https://codenest.hu/logo_png.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://codenest.hu/qr-generator">
+    
+    <!-- Performance & Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="qr_style.css">
+    <link rel="stylesheet" href="cookie-consent.css">
+    
+    <!-- QR Code Styling Library -->
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo_png.png">
+    <link rel="shortcut icon" href="logo_png.png">
+    
+    <!-- Title -->
+    <title>QR Code Generator - Create Custom QR Codes | CodeNest</title>
+    
+    <!-- Screen Reader Announcements -->
+    <div id="sr-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+</head>
+
+<body>
+  
+    
+    <!-- HEADER / NAVIGATION -->
+    <header class="header" id="header" role="banner">
+        <div class="container">
+            <nav class="nav" role="navigation" aria-label="Main navigation">
+                <!-- Logo -->
+                <a href="index.html" class="logo" title="CodeNest - Web Development Agency">
+                    <img src="logo_png.png" alt="CodeNest Logo - Web Development Agency" height="64" title="CodeNest Agency">
+                    <span class="brand">
+                        Code<i style="color: gray; font-style: normal;">Nest</i>
+                    </span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html#services" class="nav-link" data-en="Services" data-hu="Szolgáltatások">Services</a></li>
+                    <li><a href="index.html#portfolio" class="nav-link" data-en="Portfolio" data-hu="Referenciák">Portfolio</a></li>
+                    <li><a href="index.html#team" class="nav-link" data-en="Team" data-hu="Csapat">Team</a></li>
+                    <li><a href="index.html#tools" class="nav-link" data-en="Tools" data-hu="Eszközök">Tools</a>
+                        
+                    </li>
+                    <li><a href="index.html#contact" class="nav-link" data-en="Contact" data-hu="Kapcsolat">Contact</a></li>
+                    <!-- Mobile language switch (visible only inside mobile overlay) -->
+                    <li class="mobile-language-switch" role="presentation">
+                        <div class="language-switch" aria-label="Language switcher (mobile)">
+                            <a href="#" class="lang-btn active" data-lang="en" data-en="EN" data-hu="EN" role="button" aria-pressed="true">Switch to English</a>
+                            <span class="lang-divider">/</span>
+                            <a href="#" class="lang-btn" data-lang="hu" data-en="HU" data-hu="HU" role="button" aria-pressed="false">Magyarra váltás</a>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- CTA & Language -->
+                <div class="nav-actions">
+                    <div class="language-switch">
+                        <a href="#" class="lang-btn active" data-lang="en" data-en="EN" data-hu="EN">EN</a>
+                        <span class="lang-divider">/</span>
+                        <a href="#" class="lang-btn" data-lang="hu" data-en="HU" data-hu="HU">HU</a>
+                    </div>
+                    <a href="index.html#contact" class="qr-btn qr-btn-primary btn-small" data-en="Get a Quote"
+                        data-hu="Ajánlatkérés">Get a Quote</a>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu" type="button">
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
+                </button>
+
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" role="main" class="qr-generator-page">
+        
+        <!-- Page Header -->
+        <section class="qr-page-header">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title" data-i18n="title">QR Code Generator</h1>
+                    <p class="section-subtitle" data-i18n="subtitle">Professional QR code creator for any purpose</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- QR Generator App -->
+        <section class="qr-generator-section">
+            <div class="qr-container">
+                <div class="container qr-app-container">
+                    <!-- Fő tartalmi terület -->
+                    <main class="qr-main-content">
+                        <!-- BAL OLDAL - Beállítások -->
+                        <section class="qr-settings-panel">
+                            <div class="qr-settings-card">
+                                <!-- QR típus választó (tabs) -->
+                                <div class="qr-types">
+                                    <h3 data-i18n="typeTitle">QR Code Type</h3>
+                                    <div class="qr-type-tabs">
+                                        <button class="qr-type-tab active" data-type="url">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                            </svg>
+                                            <span data-i18n="typeUrl">URL</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="text">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                            <span data-i18n="typeText">Text</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="email">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                                <polyline points="22,6 12,13 2,6"></polyline>
+                                            </svg>
+                                            <span data-i18n="typeEmail">Email</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="phone">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                            </svg>
+                                            <span data-i18n="typePhone">Phone</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="sms">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                            <span data-i18n="typeSms">SMS</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="wifi">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                                <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                                <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                            </svg>
+                                            <span data-i18n="typeWifi">WiFi</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="vcard">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                            <span data-i18n="typeVcard">vCard</span>
+                                        </button>
+                                        <button class="qr-type-tab" data-type="location">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <span data-i18n="typeLocation">Location</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Input forms (tab contents) -->
+                                <div class="qr-input-forms-container">
+                                    <!-- URL Form -->
+                                    <form class="qr-input-form active" data-form="url">
+                                        <label data-i18n="urlLabel">Website URL</label>
+                                        <span class="qr-input-helper-text" data-i18n="urlHelper">Enter a web address (https://example.com) to create a link QR code</span>
+                                        <input type="text" id="urlInput" data-i18n-placeholder="urlPlaceholder" placeholder="https://www.example.com" required>
+                                    </form>
+
+                                    <!-- Text Form -->
+                                    <form class="qr-input-form" data-form="text">
+                                        <label data-i18n="textLabel">Text</label>
+                                        <span class="qr-input-helper-text" data-i18n="textHelper">Any text up to ~2500 characters. Great for notes, messages, or content</span>
+                                        <textarea id="textInput" data-i18n-placeholder="textPlaceholder" placeholder="Enter any text here..." required></textarea>
+                                    </form>
+
+                                    <!-- Email Form -->
+                                    <form class="qr-input-form" data-form="email">
+                                        <label data-i18n="emailAddressLabel">Email address</label>
+                                        <span class="qr-input-helper-text" data-i18n="emailHelper">Required. The email address where people can reach you</span>
+                                        <input type="email" id="emailAddress" data-i18n-placeholder="emailAddressPlaceholder" placeholder="example@email.com" required>
+                                        <label data-i18n="emailSubjectLabel">Subject (optional)</label>
+                                        <input type="text" id="emailSubject" data-i18n-placeholder="emailSubjectPlaceholder" placeholder="Email subject">
+                                        <label data-i18n="emailBodyLabel">Message (optional)</label>
+                                        <textarea id="emailBody" data-i18n-placeholder="emailBodyPlaceholder" placeholder="Email body..."></textarea>
+                                    </form>
+
+                                    <!-- Phone Form -->
+                                    <form class="qr-input-form" data-form="phone">
+                                        <label data-i18n="phoneLabel">Phone number</label>
+                                        <span class="qr-input-helper-text" data-i18n="phoneHelper">Enter a full phone number with country code (e.g., +1 234 567 8900)</span>
+                                        <input type="tel" id="phoneNumber" data-i18n-placeholder="phonePlaceholder" placeholder="+1 234 567 8900" required>
+                                    </form>
+
+                                    <!-- SMS Form -->
+                                    <form class="qr-input-form" data-form="sms">
+                                        <label data-i18n="smsNumberLabel">Phone number</label>
+                                        <span class="qr-input-helper-text" data-i18n="smsHelper">Phone number is required. Message text is optional</span>
+                                        <input type="tel" id="smsNumber" data-i18n-placeholder="smsNumberPlaceholder" placeholder="+1 234 567 8900" required>
+                                        <label data-i18n="smsMessageLabel">Message</label>
+                                        <textarea id="smsMessage" data-i18n-placeholder="smsMessagePlaceholder" placeholder="SMS text..."></textarea>
+                                    </form>
+
+                                    <!-- WiFi Form -->
+                                    <form class="qr-input-form" data-form="wifi">
+                                        <label data-i18n="wifiSsidLabel">Network name (SSID)</label>
+                                        <span class="qr-input-helper-text" data-i18n="wifiHelper">Enter your WiFi network name and password for automatic connection</span>
+                                        <input type="text" id="wifiSsid" data-i18n-placeholder="wifiSsidPlaceholder" placeholder="WiFi_name" required>
+                                        <label data-i18n="wifiPasswordLabel">Password</label>
+                                        <input type="password" id="wifiPassword" data-i18n-placeholder="wifiPasswordPlaceholder" placeholder="password123" required>
+                                        <label data-i18n="wifiEncryptionLabel">Encryption</label>
+                                        <select id="wifiEncryption">
+                                            <option value="WPA">WPA</option>
+                                            <option value="WEP">WEP</option>
+                                            <option value="nopass">No Password</option>
+                                        </select>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="wifiHidden">
+                                            <span data-i18n="wifiHiddenLabel">Hidden network</span>
+                                        </label>
+                                    </form>
+
+                                    <!-- vCard Form -->
+                                    <form class="qr-input-form" data-form="vcard">
+                                        <label data-i18n="vcardNameLabel">Full name</label>
+                                        <span class="qr-input-helper-text" data-i18n="vcardHelper">Name is required. Other fields are optional but add more value to your contact card</span>
+                                        <input type="text" id="vcardName" data-i18n-placeholder="vcardNamePlaceholder" placeholder="John Doe" required>
+                                        <label data-i18n="vcardOrgLabel">Company (optional)</label>
+                                        <input type="text" id="vcardOrg" data-i18n-placeholder="vcardOrgPlaceholder" placeholder="CodeNest Ltd.">
+                                        <label data-i18n="vcardPhoneLabel">Phone</label>
+                                        <input type="tel" id="vcardPhone" data-i18n-placeholder="vcardPhonePlaceholder" placeholder="+1 234 567 8900" required>
+                                        <label data-i18n="vcardEmailLabel">Email</label>
+                                        <input type="email" id="vcardEmail" data-i18n-placeholder="vcardEmailPlaceholder" placeholder="example@email.com" required>
+                                        <label data-i18n="vcardUrlLabel">Website (optional)</label>
+                                        <input type="text" id="vcardUrl" data-i18n-placeholder="vcardUrlPlaceholder" placeholder="https://www.example.com">
+                                    </form>
+
+                                    <!-- Location Form -->
+                                    <form class="qr-input-form" data-form="location">
+                                        <label data-i18n="locationLatLabel">Latitude</label>
+                                        <span class="qr-input-helper-text" data-i18n="locationHelper">Enter coordinates from Google Maps (decimal format)</span>
+                                        <input type="number" id="locationLat" step="0.0001" data-i18n-placeholder="locationLatPlaceholder" placeholder="40.7128" required>
+                                        <label data-i18n="locationLngLabel">Longitude</label>
+                                        <input type="number" id="locationLng" step="0.0001" data-i18n-placeholder="locationLngPlaceholder" placeholder="-74.0060" required>
+                                        <small data-i18n="locationHint">Google Maps coordinates (New York example)</small>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Design Settings -->
+                            <div class="qr-settings-card qr-design-collapsible">
+                                <button class="qr-design-toggle" id="designToggle" aria-expanded="false" aria-controls="designContent">
+                                    <span>🎨 <span data-i18n="designTitle">Design</span></span>
+                                    <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                
+                                <div class="qr-design-content" id="designContent">
+                                    <!-- Presets -->
+                                    <div class="qr-preset-section">
+                                    <label data-i18n="designLabel">Style</label>
+                                    <div class="qr-preset-buttons">
+                                        <button class="qr-preset-btn active" data-preset="classic" data-i18n="presetClassic">Classic</button>
+                                        <button class="qr-preset-btn" data-preset="rounded" data-i18n="presetRounded">Rounded</button>
+                                        <button class="qr-preset-btn" data-preset="dots" data-i18n="presetDots">Dots</button>
+                                    </div>
+                                </div>
+
+                                <!-- Colors -->
+                                <div class="qr-color-section">
+                                    <div class="color-picker-group">
+                                        <label data-i18n="colorFg">Foreground</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="colorFg" value="#000000">
+                                            <span id="colorFgValue">#000000</span>
+                                        </div>
+                                    </div>
+                                    <div class="color-picker-group">
+                                        <label data-i18n="colorBg">Background</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="colorBg" value="#ffffff">
+                                            <span id="colorBgValue">#FFFFFF</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Size -->
+                                <div class="qr-size-section">
+                                    <label data-i18n="sizeLabel">Size</label>
+                                    <div class="size-input-wrapper">
+                                        <input type="range" id="qrSize" min="200" max="600" value="300">
+                                        <span id="sizeValue">300px</span>
+                                    </div>
+                                </div>
+
+                                <!-- Reset Button -->
+                                <button id="resetBtn" class="qr-btn qr-btn-secondary qr-btn-block" data-i18n="reset">Reset</button>
+                            </div>
+                            </div>
+                        </section>
+
+                        <!-- JOBB OLDAL - Preview -->
+                        <section class="qr-preview-panel">
+                            <div class="qr-preview-card">
+                                <div class="preview-header">
+                                    <h2 data-i18n="preview">Preview</h2>
+                                </div>
+                                
+                                <div class="preview-content">
+                                    <div class="qr-status-badge empty" id="statusBadge" role="status" aria-live="polite">
+                                        <span data-i18n="statusEmpty">Ready to generate</span>
+                                    </div>
+                                    <div id="qrCode" class="qr-code-container"></div>
+                                    <div id="errorMessage" class="error-message">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        <p data-i18n="errorEmpty">Fill in the fields to generate the QR code</p>
+                                    </div>
+                                </div>
+
+                                <div class="preview-actions">
+                                    <button id="downloadBtn" class="qr-btn qr-btn-primary" data-i18n="download" disabled>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        <span data-i18n="download">Download (PNG)</span>
+                                    </button>
+                                    <button id="copyBtn" class="qr-btn qr-btn-secondary" data-i18n="copy" disabled>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        <span data-i18n="copy">Copy to Clipboard</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast">
+            <span id="toastMessage"></span>
+        </div>
+
+        <!-- Sticky Action Bar (Mobile Only) -->
+        <div class="sticky-actions" id="stickyActions">
+            <button id="stickyDownloadBtn" class="qr-btn qr-btn-primary" data-i18n="download" disabled aria-label="Download QR Code">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span data-i18n="download">Download</span>
+            </button>
+            <button id="stickyCopyBtn" class="qr-btn qr-btn-secondary" data-i18n="copy" disabled aria-label="Copy QR Code to Clipboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span data-i18n="copy">Copy</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Column 1: Logo & Description -->
+                <div class="footer-column footer-brand">
+                    <a href="index.html" class="footer-logo" title="CodeNest - Web Development Agency">
+                        <img src="logo_footer-modified.png" alt="CodeNest Logo - Professional Web Development and Design" height="96" title="CodeNest Agency Footer Logo">
+                        <span class="brand">
+                            <i style="color: rgb(255, 255, 255); font-style: normal;">Code</i><i style="color: rgb(255, 255, 255); font-style: normal;">Nest</i>
+                        </span>
+                    </a>
+
+                    <!-- Social Links -->
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com/share/17UPaEDB6e/" class="social-icon" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/codenest-hu/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
+                                <circle cx="4" cy="4" r="2" />
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/team_codenest?igsh=a3lkOWhmNGdzd3Fz" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" />
+                                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                                <path d="M17.5 6.5h.01" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Services -->
+                <div class="footer-column">
+                    <h4 class="footer-heading" data-en="Services" data-hu="Szolgáltatások">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#services" data-en="Website Development" data-hu="Weboldal fejlesztés">Website Development</a></li>
+                        <li><a href="index.html#services" data-en="Web Applications" data-hu="Webalkalmazások">Web Applications</a></li>
+                        <li><a href="index.html#services" data-en="UI/UX Design" data-hu="UI/UX Design">UI/UX Design</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Company -->
+                <div class="footer-column">
+                    <h4 class="footer-heading" data-en="Company" data-hu="Cég">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#team" data-en="About Us" data-hu="Rólunk">About Us</a></li>
+                        <li><a href="index.html#portfolio" data-en="Portfolio" data-hu="Referenciák">Portfolio</a></li>
+                        <li><a href="index.html#team" data-en="Team" data-hu="Csapat">Team</a></li>
+                        <li><a href="index.html#contact" data-en="Contact" data-hu="Kapcsolat">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Legal -->
+                <div class="footer-column">
+                    <h4 class="footer-heading" data-en="Legal" data-hu="Jogi">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="legal-hu.html" data-en="Imprint / Impresszum" data-hu="Impresszum">Imprint / Impresszum</a></li>
+                        <li><a href="legal-hu.html" data-en="Privacy Policy" data-hu="Adatvédelmi">Privacy Policy</a></li>
+                        <li><a href="legal-hu.html" data-en="GDPR" data-hu="GDPR">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p class="footer-copyright" data-en="© 2025 CodeNest. All rights reserved." data-hu="© 2025 CodeNest. Minden jog fenntartva.">
+                    © 2025 CodeNest. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="qr_app.js"></script>
+    <script src="script.js"></script>
+    <script src="cookie-consent.js"></script>
+</body>
+
+</html>
