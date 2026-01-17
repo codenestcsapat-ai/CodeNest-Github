@@ -3,6 +3,11 @@
 # Performance Optimization & Caching
 # =============================================
 
+# Hide index.html from URL - serve directly when accessing directory
+<IfModule mod_dir.c>
+    DirectoryIndex index.html index.htm
+</IfModule>
+
 # Enable Rewrite Engine
 <IfModule mod_rewrite.c>
     RewriteEngine On
