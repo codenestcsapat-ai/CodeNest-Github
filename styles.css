@@ -1363,9 +1363,8 @@ a {
     pointer-events: auto !important;
 }
 
-
 /* ========================================
-   TOOLS SECTION
+   TOOLS SECTION - Cleaned & Optimized
    ======================================== */
 
 .tools-section {
@@ -1373,8 +1372,10 @@ a {
 }
 
 .tools-grid {
+    display: -ms-grid;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    /* Added standard repeat for better compatibility */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 3rem;
 }
@@ -1384,11 +1385,20 @@ a {
     border: 1px solid #E5E7EB;
     border-radius: var(--radius-xl);
     padding: 2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-transition: all var(--transition-base);
     transition: all var(--transition-base);
     position: relative;
     overflow: hidden;
+    /* Ensure card is visible even if fade-in fails */
+    opacity: 1 !important; 
+    visibility: visible !important;
 }
 
 .tool-card::before {
@@ -1398,24 +1408,37 @@ a {
     left: 0;
     right: 0;
     height: 3px;
+    background: -webkit-gradient(linear, left top, right top, from(var(--color-accent-blue)), color-stop(#8b5cf6), to(#ec4899));
     background: linear-gradient(to right, var(--color-accent-blue), #8b5cf6, #ec4899);
+    -webkit-transform: scaleX(0);
     transform: scaleX(0);
+    -webkit-transform-origin: left;
     transform-origin: left;
+    -webkit-transition: -webkit-transform var(--transition-base);
+    transition: -webkit-transform var(--transition-base);
     transition: transform var(--transition-base);
+    transition: transform var(--transition-base), -webkit-transform var(--transition-base);
 }
 
 .tool-card:hover {
     border-color: var(--color-accent-blue);
+    -webkit-box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+    -webkit-transform: translateY(-4px);
     transform: translateY(-4px);
 }
 
 .tool-card:hover::before {
+    -webkit-transform: scaleX(1);
     transform: scaleX(1);
 }
 
 .tool-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
@@ -1427,10 +1450,17 @@ a {
     height: 48px;
     background: linear-gradient(135deg, #3B82F6, #8b5cf6);
     border-radius: var(--radius-lg);
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     color: var(--color-white);
+    -ms-flex-negative: 0;
     flex-shrink: 0;
 }
 
@@ -1446,11 +1476,16 @@ a {
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
     flex-grow: 1;
 }
 
 .tool-features {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
@@ -1466,17 +1501,6 @@ a {
     font-weight: 500;
 }
 
-.tool-card .btn {
-    align-self: flex-start;
-    margin-top: auto;
-}
-
-/* Placeholder Card */
-.tool-card-placeholder {
-    position: relative;
-    opacity: 0.85;
-}
-
 .tool-badge {
     position: absolute;
     top: 1rem;
@@ -1488,11 +1512,6 @@ a {
     font-size: 0.8rem;
     font-weight: 600;
 }
-
-.tool-card-placeholder:hover {
-    opacity: 1;
-}
-
 
 /* ========================================
    WHY CHOOSE US SECTION
