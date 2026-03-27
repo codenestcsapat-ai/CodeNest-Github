@@ -1,0 +1,2556 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media & AI | Közösségi média és AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <style>
+    :root {
+      --bg-main: #0d1026;
+      --bg-soft: #151a3d;
+      --bg-card: rgba(20, 26, 61, 0.78);
+      --line: rgba(255, 255, 255, 0.12);
+      --text-main: #eef2ff;
+      --text-soft: #b7c0f8;
+      --accent: #7c5cff;
+      --accent-2: #26b7ff;
+      --success: #7ef0c2;
+      --shadow: 0 20px 60px rgba(7, 11, 31, 0.45);
+      --max-width: 1180px;
+      --nav-height: 84px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, rgba(124, 92, 255, 0.28), transparent 32%),
+        radial-gradient(circle at top right, rgba(38, 183, 255, 0.25), transparent 28%),
+        linear-gradient(160deg, #0a0d21 0%, #10173d 50%, #0c1130 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent);
+      pointer-events: none;
+      z-index: -1;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    main,
+    .site-header,
+    .hero,
+    .section,
+    .container,
+    .footer {
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    p,
+    li,
+    .section-title,
+    .section-subtitle,
+    .quiz-meta,
+    .tool-tab,
+    .tool-content {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .section {
+      padding: 5.5rem 0;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.08;
+      margin: 0 0 1rem;
+    }
+
+    .section-subtitle {
+      max-width: 720px;
+      color: var(--text-soft);
+      margin: 0 0 2.2rem;
+      font-size: 1rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #dfe5ff;
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      background: rgba(7, 10, 28, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: visible;
+    }
+
+    main {
+      padding-top: var(--nav-height);
+    }
+
+    .nav {
+      min-height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: nowrap;
+      overflow: visible;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 30px rgba(74, 91, 255, 0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .nav-links li {
+      flex: 0 0 auto;
+    }
+
+    /* Navbar icon-only links with tooltip */
+    .nav-links a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 999px;
+      color: var(--text-soft);
+      transition: 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a i {
+      display: inline-flex;
+      font-size: 1.05rem;
+      pointer-events: none;
+    }
+
+    .nav-links a::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: rgba(14, 18, 48, 0.97);
+      color: var(--text-main);
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 24px rgba(5, 10, 30, 0.45);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 200;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+    }
+
+    .nav-links a.nav-active {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .nav-links a.nav-active::before {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      position: absolute;
+      left: 50%;
+      bottom: 0.38rem;
+      transform: translateX(-50%);
+    }
+
+    .lang-dropdown {
+      position: relative;
+      flex-shrink: 0;
+      z-index: 1100;
+    }
+
+    .lang-dropdown-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.25), rgba(38, 183, 255, 0.18));
+      color: var(--text-main);
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .lang-dropdown-btn:hover,
+    .lang-dropdown-btn:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.32);
+      outline: none;
+    }
+
+    .lang-chevron {
+      font-size: 0.75rem;
+      transition: transform 0.25s ease;
+    }
+
+    .lang-dropdown.open .lang-chevron {
+      transform: rotate(180deg);
+    }
+
+    .lang-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 0.6rem);
+      right: 0;
+      min-width: 150px;
+      list-style: none;
+      margin: 0;
+      padding: 0.5rem;
+      border-radius: 18px;
+      background: rgba(14, 18, 48, 0.97);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(5, 10, 30, 0.55);
+      backdrop-filter: blur(16px);
+      z-index: 1200;
+    }
+
+    .lang-dropdown.open .lang-menu {
+      display: block;
+      animation: fadeDropdown 0.2s ease;
+    }
+
+    @keyframes fadeDropdown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-size: 0.93rem;
+      font-weight: 500;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .lang-option:hover,
+    .lang-option:focus-visible {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .lang-option.active {
+      color: var(--text-main);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.2), rgba(38, 183, 255, 0.15));
+    }
+
+    .fi {
+      width: 1.4em;
+      height: 1.4em;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+
+    @media (min-width: 1025px) {
+      .section {
+        padding: 6.5rem 0;
+      }
+
+      .nav-links {
+        gap: 0.25rem;
+        flex-wrap: nowrap;
+        overflow: hidden;
+      }
+
+      .nav-links li:nth-child(6) {
+        margin-left: 0.75rem;
+        padding-left: 0.75rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-links a {
+        font-size: 0.88rem;
+      }
+
+      .nav-links a.nav-active {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text-main);
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .hero-copy h1,
+      .hero-copy .section-subtitle,
+      .hero-actions {
+        margin-bottom: 0;
+      }
+
+      .hero-stats {
+        margin-top: 2.5rem;
+      }
+
+      .hero-copy .hero-stats {
+        margin-top: 1rem;
+      }
+
+      .hero-stat {
+        padding: 1.75rem;
+        min-height: 110px;
+      }
+
+      .cards-grid {
+        gap: 1.6rem;
+      }
+
+      .glass-card {
+        padding: 1.75rem 1.6rem;
+      }
+
+      .platform-card {
+        padding: 1.8rem;
+        padding-left: 2.1rem;
+      }
+
+      .data-panel {
+        padding: 1.9rem;
+      }
+
+      .quiz-box {
+        padding: 2rem 1.75rem;
+      }
+
+      .fact-card {
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .chart-card {
+        padding: 1.5rem;
+      }
+    }
+
+    .hero {
+      padding-top: 2rem;
+    }
+
+    .hero-grid,
+    .quiz-layout,
+    .video-layout {
+      display: grid;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+    }
+
+    .hero-copy h1 {
+      margin: 0 0 1.25rem;
+      font-size: clamp(2.7rem, 6vw, 5.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #fbfdff 0%, #9bdfff 46%, #a88dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy p,
+    .glass-card p,
+    .image-copy p,
+    .video-copy p,
+    .quiz-meta,
+    .fact-card p {
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .hero-actions,
+    .quiz-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      border: none;
+      border-radius: 999px;
+      padding: 1rem 1.35rem;
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s ease;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 18px 35px rgba(75, 94, 255, 0.34);
+    }
+
+    .btn-secondary {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .hero-stat,
+    .glass-card,
+    .quiz-box,
+    .fact-card,
+    .video-card,
+    .image-card {
+      background: rgba(20, 26, 61, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-stat,
+    .glass-card,
+    .fact-card,
+    .quiz-tip,
+    .quiz-box,
+    .video-card,
+    .image-card {
+      border-radius: 24px;
+    }
+
+    .image-card {
+      padding: 1.25rem;
+    }
+
+    .hero-stat,
+    .glass-card,
+    .quiz-box,
+    .fact-card {
+      padding: 1.5rem;
+    }
+
+    .hero-stat strong,
+    .counter {
+      display: block;
+      font-weight: 800;
+    }
+
+    .hero-panel {
+      border-radius: 32px;
+      padding: 1rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-image {
+      border-radius: 26px;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+    }
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .floating-card {
+      position: absolute;
+      right: -1.25rem;
+      bottom: 1.8rem;
+      width: min(88%, 320px);
+      padding: 1.1rem;
+      border-radius: 20px;
+      background: rgba(10, 16, 43, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 22px 55px rgba(5, 10, 30, 0.45);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .icon-wrap {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      margin-bottom: 1.1rem;
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.25), rgba(38, 183, 255, 0.25));
+      color: #ffffff;
+      font-size: 1.35rem;
+    }
+
+    .image-showcase,
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+      align-items: stretch;
+    }
+
+    .platform-card {
+      position: relative;
+      padding: 1.6rem;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(20, 26, 61, 0.92), rgba(12, 18, 42, 0.88));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 100%;
+    }
+
+    .platform-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 6px;
+      background: var(--platform-accent, var(--accent));
+    }
+
+    .platform-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .platform-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .platform-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 1.45rem;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .platform-name {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .platform-tag {
+      margin: 0.2rem 0 0;
+      color: var(--text-soft);
+      font-size: 0.93rem;
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+    }
+
+    .score-low {
+      background: rgba(255, 159, 103, 0.15);
+      color: #ffbf92;
+    }
+
+    .score-medium {
+      background: rgba(255, 214, 102, 0.14);
+      color: #ffe181;
+    }
+
+    .score-high {
+      background: rgba(126, 240, 194, 0.14);
+      color: #9bf2d1;
+    }
+
+    .platform-list {
+      margin: 1rem 0 0;
+      padding-left: 1.2rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .platform-list li + li {
+      margin-top: 0.45rem;
+    }
+
+    .platform-list li {
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    .data-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.4rem;
+      margin-top: 2rem;
+      align-items: start;
+    }
+
+    .data-panel {
+      padding: 1.6rem;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(20, 26, 61, 0.82), rgba(11, 17, 43, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .data-orbit {
+      position: relative;
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .data-core {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 1.2rem;
+      background: radial-gradient(circle at top, rgba(124, 92, 255, 0.9), rgba(38, 183, 255, 0.6));
+      box-shadow: 0 0 0 18px rgba(124, 92, 255, 0.08), 0 0 0 42px rgba(38, 183, 255, 0.05);
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .data-node {
+      position: absolute;
+      width: min(44%, 220px);
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(12, 20, 49, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 16px 40px rgba(7, 11, 31, 0.35);
+      animation: floatCard 5.5s ease-in-out infinite;
+    }
+
+    .data-node.behavioral { top: 1rem; left: 1rem; }
+    .data-node.demographic { top: 1rem; right: 1rem; animation-delay: 0.8s; }
+    .data-node.device { bottom: 1rem; left: 1rem; animation-delay: 1.6s; }
+    .data-node.social { bottom: 1rem; right: 1rem; animation-delay: 2.4s; }
+
+    .data-node strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.98rem;
+    }
+
+    .data-node p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .accordion {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .accordion-item {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.15rem;
+      background: transparent;
+      color: var(--text-main);
+      border: 0;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .accordion-trigger span:last-child {
+      font-size: 1.15rem;
+      transition: transform 0.25s ease;
+    }
+
+    .accordion-item.open .accordion-trigger span:last-child {
+      transform: rotate(45deg);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
+    .accordion-inner {
+      padding: 0 1.15rem 1.15rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .accordion-inner p {
+      margin: 0;
+    }
+
+    .tools-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.4rem;
+      align-items: start;
+      margin-top: 2rem;
+    }
+
+    .tool-tabs,
+    .tool-panel {
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(20, 26, 61, 0.84), rgba(11, 17, 43, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .tool-tabs {
+      padding: 1rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .tool-tab {
+      width: 100%;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .tool-tab strong {
+      display: block;
+      margin-bottom: 0.28rem;
+      font-size: 1rem;
+    }
+
+    .tool-tab small {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .tool-tab.active,
+    .tool-tab:hover,
+    .tool-tab:focus-visible {
+      transform: translateX(4px);
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.18), rgba(38, 183, 255, 0.13));
+      border-color: rgba(255, 255, 255, 0.18);
+      outline: none;
+    }
+
+    .tool-panel {
+      padding: 1.6rem;
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .tool-content.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tool-content h3 {
+      margin: 0 0 0.8rem;
+      font-size: 1.35rem;
+    }
+
+    .tool-content p {
+      margin: 0 0 1rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .tool-list {
+      margin: 0 0 1.2rem;
+      padding-left: 1.2rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .tool-list li + li {
+      margin-top: 0.4rem;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+
+    .example-card,
+    .demo-box {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 1rem;
+    }
+
+    .example-label {
+      display: inline-flex;
+      margin-bottom: 0.55rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .label-before {
+      background: rgba(255, 159, 103, 0.14);
+      color: #ffc596;
+    }
+
+    .label-after {
+      background: rgba(126, 240, 194, 0.14);
+      color: #9ff2d4;
+    }
+
+    .demo-box {
+      margin-top: 1.2rem;
+    }
+
+    .demo-box textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(8, 13, 34, 0.72);
+      color: var(--text-main);
+      font: inherit;
+      padding: 0.95rem 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .demo-box textarea::placeholder {
+      color: rgba(183, 192, 248, 0.7);
+    }
+
+    .demo-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 0.9rem;
+    }
+
+    .demo-output {
+      min-height: 86px;
+      border-radius: 18px;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.12), rgba(38, 183, 255, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .chart-card {
+      padding: 1.25rem;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(20, 26, 61, 0.84), rgba(11, 17, 43, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow);
+      min-height: 100%;
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .chart-head h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: help;
+      white-space: nowrap;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      height: 320px;
+    }
+
+    .chart-canvas-wrap canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .quiz-layout {
+      grid-template-columns: 0.92fr 1.08fr;
+      align-items: start;
+    }
+
+    .quiz-side {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .quiz-tip {
+      padding: 1.4rem;
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.16), rgba(38, 183, 255, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: var(--text-soft);
+      font-size: 0.94rem;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-bottom: 1.4rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 20%;
+      border-radius: inherit;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      transition: width 0.35s ease;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 0.85rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      padding: 1rem 1.1rem;
+      font-family: inherit;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .option-btn:hover,
+    .option-btn:focus-visible {
+      transform: translateX(4px);
+      border-color: rgba(126, 240, 194, 0.45);
+      background: rgba(126, 240, 194, 0.08);
+      outline: none;
+    }
+
+    .quiz-feedback {
+      min-height: 1.7rem;
+      color: var(--success);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+    }
+
+    .fact-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 0;
+    }
+
+    .counter {
+      font-size: clamp(2.3rem, 4vw, 3.4rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .video-layout {
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+
+    .video-card {
+      padding: 1rem;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 22px;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .footer {
+      padding: 1.8rem 0 2.5rem;
+      color: var(--text-soft);
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .cards-grid,
+      .platform-grid,
+      .image-showcase,
+      .data-layout,
+      .tools-layout,
+      .charts-grid,
+      .quiz-layout,
+      .fact-grid,
+      .video-layout {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .nav {
+        min-height: auto;
+        padding: 0.75rem 0;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "brand toggle"
+          "links links";
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .brand {
+        grid-area: brand;
+        min-width: 0;
+      }
+
+      .nav-links {
+        grid-area: links;
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        overflow: visible;
+        padding-bottom: 0;
+        row-gap: 0.5rem;
+      }
+
+      .lang-dropdown {
+        grid-area: toggle;
+        align-self: center;
+        justify-self: end;
+        margin-left: 0;
+      }
+
+      .hero,
+      .section {
+        padding: 4.2rem 0;
+      }
+
+      .hero-grid,
+      .cards-grid,
+      .platform-grid,
+      .image-showcase,
+      .data-layout,
+      .tools-layout,
+      .charts-grid,
+      .quiz-layout,
+      .fact-grid,
+      .video-layout,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .data-orbit {
+        min-height: auto;
+        gap: 1rem;
+        display: grid;
+        padding: 1rem;
+      }
+
+      .data-node {
+        position: static;
+        width: 100%;
+        animation: none;
+      }
+
+      .data-core {
+        margin: 0 auto 0.5rem;
+      }
+
+      .floating-card {
+        right: 1rem;
+        left: 1rem;
+        bottom: 1rem;
+        width: auto;
+      }
+
+      .tool-tab:hover,
+      .tool-tab:focus-visible {
+        transform: none;
+      }
+
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .platform-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        width: min(calc(100% - 1.2rem), var(--max-width));
+      }
+
+      .nav {
+        gap: 0.75rem;
+      }
+
+      .nav .lang-dropdown {
+        width: auto;
+      }
+
+      .btn,
+      .lang-dropdown-btn,
+      .option-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero-actions,
+      .quiz-controls,
+      .demo-actions {
+        flex-direction: column;
+      }
+
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .floating-card {
+        position: static;
+        margin-top: 1rem;
+        width: 100%;
+        border-radius: 20px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#home" class="brand">
+        <span class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <span data-en="Social Media & AI" data-hu="Közösségi média és AI">Social Media & AI</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" title="Home" data-tooltip-en="Home" data-tooltip-hu="Főoldal"><i class="fa-solid fa-house" aria-hidden="true"></i></a></li>
+        <li><a href="#how-ai" title="How AI Works" data-tooltip-en="How AI Works" data-tooltip-hu="Hogyan működik az AI?"><i class="fa-solid fa-microchip" aria-hidden="true"></i></a></li>
+        <li><a href="#platforms" title="Platforms & Data" data-tooltip-en="Platforms & Data" data-tooltip-hu="Platformok és adatok"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></a></li>
+        <li><a href="#tools" title="AI Tools for You" data-tooltip-en="AI Tools for You" data-tooltip-hu="AI eszközök neked"><i class="fa-solid fa-toolbox" aria-hidden="true"></i></a></li>
+        <li><a href="#numbers" title="By The Numbers" data-tooltip-en="By The Numbers" data-tooltip-hu="Számokban"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></a></li>
+        <li><a href="#quiz" title="Quiz" data-tooltip-en="Quiz" data-tooltip-hu="Kvíz"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></a></li>
+        <li><a href="#facts" title="Did You Know?" data-tooltip-en="Did You Know?" data-tooltip-hu="Tudtad?"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></a></li>
+        <li><a href="#watch" title="Watch & Learn" data-tooltip-en="Watch & Learn" data-tooltip-hu="Nézd meg"><i class="fa-solid fa-video" aria-hidden="true"></i></a></li>
+      </ul>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-dropdown-btn" id="langToggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="fi fi-gb"></span>
+          <span id="langLabel">EN</span>
+          <i class="fa-solid fa-chevron-down lang-chevron"></i>
+        </button>
+        <ul class="lang-menu" role="listbox">
+          <li class="lang-option active" data-lang="en" role="option" tabindex="0">
+            <span class="fi fi-gb"></span>
+            <span>English</span>
+          </li>
+          <li class="lang-option" data-lang="hu" role="option" tabindex="0">
+            <span class="fi fi-hu"></span>
+            <span>Magyar</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section" id="home">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div class="badge">
+            <i class="fa-solid fa-brain"></i>
+            <span data-en="A youth-friendly guide to the smart side of social media" data-hu="Fiatalos útmutató a közösségi média okos oldalához">A youth-friendly guide to the smart side of social media</span>
+          </div>
+          <h1>
+            <span data-en="How" data-hu="Így formálja">How</span>
+            <span class="gradient-text" data-en="AI shapes" data-hu="az AI">AI shapes</span>
+            <span data-en="your social media world" data-hu="a közösségi média világát">your social media world</span>
+          </h1>
+          <p data-en="From personalized feeds to automatic captions, artificial intelligence helps make social apps faster, smarter, and more accessible. Explore how it works in a fun, clear, bilingual experience." data-hu="A személyre szabott hírfolyamtól az automatikus feliratokig a mesterséges intelligencia gyorsabbá, okosabbá és elérhetőbbé teszi a közösségi appokat. Fedezd fel működését egy játékos, érthető, kétnyelvű oldalon.">From personalized feeds to automatic captions, artificial intelligence helps make social apps faster, smarter, and more accessible. Explore how it works in a fun, clear, bilingual experience.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#quiz"><i class="fa-solid fa-circle-play"></i><span data-en="Take the Quiz" data-hu="Indítsd a kvízt">Take the Quiz</span></a>
+            <a class="btn btn-secondary" href="#how-ai"><i class="fa-solid fa-compass"></i><span data-en="Learn the Basics" data-hu="Tanuld meg az alapokat">Learn the Basics</span></a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><strong>24/7</strong><span data-en="AI helps platforms organize content all day" data-hu="Az AI egész nap segít rendszerezni a tartalmakat">AI helps platforms organize content all day</span></div>
+            <div class="hero-stat"><strong>5</strong><span data-en="Interactive quiz questions to test your knowledge" data-hu="Interaktív kérdés a tudásod próbára tételéhez">Interactive quiz questions to test your knowledge</span></div>
+            <div class="hero-stat"><strong>2</strong><span data-en="Languages on one page with one tap" data-hu="Nyelv egyetlen gombnyomással váltható">Languages on one page with one tap</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="hero-panel">
+            <img class="hero-image" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="Young people using social media technology together">
+          </div>
+          <div class="floating-card">
+            <strong data-en="Smart feed, smart tools" data-hu="Okos hírfolyam, okos eszközök">Smart feed, smart tools</strong>
+            <p data-en="Recommendation systems, accessibility features, and safety tools often rely on machine learning behind the scenes." data-hu="Az ajánlórendszerek, az akadálymentesítő funkciók és a biztonsági eszközök gyakran gépi tanulásra épülnek a háttérben.">Recommendation systems, accessibility features, and safety tools often rely on machine learning behind the scenes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-ai">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">
+            <i class="fa-solid fa-microchip"></i>
+            <span data-en="How AI Works in Social Media" data-hu="Hogyan működik az AI a közösségi médiában?">How AI Works in Social Media</span>
+          </div>
+          <h2 class="section-title" data-en="AI helps social platforms feel more personal, useful, and inclusive" data-hu="Az AI személyesebbé, hasznosabbá és befogadóbbá teszi a közösségi platformokat">AI helps social platforms feel more personal, useful, and inclusive</h2>
+          <p class="section-subtitle" data-en="Every scroll, swipe, and search can teach systems what people find interesting, helpful, or important. Here are four everyday ways AI shows up in social media." data-hu="Minden görgetés, húzás és keresés segíthet a rendszereknek megérteni, mi érdekes, hasznos vagy fontos az emberek számára. Íme négy hétköznapi mód, ahogyan az AI megjelenik a közösségi médiában.">Every scroll, swipe, and search can teach systems what people find interesting, helpful, or important. Here are four everyday ways AI shows up in social media.</p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="glass-card reveal"><div class="icon-wrap"><i class="fa-solid fa-wand-sparkles"></i></div><h3 data-en="Recommendation Algorithms" data-hu="Ajánló algoritmusok">Recommendation Algorithms</h3><p data-en="AI looks at your likes, watch time, and interests to suggest videos, creators, and posts you may enjoy." data-hu="Az AI a kedvelések, a nézési idő és az érdeklődési kör alapján ajánlhat neked videókat, alkotókat és bejegyzéseket.">AI looks at your likes, watch time, and interests to suggest videos, creators, and posts you may enjoy.</p></article>
+          <article class="glass-card reveal"><div class="icon-wrap"><i class="fa-solid fa-shield-heart"></i></div><h3 data-en="Content Moderation" data-hu="Tartalommoderálás">Content Moderation</h3><p data-en="Moderation systems can flag unsafe or rule-breaking content quickly so human teams can review it more efficiently." data-hu="A moderációs rendszerek gyorsan jelezhetik a szabályszegő vagy problémás tartalmakat, így az emberi csapatok hatékonyabban vizsgálhatják meg őket.">Moderation systems can flag unsafe or rule-breaking content quickly so human teams can review it more efficiently.</p></article>
+          <article class="glass-card reveal"><div class="icon-wrap"><i class="fa-solid fa-camera-retro"></i></div><h3 data-en="Deepfake Detection" data-hu="Deepfake-felismerés">Deepfake Detection</h3><p data-en="AI tools can spot unusual visual or audio patterns to help platforms identify manipulated media." data-hu="Az AI-eszközök szokatlan vizuális vagy hangmintákat ismerhetnek fel, hogy segítsenek az átalakított médiatartalmak azonosításában.">AI tools can spot unusual visual or audio patterns to help platforms identify manipulated media.</p></article>
+          <article class="glass-card reveal"><div class="icon-wrap"><i class="fa-solid fa-closed-captioning"></i></div><h3 data-en="Auto-Captions & Accessibility" data-hu="Automatikus feliratok és akadálymentesítés">Auto-Captions & Accessibility</h3><p data-en="Speech recognition can create captions, while image understanding can generate descriptions that support more users." data-hu="A beszédfelismerés feliratokat készíthet, a képfelismerés pedig leírásokat generálhat, így több felhasználó számára lesz elérhető a tartalom.">Speech recognition can create captions, while image understanding can generate descriptions that support more users.</p></article>
+        </div>
+
+        <div class="image-showcase">
+          <article class="image-card reveal">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Close-up of futuristic AI technology">
+            <div class="image-copy">
+              <h3 data-en="AI learns from patterns" data-hu="Az AI mintákból tanul">AI learns from patterns</h3>
+              <p data-en="Instead of thinking like a person, machine learning finds useful patterns in huge amounts of data to make predictions and suggestions." data-hu="A gépi tanulás nem emberként gondolkodik, hanem nagy adatmennyiségekben keres hasznos mintákat, hogy előrejelzéseket és ajánlásokat adjon.">Instead of thinking like a person, machine learning finds useful patterns in huge amounts of data to make predictions and suggestions.</p>
+            </div>
+          </article>
+          <article class="image-card reveal">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80" alt="People working with modern digital interfaces">
+            <div class="image-copy">
+              <h3 data-en="Human creativity still matters" data-hu="Az emberi kreativitás továbbra is fontos">Human creativity still matters</h3>
+              <p data-en="AI can assist creators and communities, but the best online experiences still come from human ideas, connection, and thoughtful choices." data-hu="Az AI segítheti az alkotókat és a közösségeket, de a legjobb online élményeket továbbra is az emberi ötletek, kapcsolatok és tudatos döntések adják.">AI can assist creators and communities, but the best online experiences still come from human ideas, connection, and thoughtful choices.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="platforms">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">
+            <i class="fa-solid fa-layer-group"></i>
+            <span data-en="How Platforms Use AI" data-hu="Hogyan használják az AI-t a platformok?">How Platforms Use AI</span>
+          </div>
+          <h2 class="section-title" data-en="Different platforms train their AI systems for different goals" data-hu="A különböző platformok eltérő célokra hangolják az AI-rendszereiket">Different platforms train their AI systems for different goals</h2>
+          <p class="section-subtitle" data-en="Social apps often use similar machine learning ideas, but each platform focuses on its own mix of recommendations, moderation, business tools, and discovery features. This comparison keeps the tone neutral and educational." data-hu="A közösségi appok gyakran hasonló gépi tanulási ötleteket használnak, de minden platform a saját ajánlási, moderálási, üzleti és felfedezési céljaira építi őket. Ez az összehasonlítás semleges és oktató jellegű.">Social apps often use similar machine learning ideas, but each platform focuses on its own mix of recommendations, moderation, business tools, and discovery features. This comparison keeps the tone neutral and educational.</p>
+        </div>
+
+        <div class="platform-grid">
+          <article class="platform-card reveal" style="--platform-accent:#e4405f;">
+            <div class="platform-head">
+              <div class="platform-brand">
+                <div class="platform-logo"><i class="fa-brands fa-instagram"></i></div>
+                <div>
+                  <h3 class="platform-name">Instagram / Meta</h3>
+                  <p class="platform-tag" data-en="Discovery, ads, and moderation at massive scale" data-hu="Felfedezés, hirdetések és moderálás hatalmas méretben">Discovery, ads, and moderation at massive scale</p>
+                </div>
+              </div>
+              <span class="score-badge score-medium" data-en="Transparency: Medium" data-hu="Átláthatóság: Közepes">Transparency: Medium</span>
+            </div>
+            <ul class="platform-list">
+              <li data-en="Ad targeting models estimate which campaigns and products may feel most relevant." data-hu="A hirdetéscélzó modellek megbecsülik, mely kampányok és termékek lehetnek a legrelevánsabbak.">Ad targeting models estimate which campaigns and products may feel most relevant.</li>
+              <li data-en="Feed ranking systems sort posts using interest signals, recency, and engagement patterns." data-hu="A hírfolyam-rangsoroló rendszerek érdeklődési jelek, frissesség és aktivitási minták alapján rendezik a posztokat.">Feed ranking systems sort posts using interest signals, recency, and engagement patterns.</li>
+              <li data-en="Face-related AI has supported tagging and recognition features across Meta products." data-hu="Az arcfelismeréshez kapcsolódó AI a Meta termékein belül címkézési és felismerési funkciókat is támogatott.">Face-related AI has supported tagging and recognition features across Meta products.</li>
+              <li data-en="Content moderation models help flag spam, scams, or policy-sensitive uploads for review." data-hu="A tartalommoderáló modellek segítenek megjelölni a spamet, csalásokat vagy szabályérzékeny feltöltéseket ellenőrzésre.">Content moderation models help flag spam, scams, or policy-sensitive uploads for review.</li>
+            </ul>
+          </article>
+
+          <article class="platform-card reveal" style="--platform-accent:#00f2ea;">
+            <div class="platform-head">
+              <div class="platform-brand">
+                <div class="platform-logo"><i class="fa-solid fa-music"></i></div>
+                <div>
+                  <h3 class="platform-name">TikTok</h3>
+                  <p class="platform-tag" data-en="Fast, highly personalized short-form recommendations" data-hu="Gyors, erősen személyre szabott rövidvideós ajánlások">Fast, highly personalized short-form recommendations</p>
+                </div>
+              </div>
+              <span class="score-badge score-medium" data-en="Transparency: Medium" data-hu="Átláthatóság: Közepes">Transparency: Medium</span>
+            </div>
+            <ul class="platform-list">
+              <li data-en="The For You Page uses signals like watch time, rewatches, and skips to personalize the feed." data-hu="A For You Page a nézési időt, újranézéseket és továbblépéseket is használja a hírfolyam személyre szabásához.">The For You Page uses signals like watch time, rewatches, and skips to personalize the feed.</li>
+              <li data-en="Prediction models estimate how long a viewer may stay with a video." data-hu="Az előrejelző modellek megbecsülik, mennyi ideig maradhat egy néző egy videónál.">Prediction models estimate how long a viewer may stay with a video.</li>
+              <li data-en="Trend-detection systems spot emerging sounds, creators, and formats quickly." data-hu="A trendfelismerő rendszerek gyorsan észreveszik a feltörekvő hangokat, alkotókat és formátumokat.">Trend-detection systems spot emerging sounds, creators, and formats quickly.</li>
+              <li data-en="Computer vision can classify scenes, text overlays, and visual style to improve discovery." data-hu="A számítógépes látás képes jeleneteket, szövegrétegeket és vizuális stílust osztályozni a jobb felfedezés érdekében.">Computer vision can classify scenes, text overlays, and visual style to improve discovery.</li>
+            </ul>
+          </article>
+
+          <article class="platform-card reveal" style="--platform-accent:#ff0000;">
+            <div class="platform-head">
+              <div class="platform-brand">
+                <div class="platform-logo"><i class="fa-brands fa-youtube"></i></div>
+                <div>
+                  <h3 class="platform-name">YouTube</h3>
+                  <p class="platform-tag" data-en="Long-running recommendation and creator optimization systems" data-hu="Régóta működő ajánló és alkotói optimalizáló rendszerek">Long-running recommendation and creator optimization systems</p>
+                </div>
+              </div>
+              <span class="score-badge score-high" data-en="Transparency: High" data-hu="Átláthatóság: Magas">Transparency: High</span>
+            </div>
+            <ul class="platform-list">
+              <li data-en="Recommendation engines suggest videos based on viewing history, session patterns, and topic interest." data-hu="Az ajánlórendszerek a nézési előzmények, munkameneti minták és témák iránti érdeklődés alapján javasolnak videókat.">Recommendation engines suggest videos based on viewing history, session patterns, and topic interest.</li>
+              <li data-en="Thumbnail A/B testing tools help creators compare versions and improve click-through rates." data-hu="A bélyegkép-A/B tesztelő eszközök segítenek az alkotóknak verziókat összehasonlítani és javítani az átkattintási arányt.">Thumbnail A/B testing tools help creators compare versions and improve click-through rates.</li>
+              <li data-en="Content ID uses pattern matching to detect copyrighted audio and video." data-hu="A Content ID mintafelismerést használ a szerzői joggal védett hangok és videók azonosítására.">Content ID uses pattern matching to detect copyrighted audio and video.</li>
+              <li data-en="Automatic captions and translation features rely on speech and language models." data-hu="Az automatikus feliratok és fordítási funkciók beszéd- és nyelvi modellekre épülnek.">Automatic captions and translation features rely on speech and language models.</li>
+            </ul>
+          </article>
+
+          <article class="platform-card reveal" style="--platform-accent:#111111;">
+            <div class="platform-head">
+              <div class="platform-brand">
+                <div class="platform-logo"><i class="fa-brands fa-x-twitter"></i></div>
+                <div>
+                  <h3 class="platform-name">X (Twitter)</h3>
+                  <p class="platform-tag" data-en="Real-time ranking, context tools, and conversation signals" data-hu="Valós idejű rangsorolás, kontextuseszközök és beszélgetési jelek">Real-time ranking, context tools, and conversation signals</p>
+                </div>
+              </div>
+              <span class="score-badge score-low" data-en="Transparency: Low" data-hu="Átláthatóság: Alacsony">Transparency: Low</span>
+            </div>
+            <ul class="platform-list">
+              <li data-en="Ranking systems predict which posts may drive replies, reposts, and longer reading sessions." data-hu="A rangsoroló rendszerek azt becslik, mely posztok válthatnak ki több választ, újramegosztást és hosszabb olvasást.">Ranking systems predict which posts may drive replies, reposts, and longer reading sessions.</li>
+              <li data-en="AI tools can assist misinformation flagging workflows by surfacing unusual or disputed patterns." data-hu="Az AI-eszközök segíthetik a félretájékoztatás jelzését azzal, hogy szokatlan vagy vitatott mintákat emelnek ki.">AI tools can assist misinformation flagging workflows by surfacing unusual or disputed patterns.</li>
+              <li data-en="Engagement prediction models help sort timelines and recommend accounts or topics." data-hu="Az aktivitáselőrejelző modellek segítenek a hírfolyamok rendezésében és fiókok vagy témák ajánlásában.">Engagement prediction models help sort timelines and recommend accounts or topics.</li>
+              <li data-en="Community Notes can be supported by AI-assisted summarization and relevance matching." data-hu="A Community Notes rendszerét AI-segített összefoglalás és relevanciapárosítás is támogathatja.">Community Notes can be supported by AI-assisted summarization and relevance matching.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="data-layout">
+          <div class="data-panel reveal">
+            <div class="badge">
+              <i class="fa-solid fa-database"></i>
+              <span data-en="What Data Feeds the AI?" data-hu="Milyen adatok táplálják az AI-t?">What Data Feeds the AI?</span>
+            </div>
+            <h3 data-en="Platforms learn from signals, not just from posts" data-hu="A platformok nemcsak a posztokból, hanem a jelekből is tanulnak">Platforms learn from signals, not just from posts</h3>
+            <p class="section-subtitle" style="margin-bottom:1.4rem;" data-en="AI systems often combine many small clues to predict what content might be useful, interesting, or relevant. Open each category to see the main data groups." data-hu="Az AI-rendszerek gyakran sok apró jelből dolgoznak, hogy megjósolják, mely tartalom lehet hasznos, érdekes vagy releváns. Nyisd le a kategóriákat a fő adatcsoportok megtekintéséhez.">AI systems often combine many small clues to predict what content might be useful, interesting, or relevant. Open each category to see the main data groups.</p>
+
+            <div class="accordion" id="dataAccordion">
+              <div class="accordion-item open">
+                <button class="accordion-trigger" type="button">
+                  <strong data-en="Behavioral Data" data-hu="Viselkedési adatok">Behavioral Data</strong>
+                  <span>+</span>
+                </button>
+                <div class="accordion-content" style="max-height: 220px;">
+                  <div class="accordion-inner">
+                    <p data-en="Scroll speed, pause time, rewatches, likes, saves, comments, and which posts you skip can all shape future recommendations." data-hu="A görgetési sebesség, megállási idő, újranézések, kedvelések, mentések, kommentek és az átugrott posztok mind alakíthatják a jövőbeli ajánlásokat.">Scroll speed, pause time, rewatches, likes, saves, comments, and which posts you skip can all shape future recommendations.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-trigger" type="button">
+                  <strong data-en="Demographic Data" data-hu="Demográfiai adatok">Demographic Data</strong>
+                  <span>+</span>
+                </button>
+                <div class="accordion-content">
+                  <div class="accordion-inner">
+                    <p data-en="Age range, language, region, and broad audience categories may help platforms tailor safety settings, ads, and content suggestions." data-hu="A korcsoport, nyelv, régió és tágabb közönségkategóriák segíthetnek a platformoknak a biztonsági beállítások, hirdetések és tartalomajánlások testreszabásában.">Age range, language, region, and broad audience categories may help platforms tailor safety settings, ads, and content suggestions.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-trigger" type="button">
+                  <strong data-en="Device & Location Data" data-hu="Eszköz- és helyadatok">Device & Location Data</strong>
+                  <span>+</span>
+                </button>
+                <div class="accordion-content">
+                  <div class="accordion-inner">
+                    <p data-en="Device type, operating system, app version, connection quality, and approximate location can influence performance, local trends, and ad delivery." data-hu="Az eszköz típusa, operációs rendszere, appverziója, kapcsolat minősége és hozzávetőleges helyzete befolyásolhatja a teljesítményt, a helyi trendeket és a hirdetések megjelenését.">Device type, operating system, app version, connection quality, and approximate location can influence performance, local trends, and ad delivery.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button class="accordion-trigger" type="button">
+                  <strong data-en="Social Graph Data" data-hu="Kapcsolati háló adatai">Social Graph Data</strong>
+                  <span>+</span>
+                </button>
+                <div class="accordion-content">
+                  <div class="accordion-inner">
+                    <p data-en="Who you follow, message, mention, or interact with can help AI estimate communities, shared interests, and which creators you may want to discover next." data-hu="Az, hogy kit követsz, kinek írsz, kit említesz meg vagy kivel lépsz kapcsolatba, segíthet az AI-nak közösségeket, közös érdeklődést és új felfedezendő alkotókat becsülni.">Who you follow, message, mention, or interact with can help AI estimate communities, shared interests, and which creators you may want to discover next.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-panel data-orbit reveal">
+            <div class="data-core">
+              <span data-en="AI Input Signals" data-hu="AI-bemeneti jelek">AI Input Signals</span>
+            </div>
+            <div class="data-node behavioral">
+              <strong data-en="Behavioral" data-hu="Viselkedés">Behavioral</strong>
+              <p data-en="Watch time, scrolling, likes, pauses" data-hu="Nézési idő, görgetés, kedvelések, megállások">Watch time, scrolling, likes, pauses</p>
+            </div>
+            <div class="data-node demographic">
+              <strong data-en="Demographic" data-hu="Demográfiai">Demographic</strong>
+              <p data-en="Language, age range, region" data-hu="Nyelv, korcsoport, régió">Language, age range, region</p>
+            </div>
+            <div class="data-node device">
+              <strong data-en="Device & Location" data-hu="Eszköz és hely">Device & Location</strong>
+              <p data-en="Phone type, network, local context" data-hu="Telefon típusa, hálózat, helyi kontextus">Phone type, network, local context</p>
+            </div>
+            <div class="data-node social">
+              <strong data-en="Social Graph" data-hu="Kapcsolati háló">Social Graph</strong>
+              <p data-en="Follows, replies, shares, communities" data-hu="Követések, válaszok, megosztások, közösségek">Follows, replies, shares, communities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">
+            <i class="fa-solid fa-toolbox"></i>
+            <span data-en="AI Tools for You" data-hu="AI eszközök neked">AI Tools for You</span>
+          </div>
+          <h2 class="section-title" data-en="Everyday creators can use AI to plan, design, and grow smarter" data-hu="A mindennapi alkotók is használhatják az AI-t okosabb tervezéshez, készítéshez és növekedéshez">Everyday creators can use AI to plan, design, and grow smarter</h2>
+          <p class="section-subtitle" data-en="You do not need to be a developer to use AI well. These tools can help you write stronger captions, create visuals, understand your audience, and manage your community in a practical, creator-friendly way." data-hu="Nem kell fejlesztőnek lenned ahhoz, hogy jól használd az AI-t. Ezek az eszközök segíthetnek jobb képaláírások írásában, látványok készítésében, a közönséged megértésében és a közösséged kezelésében, gyakorlatias és alkotóbarát módon.">You do not need to be a developer to use AI well. These tools can help you write stronger captions, create visuals, understand your audience, and manage your community in a practical, creator-friendly way.</p>
+        </div>
+
+        <div class="tools-layout">
+          <div class="tool-tabs reveal" role="tablist" aria-label="AI tools tabs">
+            <button class="tool-tab active" type="button" data-tab="post" role="tab" aria-selected="true">
+              <strong data-en="Post Creation" data-hu="Poszt készítés">Post Creation</strong>
+              <small data-en="Captions, hashtags, timing" data-hu="Feliratok, hashtagek, időzítés">Captions, hashtags, timing</small>
+            </button>
+            <button class="tool-tab" type="button" data-tab="visual" role="tab" aria-selected="false">
+              <strong data-en="Visual Content" data-hu="Vizuális tartalom">Visual Content</strong>
+              <small data-en="Images, editing, AI video" data-hu="Képek, szerkesztés, AI-videó">Images, editing, AI video</small>
+            </button>
+            <button class="tool-tab" type="button" data-tab="analytics" role="tab" aria-selected="false">
+              <strong data-en="Analytics & Growth" data-hu="Analitika">Analytics & Growth</strong>
+              <small data-en="Insights, comments, competitors" data-hu="Elemzések, kommentek, versenytársak">Insights, comments, competitors</small>
+            </button>
+            <button class="tool-tab" type="button" data-tab="moderation" role="tab" aria-selected="false">
+              <strong data-en="Creator Moderation" data-hu="Készítői moderálás">Creator Moderation</strong>
+              <small data-en="Comment filters and replies" data-hu="Kommentszűrés és válaszok">Comment filters and replies</small>
+            </button>
+          </div>
+
+          <div class="tool-panel reveal">
+            <article class="tool-content active" data-content="post">
+              <h3 data-en="Post Creation / Make rough ideas sound stronger" data-hu="Poszt készítés / Tedd erősebbé a nyers ötleteidet">Post Creation / Make rough ideas sound stronger</h3>
+              <p data-en="Caption generators can turn a short idea into something more polished, warm, and engaging. They are also useful for brainstorming hashtags and estimating when your audience may be most active." data-hu="A képaláírás-generátorok egy rövid ötletből is csiszoltabb, barátságosabb és figyelemfelkeltőbb szöveget készíthetnek. Hasznosak lehetnek hashtagek ötletelésére és annak becslésére is, mikor aktív leginkább a közönséged.">Caption generators can turn a short idea into something more polished, warm, and engaging. They are also useful for brainstorming hashtags and estimating when your audience may be most active.</p>
+              <ul class="tool-list">
+                <li data-en="AI caption generators: ChatGPT, Meta AI, Canva Magic Write" data-hu="AI képaláírás-generátorok: ChatGPT, Meta AI, Canva Magic Write">AI caption generators: ChatGPT, Meta AI, Canva Magic Write</li>
+                <li data-en="Hashtag suggestion tools can match tone, topic, and audience" data-hu="A hashtag-ajánló eszközök a témához, hangvételhez és közönséghez illeszthetnek javaslatokat">Hashtag suggestion tools can match tone, topic, and audience</li>
+                <li data-en="Best posting time prediction can support smarter scheduling" data-hu="A legjobb posztolási idő előrejelzése segíthet az okosabb időzítésben">Best posting time prediction can support smarter scheduling</li>
+              </ul>
+
+              <div class="example-grid">
+                <div class="example-card">
+                  <span class="example-label label-before" data-en="Before" data-hu="Előtte">Before</span>
+                  <p data-en="new video is up, go watch it" data-hu="kint az új videó, nézd meg">new video is up, go watch it</p>
+                </div>
+                <div class="example-card">
+                  <span class="example-label label-after" data-en="AI Improved" data-hu="AI-jal javítva">AI Improved</span>
+                  <p data-en="Just dropped a new video and I am excited to share it with you. Watch it now and tell me which part was your favorite." data-hu="Most került ki az új videóm, és nagyon kíváncsi vagyok, mit szóltok hozzá. Nézd meg, és írd meg, melyik rész tetszett a legjobban.">Just dropped a new video and I am excited to share it with you. Watch it now and tell me which part was your favorite.</p>
+                </div>
+              </div>
+
+              <div class="demo-box">
+                <h3 data-en="Try It" data-hu="Próbáld ki">Try It</h3>
+                <p data-en="Type a rough post idea and see sample AI-style caption upgrades." data-hu="Írj be egy nyers posztötletet, és nézz meg néhány AI-stílusú feljavított változatot.">Type a rough post idea and see sample AI-style caption upgrades.</p>
+                <textarea id="captionIdeaInput" data-placeholder-en="Example: sunset coffee photo with friends after school" data-placeholder-hu="Példa: naplementés kávézós kép barátokkal suli után" placeholder="Example: sunset coffee photo with friends after school"></textarea>
+                <div class="demo-actions">
+                  <button class="btn btn-primary" id="captionGenerateBtn" type="button">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span data-en="Generate Captions" data-hu="Képaláírások generálása">Generate Captions</span>
+                  </button>
+                  <span class="quiz-meta" data-en="Each click rotates between 3 sample polished captions." data-hu="Minden kattintás a 3 mintaképaláírás egyikét mutatja.">Each click rotates between 3 sample polished captions.</span>
+                </div>
+                <div class="demo-output" id="captionDemoOutput" data-en="Your sample AI-enhanced caption will appear here." data-hu="Itt jelenik meg a mintaként generált AI-javított képaláírásod.">Your sample AI-enhanced caption will appear here.</div>
+              </div>
+            </article>
+
+            <article class="tool-content" data-content="visual">
+              <h3 data-en="Visual Content / Design faster and polish more easily" data-hu="Vizuális tartalom / Tervezz gyorsabban és csiszolj könnyebben">Visual Content / Design faster and polish more easily</h3>
+              <p data-en="Visual AI tools can help creators draft concepts, clean up photos, and build short-form videos without needing a full studio workflow." data-hu="A vizuális AI-eszközök segíthetnek az alkotóknak koncepciók vázolásában, fotók javításában és rövid videók készítésében anélkül, hogy teljes stúdiófolyamatra lenne szükség.">Visual AI tools can help creators draft concepts, clean up photos, and build short-form videos without needing a full studio workflow.</p>
+              <ul class="tool-list">
+                <li data-en="AI image generation: Midjourney, DALL-E, Adobe Firefly" data-hu="AI képgenerálás: Midjourney, DALL-E, Adobe Firefly">AI image generation: Midjourney, DALL-E, Adobe Firefly</li>
+                <li data-en="Background removal and photo enhancement can save editing time" data-hu="A háttéreltávolítás és fotójavítás sok szerkesztési időt spórolhat">Background removal and photo enhancement can save editing time</li>
+                <li data-en="AI video tools like CapCut AI and Runway can help with cutting, effects, and scene cleanup" data-hu="Az AI videós eszközök, mint a CapCut AI vagy a Runway, segíthetnek vágásban, effektekben és jelenettisztításban">AI video tools like CapCut AI and Runway can help with cutting, effects, and scene cleanup</li>
+              </ul>
+            </article>
+
+            <article class="tool-content" data-content="analytics">
+              <h3 data-en="Analytics & Growth / Learn what works for your audience" data-hu="Analitika / Tudd meg, mi működik a közönségednél">Analytics & Growth / Learn what works for your audience</h3>
+              <p data-en="AI can highlight patterns in performance that are hard to spot manually, especially if you post often or across multiple platforms." data-hu="Az AI olyan teljesítménymintákat is kiemelhet, amelyeket kézzel nehéz észrevenni, különösen akkor, ha gyakran vagy több platformon is posztolsz.">AI can highlight patterns in performance that are hard to spot manually, especially if you post often or across multiple platforms.</p>
+              <ul class="tool-list">
+                <li data-en="AI-powered insights can estimate when your audience is online and what format performs best" data-hu="Az AI-alapú elemzések megbecsülhetik, mikor van online a közönséged, és melyik formátum teljesít a legjobban">AI-powered insights can estimate when your audience is online and what format performs best</li>
+                <li data-en="Sentiment analysis can summarize whether comments feel excited, curious, confused, or supportive" data-hu="A hangulatelemzés összefoglalhatja, hogy a kommentek inkább lelkesek, kíváncsiak, bizonytalanok vagy támogatóak-e">Sentiment analysis can summarize whether comments feel excited, curious, confused, or supportive</li>
+                <li data-en="Competitor analysis tools can compare themes, posting rhythm, and content strengths" data-hu="A versenytárselemző eszközök összevethetik a témákat, a posztolási ritmust és a tartalmi erősségeket">Competitor analysis tools can compare themes, posting rhythm, and content strengths</li>
+              </ul>
+            </article>
+
+            <article class="tool-content" data-content="moderation">
+              <h3 data-en="Content Moderation for Creators / Keep your space welcoming" data-hu="Tartalommoderálás készítőknek / Tartsd barátságosan a saját tered">Content Moderation for Creators / Keep your space welcoming</h3>
+              <p data-en="Creators can also use AI to make community management lighter by filtering unwanted replies and drafting faster responses." data-hu="Az alkotók az AI-t közösségkezelésre is használhatják: kiszűrhetik a nem kívánt válaszokat, és gyorsabban készíthetnek reakciókat.">Creators can also use AI to make community management lighter by filtering unwanted replies and drafting faster responses.</p>
+              <ul class="tool-list">
+                <li data-en="Auto-filtering can hide toxic or spam-like comments before they take over a thread" data-hu="Az automatikus szűrés elrejtheti a mérgező vagy spamszerű kommenteket, mielőtt elárasztanák a beszélgetést">Auto-filtering can hide toxic or spam-like comments before they take over a thread</li>
+                <li data-en="AI reply suggestions can help creators answer frequent questions more quickly" data-hu="Az AI-válaszjavaslatok segíthetnek a gyakori kérdések gyorsabb megválaszolásában">AI reply suggestions can help creators answer frequent questions more quickly</li>
+                <li data-en="Moderation helpers can spot repeated phrases, bot-like behavior, and unusual comment spikes" data-hu="A moderációs segítők észrevehetik az ismétlődő fordulatokat, botszerű viselkedést és a szokatlan kommenthullámokat">Moderation helpers can spot repeated phrases, bot-like behavior, and unusual comment spikes</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="numbers">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">
+            <i class="fa-solid fa-chart-column"></i>
+            <span data-en="Social Media AI By The Numbers" data-hu="Számokban">Social Media AI By The Numbers</span>
+          </div>
+          <h2 class="section-title" data-en="A quick visual snapshot of scale, data, and investment" data-hu="Gyors vizuális áttekintés a léptékről, adatokról és befektetésekről">A quick visual snapshot of scale, data, and investment</h2>
+          <p class="section-subtitle" data-en="These charts show estimated moderation scale, the kinds of data platforms use to train AI systems, and how investment has grown over time. They animate into view as you scroll." data-hu="Ezek a grafikonok a moderálás becsült léptékét, az AI-rendszereket tápláló adattípusokat és a befektetések időbeli növekedését mutatják. Görgetéskor animáltan jelennek meg.">These charts show estimated moderation scale, the kinds of data platforms use to train AI systems, and how investment has grown over time. They animate into view as you scroll.</p>
+        </div>
+
+        <div class="charts-grid reveal" id="chartsSection">
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3 data-en="AI Moderation Volume" data-hu="AI moderálási volumen">AI Moderation Volume</h3>
+              <span class="source-badge" title="Estimated from large-platform transparency reporting, public trust & safety summaries, and industry analysis.">
+                <i class="fa-solid fa-circle-info"></i>
+                <span data-en="Source" data-hu="Forrás">Source</span>
+              </span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="moderationChart"></canvas>
+            </div>
+          </article>
+
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3 data-en="Data Collected by Platforms" data-hu="A platformok által gyűjtött adatok">Data Collected by Platforms</h3>
+              <span class="source-badge" title="Illustrative educational breakdown based on common platform privacy disclosures and product documentation.">
+                <i class="fa-solid fa-circle-info"></i>
+                <span data-en="Source" data-hu="Forrás">Source</span>
+              </span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="dataTypesChart"></canvas>
+            </div>
+          </article>
+
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3 data-en="AI Investment Growth" data-hu="Az AI-befektetések növekedése">AI Investment Growth</h3>
+              <span class="source-badge" title="Illustrative estimate based on trend reporting around platform AI infrastructure, safety tooling, and recommendation systems investment.">
+                <i class="fa-solid fa-circle-info"></i>
+                <span data-en="Source" data-hu="Forrás">Source</span>
+              </span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="investmentChart"></canvas>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="quiz">
+      <div class="container quiz-layout">
+        <div class="quiz-side reveal">
+          <div class="badge">
+            <i class="fa-solid fa-gamepad"></i>
+            <span data-en="Interactive Quiz" data-hu="Interaktív kvíz">Interactive Quiz</span>
+          </div>
+          <h2 class="section-title" data-en="How well do you know Social Media AI?" data-hu="Mennyire ismered a közösségi média AI-ját?">How well do you know Social Media AI?</h2>
+          <p class="section-subtitle" data-en="Answer five quick questions and see your score instantly. It is a fun way to lock in the main ideas from this page." data-hu="Válaszolj öt gyors kérdésre, és azonnal meglátod az eredményedet. Játékos módja annak, hogy rögzítsd az oldal legfontosabb gondolatait.">Answer five quick questions and see your score instantly. It is a fun way to lock in the main ideas from this page.</p>
+          <div class="quiz-tip">
+            <strong data-en="Tip" data-hu="Tipp">Tip</strong>
+            <p class="quiz-meta" data-en="The quiz is bilingual too, so switching the language updates every question, answer, and result message." data-hu="A kvíz is kétnyelvű, ezért a nyelvváltás minden kérdést, választ és eredményüzenetet is frissít.">The quiz is bilingual too, so switching the language updates every question, answer, and result message.</p>
+          </div>
+        </div>
+
+        <div class="quiz-box reveal">
+          <div class="quiz-progress">
+            <span id="questionCount">Question 1 / 5</span>
+            <span id="scoreLabel">Score: 0</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="quiz-question" id="quizQuestion"></div>
+          <div class="option-list" id="quizOptions"></div>
+          <div class="quiz-feedback" id="quizFeedback"></div>
+          <div class="quiz-controls">
+            <button class="btn btn-primary" id="nextQuestionBtn" type="button"><span data-en="Next Question" data-hu="Következő kérdés">Next Question</span></button>
+            <button class="btn btn-secondary" id="restartQuizBtn" type="button"><span data-en="Restart Quiz" data-hu="Kvíz újraindítása">Restart Quiz</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="facts">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span data-en="Did You Know?" data-hu="Tudtad?">Did You Know?</span>
+          </div>
+          <h2 class="section-title" data-en="AI powers huge amounts of activity behind the scenes" data-hu="Az AI a háttérben óriási mennyiségű folyamatot segít">AI powers huge amounts of activity behind the scenes</h2>
+          <p class="section-subtitle" data-en="These animated stats highlight how widely AI tools are used to support recommendations, moderation, and accessibility on major platforms." data-hu="Ezek az animált számok megmutatják, milyen széles körben használják az AI-t ajánlásokhoz, moderáláshoz és akadálymentesítéshez a nagy platformokon.">These animated stats highlight how widely AI tools are used to support recommendations, moderation, and accessibility on major platforms.</p>
+        </div>
+
+        <div class="fact-grid">
+          <article class="fact-card reveal">
+            <div class="counter"><span class="count-up" data-target="100" data-suffix="M+">0</span></div>
+            <h3 data-en="Posts reviewed daily" data-hu="Naponta átnézett posztok">Posts reviewed daily</h3>
+            <p data-en="Large social platforms use AI systems to help review and sort massive numbers of posts every day." data-hu="A nagy közösségi platformok AI-rendszereket használnak, hogy naponta hatalmas mennyiségű bejegyzést vizsgáljanak és rendezzenek.">Large social platforms use AI systems to help review and sort massive numbers of posts every day.</p>
+          </article>
+          <article class="fact-card reveal">
+            <div class="counter"><span class="count-up" data-target="95" data-suffix="%">0</span></div>
+            <h3 data-en="Feeds shaped by predictions" data-hu="Előrejelzések által formált hírfolyamok">Feeds shaped by predictions</h3>
+            <p data-en="Recommendation systems constantly estimate what people may want to watch, read, or explore next." data-hu="Az ajánlórendszerek folyamatosan becslik, mit szeretnének az emberek legközelebb nézni, olvasni vagy felfedezni.">Recommendation systems constantly estimate what people may want to watch, read, or explore next.</p>
+          </article>
+          <article class="fact-card reveal">
+            <div class="counter"><span class="count-up" data-target="80" data-suffix="+">0</span></div>
+            <h3 data-en="Languages supported by AI captions" data-hu="AI-feliratokkal támogatott nyelvek">Languages supported by AI captions</h3>
+            <p data-en="Speech-to-text tools can make videos easier to follow for multilingual audiences and people with hearing differences." data-hu="A beszédből szöveget készítő eszközök könnyebben követhetővé tehetik a videókat a többnyelvű közönség és a hallásukban eltérő emberek számára.">Speech-to-text tools can make videos easier to follow for multilingual audiences and people with hearing differences.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  <section class="section" id="watch-social-media" >
+  <div id="watch" class="container video-layout" >
+    <div class="video-copy reveal">
+      <div class="badge">
+        <i class="fa-solid fa-video"></i>
+        <span data-en="Watch & Learn" data-hu="Nézd meg">Watch & Learn</span>
+      </div>
+      <h2 class="section-title"  data-en="WiseBoys sat down again for a conversation about how they use social media with the help of AI" data-hu="A WiseBoys ismét összeült egy beszélgetésre, hogy kitárgyalják, hogyan használják a social médiát az AI segítségével">WiseBoys sat down again for a conversation about how they use social media with the help of AI</h2>
+      <p class="section-subtitle" data-en="In this episode, the WiseBoys break down their personal experience using AI across social platforms — from content creation to smarter engagement." data-hu="Ebben az epizódban a WiseBoys megosztja személyes tapasztalatait arról, hogyan használják az AI-t a közösségi médiában – a tartalomkészítéstől az okosabb interakciókig.">In this episode, the WiseBoys break down their personal experience using AI across social platforms — from content creation to smarter engagement.</p>
+      <div class="quiz-tip">
+        <strong data-en="Why this matters" data-hu="Miért fontos ez">Why this matters</strong>
+        <p class="quiz-meta" data-en="Tune in to hear how the WiseBoys actually put AI to work on their socials — and pick up a few tricks for yourself." data-hu="Hallgasd meg, hogyan alkalmazza a WiseBoys az AI-t a saját csatornáin – és vidd haza a legjobb tippeket.">Tune in to hear how the WiseBoys actually put AI to work on their socials — and pick up a few tricks for yourself.</p>
+      </div>
+    </div>
+
+    <div class="video-card reveal" >
+      <div class="video-frame">
+        <iframe
+          src="https://www.youtube.com/embed/_heT1sp_9wQ"
+          title="WiseBoys social media and AI video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="watch-ai-school">
+  <div class="container video-layout">
+    <div class="video-copy reveal">
+      <div class="badge">
+        <i class="fa-solid fa-video"></i>
+        <span data-en="Watch & Learn" data-hu="Nézd meg">Watch & Learn</span>
+      </div>
+
+      <h2 class="section-title"
+        data-en="WiseBoys discuss the advantages and disadvantages of using AI in schools"
+        data-hu="A WiseBoys az AI iskolai használatának előnyeiről és hátrányairól beszélget">
+        WiseBoys discuss the advantages and disadvantages of using AI in schools
+      </h2>
+
+      <p class="section-subtitle"
+        data-en="In this episode, the WiseBoys explore how artificial intelligence can support learning, save time, and personalize education — while also addressing the risks of overuse, cheating, and reduced critical thinking."
+        data-hu="Ebben az epizódban a WiseBoys azt vizsgálja, hogyan segítheti a mesterséges intelligencia a tanulást, az időmegtakarítást és a személyre szabott oktatást – miközben szó esik a túlzott használat, a csalás és a kritikus gondolkodás gyengülésének veszélyeiről is.">
+        In this episode, the WiseBoys explore how artificial intelligence can support learning, save time, and personalize education — while also addressing the risks of overuse, cheating, and reduced critical thinking.
+      </p>
+
+      <div class="quiz-tip">
+        <strong data-en="Why this matters" data-hu="Miért fontos ez">Why this matters</strong>
+        <p class="quiz-meta"
+          data-en="AI is already becoming part of everyday school life, so understanding both its benefits and drawbacks helps students and teachers use it more responsibly and effectively."
+          data-hu="Az AI már most is egyre inkább része az iskolai mindennapoknak, ezért fontos megérteni az előnyeit és a hátrányait is, hogy a diákok és a tanárok felelősen és hatékonyan használják.">
+          AI is already becoming part of everyday school life, so understanding both its benefits and drawbacks helps students and teachers use it more responsibly and effectively.
+        </p>
+      </div>
+    </div>
+
+    <div class="video-card reveal">
+      <div class="video-frame">
+        <iframe
+          src="https://www.youtube.com/embed/w7CCnICIHIs"
+          title="AI use in schools advantages and disadvantages"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p data-en="Built as a bilingual educational one-page experience about Social Media & AI." data-hu="Kétnyelvű, oktatási célú egyoldalas élményként készült a közösségi média és az AI témájáról.">Built as a bilingual educational one-page experience about Social Media & AI.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const quizData = [
+      { question: { en: "What does an AI recommendation algorithm do?", hu: "Mit csinál egy AI-ajánló algoritmus?" }, answers: [
+        { en: "A) Hacks your phone", hu: "A) Feltöri a telefonodat", correct: false },
+        { en: "B) Suggests content you might like", hu: "B) Olyan tartalmat ajánl, ami tetszhet", correct: true },
+        { en: "C) Deletes your posts", hu: "C) Törli a posztjaidat", correct: false },
+        { en: "D) Sends spam", hu: "D) Spam üzeneteket küld", correct: false }
+      ]},
+      { question: { en: "Which platform was first to use AI for photo filters?", hu: "Melyik platform használta először az AI-t fotószűrőkhöz?" }, answers: [
+        { en: "A) Twitter", hu: "A) Twitter", correct: false },
+        { en: "B) LinkedIn", hu: "B) LinkedIn", correct: false },
+        { en: "C) Snapchat", hu: "C) Snapchat", correct: true },
+        { en: "D) Pinterest", hu: "D) Pinterest", correct: false }
+      ]},
+      { question: { en: "What is \"content moderation AI\" used for?", hu: "Mire használják a „tartalommoderáló AI-t”?" }, answers: [
+        { en: "A) Writing posts", hu: "A) Posztok írására", correct: false },
+        { en: "B) Detecting harmful content", hu: "B) Káros tartalmak felismerésére", correct: true },
+        { en: "C) Increasing followers", hu: "C) Követők számának növelésére", correct: false },
+        { en: "D) Editing videos", hu: "D) Videók szerkesztésére", correct: false }
+      ]},
+      { question: { en: "What does \"algorithm\" mean in social media context?", hu: "Mit jelent az „algoritmus” a közösségi média világában?" }, answers: [
+        { en: "A) A type of smartphone", hu: "A) Egy okostelefon típusa", correct: false },
+        { en: "B) A hacking tool", hu: "B) Egy hackereszköz", correct: false },
+        { en: "C) A set of rules that decides what you see", hu: "C) Szabályok összessége, amely eldönti, mit látsz", correct: true },
+        { en: "D) A social media platform", hu: "D) Egy közösségi platform", correct: false }
+      ]},
+      { question: { en: "How can AI help people with disabilities on social media?", hu: "Hogyan segíthet az AI a fogyatékossággal élő embereknek a közösségi médiában?" }, answers: [
+        { en: "A) It cannot help", hu: "A) Nem tud segíteni", correct: false },
+        { en: "B) By auto-generating image descriptions", hu: "B) Képleírások automatikus létrehozásával", correct: true },
+        { en: "C) By blocking their accounts", hu: "C) A fiókjuk letiltásával", correct: false },
+        { en: "D) By removing their posts", hu: "D) A posztjaik eltávolításával", correct: false }
+      ]}
+    ];
+
+    const resultsText = {
+      en: [
+        "Awesome start! You are discovering how AI supports social media in everyday ways.",
+        "Nice work! You already understand many of the smart tools behind your favorite apps.",
+        "Excellent! You clearly know how AI powers modern social media experiences."
+      ],
+      hu: [
+        "Szuper kezdet! Egyre jobban látod, hogyan segíti az AI a közösségi médiát a mindennapokban.",
+        "Szép munka! Már most sokat tudsz a kedvenc appjaid mögött működő okos eszközökről.",
+        "Kiváló! Jól érted, hogyan működteti az AI a modern közösségi médiaélményeket."
+      ]
+    };
+
+    let currentLanguage = "en";
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answerSelected = false;
+    let chartsInitialized = false;
+    let moderationChartInstance = null;
+    let dataTypesChartInstance = null;
+    let investmentChartInstance = null;
+
+    const langDropdown = document.getElementById("langDropdown");
+    const langLabel = document.getElementById("langLabel");
+    const langOptions = document.querySelectorAll(".lang-option");
+    const langDropdownBtn = document.getElementById("langToggle");
+    const flagMap = { en: "fi-gb", hu: "fi-hu" };
+    const translatableNodes = document.querySelectorAll("[data-en][data-hu]");
+    const quizQuestion = document.getElementById("quizQuestion");
+    const quizOptions = document.getElementById("quizOptions");
+    const quizFeedback = document.getElementById("quizFeedback");
+    const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+    const restartQuizBtn = document.getElementById("restartQuizBtn");
+    const questionCount = document.getElementById("questionCount");
+    const scoreLabel = document.getElementById("scoreLabel");
+    const progressFill = document.getElementById("progressFill");
+    const countUpElements = document.querySelectorAll(".count-up");
+    const accordionItems = document.querySelectorAll(".accordion-item");
+    const toolTabs = document.querySelectorAll(".tool-tab");
+    const toolContents = document.querySelectorAll(".tool-content");
+    const captionIdeaInput = document.getElementById("captionIdeaInput");
+    const captionGenerateBtn = document.getElementById("captionGenerateBtn");
+    const captionDemoOutput = document.getElementById("captionDemoOutput");
+    const chartsSection = document.getElementById("chartsSection");
+    const moderationChartCanvas = document.getElementById("moderationChart");
+    const dataTypesChartCanvas = document.getElementById("dataTypesChart");
+    const investmentChartCanvas = document.getElementById("investmentChart");
+    const captionSamples = {
+      en: [
+        "Golden hour, good coffee, and even better company. Moments like this make an ordinary day feel special.",
+        "After-school coffee stop with the best people and the softest sunset. Little moments really do glow.",
+        "A calm sunset, a cozy drink, and a lot of laughter. This is your reminder to enjoy the small wins today."
+      ],
+      hu: [
+        "Aranyóra, finom kávé és még jobb társaság. Az ilyen pillanatok tesznek különlegessé egy átlagos napot.",
+        "Suli utáni kávézás a legjobb emberekkel és a legszebb naplementével. A kis pillanatok tényleg ragyognak.",
+        "Nyugodt naplemente, egy kellemes ital és sok nevetés. Emlékeztető: élvezd a nap apró örömeit is."
+      ]
+    };
+    let captionSampleIndex = 0;
+    const chartLabels = {
+      platformNames: {
+        en: ["Instagram/Meta", "TikTok", "YouTube", "X"],
+        hu: ["Instagram/Meta", "TikTok", "YouTube", "X"]
+      },
+      moderationTitle: {
+        en: "Estimated posts reviewed per day (millions)",
+        hu: "Becsült naponta átnézett posztok (millió)"
+      },
+      moderationAxisX: {
+        en: "Platform",
+        hu: "Platform"
+      },
+      moderationAxisY: {
+        en: "Posts per day (millions)",
+        hu: "Poszt naponta (millió)"
+      },
+      dataTypesTitle: {
+        en: "Typical platform data signals",
+        hu: "Tipikus platformos adatjelek"
+      },
+      dataTypes: {
+        en: ["Behavioral", "Demographic", "Device & Location", "Social Graph"],
+        hu: ["Viselkedési", "Demográfiai", "Eszköz és hely", "Kapcsolati háló"]
+      },
+      investmentTitle: {
+        en: "Estimated AI investment in social media ($ billions)",
+        hu: "Becsült AI-befektetés a közösségi médiában (milliárd USD)"
+      },
+      investmentAxisX: {
+        en: "Year",
+        hu: "Év"
+      },
+      investmentAxisY: {
+        en: "Investment ($ billions)",
+        hu: "Befektetés (milliárd USD)"
+      }
+    };
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLanguage === "en" ? "en" : "hu";
+      translatableNodes.forEach((node) => {
+        node.textContent = node.dataset[currentLanguage];
+      });
+      document.querySelectorAll(".nav-links a[data-tooltip-en]").forEach((link) => {
+        link.setAttribute("data-tooltip", link.dataset[`tooltip${currentLanguage === "en" ? "En" : "Hu"}`]);
+      });
+      if (captionIdeaInput) {
+        captionIdeaInput.placeholder = captionIdeaInput.dataset[`placeholder${currentLanguage === "en" ? "En" : "Hu"}`];
+      }
+      if (captionDemoOutput && !captionDemoOutput.dataset.generated) {
+        captionDemoOutput.textContent = captionDemoOutput.dataset[currentLanguage];
+      }
+      syncAccordionHeights();
+      updateChartsLanguage();
+      renderQuiz();
+    }
+
+    function createCharts() {
+      if (chartsInitialized || typeof Chart === "undefined") return;
+
+      const sharedGrid = "rgba(255,255,255,0.08)";
+      const sharedTicks = "#b7c0f8";
+      const titleColor = "#eef2ff";
+
+      moderationChartInstance = new Chart(moderationChartCanvas, {
+        type: "bar",
+        data: {
+          labels: chartLabels.platformNames[currentLanguage],
+          datasets: [{
+            label: chartLabels.moderationAxisY[currentLanguage],
+            data: [120, 95, 80, 42],
+            borderRadius: 14,
+            backgroundColor: [
+              "rgba(124, 92, 255, 0.88)",
+              "rgba(38, 183, 255, 0.85)",
+              "rgba(168, 141, 255, 0.82)",
+              "rgba(97, 212, 255, 0.82)"
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 1400, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: chartLabels.moderationTitle[currentLanguage], color: titleColor, font: { family: "Poppins", size: 15, weight: "600" } }
+          },
+          scales: {
+            x: {
+              ticks: { color: sharedTicks },
+              grid: { color: "rgba(255,255,255,0.04)" },
+              title: { display: true, text: chartLabels.moderationAxisX[currentLanguage], color: sharedTicks }
+            },
+            y: {
+              ticks: { color: sharedTicks },
+              grid: { color: sharedGrid },
+              title: { display: true, text: chartLabels.moderationAxisY[currentLanguage], color: sharedTicks }
+            }
+          }
+        }
+      });
+
+      dataTypesChartInstance = new Chart(dataTypesChartCanvas, {
+        type: "pie",
+        data: {
+          labels: chartLabels.dataTypes[currentLanguage],
+          datasets: [{
+            data: [38, 18, 16, 28],
+            backgroundColor: [
+              "rgba(124, 92, 255, 0.9)",
+              "rgba(38, 183, 255, 0.88)",
+              "rgba(168, 141, 255, 0.82)",
+              "rgba(126, 240, 194, 0.8)"
+            ],
+            borderColor: "rgba(13, 16, 38, 0.95)",
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 1400, easing: "easeOutQuart" },
+          plugins: {
+            legend: { labels: { color: sharedTicks, font: { family: "Poppins" } }, position: "bottom" },
+            title: { display: true, text: chartLabels.dataTypesTitle[currentLanguage], color: titleColor, font: { family: "Poppins", size: 15, weight: "600" } }
+          }
+        }
+      });
+
+      investmentChartInstance = new Chart(investmentChartCanvas, {
+        type: "line",
+        data: {
+          labels: ["2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+          datasets: [{
+            label: chartLabels.investmentAxisY[currentLanguage],
+            data: [1.2, 1.8, 2.7, 3.9, 5.6, 7.4, 9.1],
+            tension: 0.35,
+            borderColor: "rgba(38, 183, 255, 0.95)",
+            backgroundColor: "rgba(124, 92, 255, 0.18)",
+            fill: true,
+            pointBackgroundColor: "rgba(168, 141, 255, 0.95)",
+            pointBorderColor: "#ffffff",
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 1400, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: chartLabels.investmentTitle[currentLanguage], color: titleColor, font: { family: "Poppins", size: 15, weight: "600" } }
+          },
+          scales: {
+            x: {
+              ticks: { color: sharedTicks },
+              grid: { color: "rgba(255,255,255,0.04)" },
+              title: { display: true, text: chartLabels.investmentAxisX[currentLanguage], color: sharedTicks }
+            },
+            y: {
+              ticks: { color: sharedTicks },
+              grid: { color: sharedGrid },
+              title: { display: true, text: chartLabels.investmentAxisY[currentLanguage], color: sharedTicks }
+            }
+          }
+        }
+      });
+
+      chartsInitialized = true;
+    }
+
+    function updateChartsLanguage() {
+      if (!chartsInitialized) return;
+
+      moderationChartInstance.data.labels = chartLabels.platformNames[currentLanguage];
+      moderationChartInstance.data.datasets[0].label = chartLabels.moderationAxisY[currentLanguage];
+      moderationChartInstance.options.plugins.title.text = chartLabels.moderationTitle[currentLanguage];
+      moderationChartInstance.options.scales.x.title.text = chartLabels.moderationAxisX[currentLanguage];
+      moderationChartInstance.options.scales.y.title.text = chartLabels.moderationAxisY[currentLanguage];
+      moderationChartInstance.update();
+
+      dataTypesChartInstance.data.labels = chartLabels.dataTypes[currentLanguage];
+      dataTypesChartInstance.options.plugins.title.text = chartLabels.dataTypesTitle[currentLanguage];
+      dataTypesChartInstance.update();
+
+      investmentChartInstance.data.datasets[0].label = chartLabels.investmentAxisY[currentLanguage];
+      investmentChartInstance.options.plugins.title.text = chartLabels.investmentTitle[currentLanguage];
+      investmentChartInstance.options.scales.x.title.text = chartLabels.investmentAxisX[currentLanguage];
+      investmentChartInstance.options.scales.y.title.text = chartLabels.investmentAxisY[currentLanguage];
+      investmentChartInstance.update();
+    }
+
+    function syncAccordionHeights() {
+      accordionItems.forEach((item) => {
+        const content = item.querySelector(".accordion-content");
+        content.style.maxHeight = item.classList.contains("open") ? `${content.scrollHeight}px` : "0px";
+      });
+    }
+
+    function getScoreLabelText() {
+      return currentLanguage === "en" ? `Score: ${score}` : `Pontszám: ${score}`;
+    }
+
+    function getQuestionCounterText() {
+      if (currentQuestionIndex < quizData.length) {
+        return currentLanguage === "en"
+          ? `Question ${currentQuestionIndex + 1} / ${quizData.length}`
+          : `${currentQuestionIndex + 1}. kérdés / ${quizData.length}`;
+      }
+      return currentLanguage === "en"
+        ? `Completed: ${quizData.length} / ${quizData.length}`
+        : `Kész: ${quizData.length} / ${quizData.length}`;
+    }
+
+    function getResultMessage() {
+      if (score <= 2) return resultsText[currentLanguage][0];
+      if (score <= 4) return resultsText[currentLanguage][1];
+      return resultsText[currentLanguage][2];
+    }
+
+    function renderQuiz() {
+      scoreLabel.textContent = getScoreLabelText();
+      questionCount.textContent = getQuestionCounterText();
+
+      if (currentQuestionIndex >= quizData.length) {
+        quizQuestion.textContent = currentLanguage === "en"
+          ? `You finished the quiz with ${score} / ${quizData.length}!`
+          : `Befejezted a kvízt: ${score} / ${quizData.length}!`;
+        quizOptions.innerHTML = "";
+        quizFeedback.textContent = getResultMessage();
+        nextQuestionBtn.style.display = "none";
+        progressFill.style.width = "100%";
+        return;
+      }
+
+      const currentQuestion = quizData[currentQuestionIndex];
+      quizQuestion.textContent = currentQuestion.question[currentLanguage];
+      quizOptions.innerHTML = "";
+      quizFeedback.textContent = answerSelected ? quizFeedback.textContent : "";
+      nextQuestionBtn.style.display = "inline-flex";
+      progressFill.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+
+      currentQuestion.answers.forEach((answer) => {
+        const button = document.createElement("button");
+        button.className = "option-btn";
+        button.type = "button";
+        button.textContent = answer[currentLanguage];
+        button.disabled = answerSelected;
+        button.addEventListener("click", () => handleAnswer(answer.correct, button));
+        quizOptions.appendChild(button);
+      });
+    }
+
+    function handleAnswer(isCorrect, selectedButton) {
+      if (answerSelected) return;
+
+      answerSelected = true;
+      const optionButtons = quizOptions.querySelectorAll(".option-btn");
+      optionButtons.forEach((button) => {
+        button.disabled = true;
+      });
+
+      if (isCorrect) {
+        score += 1;
+        selectedButton.style.borderColor = "rgba(126, 240, 194, 0.9)";
+        selectedButton.style.background = "rgba(126, 240, 194, 0.15)";
+        quizFeedback.textContent = currentLanguage === "en" ? "Correct! Nice job." : "Helyes! Szép munka.";
+      } else {
+        selectedButton.style.borderColor = "rgba(255, 132, 168, 0.9)";
+        selectedButton.style.background = "rgba(255, 132, 168, 0.12)";
+        quizFeedback.textContent = currentLanguage === "en" ? "Good try! The correct answer is highlighted." : "Jó próbálkozás! A helyes választ kiemeltük.";
+
+        const correctIndex = quizData[currentQuestionIndex].answers.findIndex((answer) => answer.correct);
+        const correctButton = optionButtons[correctIndex];
+        if (correctButton) {
+          correctButton.style.borderColor = "rgba(126, 240, 194, 0.9)";
+          correctButton.style.background = "rgba(126, 240, 194, 0.15)";
+        }
+      }
+
+      scoreLabel.textContent = getScoreLabelText();
+    }
+
+    nextQuestionBtn.addEventListener("click", () => {
+      if (!answerSelected && currentQuestionIndex < quizData.length) {
+        quizFeedback.textContent = currentLanguage === "en" ? "Choose an answer to continue." : "A folytatáshoz válassz egy választ.";
+        return;
+      }
+      currentQuestionIndex += 1;
+      answerSelected = false;
+      quizFeedback.textContent = "";
+      renderQuiz();
+    });
+
+    restartQuizBtn.addEventListener("click", () => {
+      currentQuestionIndex = 0;
+      score = 0;
+      answerSelected = false;
+      quizFeedback.textContent = "";
+      renderQuiz();
+    });
+
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      langLabel.textContent = lang.toUpperCase();
+
+      const flagIcon = langDropdownBtn.querySelector(".fi");
+      flagIcon.className = `fi ${flagMap[lang]}`;
+
+      langOptions.forEach(opt => {
+        opt.classList.toggle("active", opt.dataset.lang === lang);
+      });
+
+      langDropdown.classList.remove("open");
+      langDropdownBtn.setAttribute("aria-expanded", "false");
+      applyLanguage();
+    }
+
+    langDropdownBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = langDropdown.classList.toggle("open");
+      langDropdownBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    langOptions.forEach(opt => {
+      opt.addEventListener("click", () => setLanguage(opt.dataset.lang));
+      opt.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setLanguage(opt.dataset.lang);
+        }
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!langDropdown.contains(e.target)) {
+        langDropdown.classList.remove("open");
+        langDropdownBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    accordionItems.forEach((item) => {
+      const trigger = item.querySelector(".accordion-trigger");
+      const content = item.querySelector(".accordion-content");
+
+      trigger.addEventListener("click", () => {
+        const isOpen = item.classList.contains("open");
+
+        accordionItems.forEach((entry) => {
+          entry.classList.remove("open");
+          entry.querySelector(".accordion-content").style.maxHeight = "0px";
+        });
+
+        if (!isOpen) {
+          item.classList.add("open");
+          content.style.maxHeight = `${content.scrollHeight}px`;
+        }
+      });
+    });
+
+    toolTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+
+        toolTabs.forEach((entry) => {
+          entry.classList.toggle("active", entry === tab);
+          entry.setAttribute("aria-selected", entry === tab ? "true" : "false");
+        });
+
+        toolContents.forEach((content) => {
+          if (content.dataset.content === target) {
+            content.style.display = "block";
+            requestAnimationFrame(() => {
+              content.classList.add("active");
+            });
+          } else {
+            content.classList.remove("active");
+            content.style.display = "none";
+          }
+        });
+      });
+    });
+
+    if (captionGenerateBtn) {
+      captionGenerateBtn.addEventListener("click", () => {
+        const samples = captionSamples[currentLanguage];
+        const idea = captionIdeaInput.value.trim();
+        const sample = samples[captionSampleIndex % samples.length];
+        const prefix = currentLanguage === "en"
+          ? (idea ? `Based on your idea "${idea}", try this:\n\n` : "Try this polished caption idea:\n\n")
+          : (idea ? `A(z) "${idea}" ötleted alapján próbáld ezt:\n\n` : "Próbáld ezt a csiszoltabb képaláírást:\n\n");
+
+        captionDemoOutput.textContent = `${prefix}${sample}`;
+        captionDemoOutput.dataset.generated = "true";
+        captionSampleIndex += 1;
+      });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18 });
+
+    document.querySelectorAll(".reveal").forEach((element) => {
+      observer.observe(element);
+    });
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const element = entry.target;
+        const target = Number(element.dataset.target);
+        const suffix = element.dataset.suffix || "";
+        let currentValue = 0;
+        const duration = 1400;
+        const stepTime = Math.max(Math.floor(duration / target), 16);
+
+        const counter = setInterval(() => {
+          currentValue += 1;
+          element.textContent = `${currentValue}${suffix}`;
+          if (currentValue >= target) {
+            clearInterval(counter);
+            element.textContent = `${target}${suffix}`;
+          }
+        }, stepTime);
+
+        counterObserver.unobserve(element);
+      });
+    }, { threshold: 0.65 });
+
+    countUpElements.forEach((counter) => {
+      counterObserver.observe(counter);
+    });
+
+    const chartObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        createCharts();
+        chartObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+
+    if (chartsSection) {
+      chartObserver.observe(chartsSection);
+    }
+    const navLinks = document.querySelectorAll(".nav-links a");
+    const observedSections = document.querySelectorAll("main section[id]");
+
+    const navActiveObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const id = entry.target.id;
+        navLinks.forEach((link) => {
+          link.classList.toggle("nav-active", link.getAttribute("href") === `#${id}`);
+        });
+      });
+    }, {
+      threshold: 0.45,
+      rootMargin: "-20% 0px -35% 0px"
+    });
+
+    observedSections.forEach((section) => {
+      navActiveObserver.observe(section);
+    });
+
+    applyLanguage();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
