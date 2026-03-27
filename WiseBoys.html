@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Media & AI | Közösségi média és AI</title>
+  <link rel="canonical" href="https://codenest.hu/WiseBoys">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="./favicon-48x48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="./favicon-96x96.png" sizes="96x96" type="image/png">
+  <link rel="apple-touch-icon" href="./favicon-192x192.png">
+  <link rel="shortcut icon" href="./favicon-48x48.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -72,14 +78,14 @@
       height: auto;
       display: block;
     }
-    main,
+    /* main,
     .site-header,
     .hero,
     .section,
     .container,
     .footer {
       overflow-x: hidden;
-    }
+    } */
 
     h1,
     h2,
@@ -178,6 +184,14 @@
       font-weight: 700;
       letter-spacing: 0.02em;
       flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .brand-logos {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-shrink: 0;
     }
 
     .brand-mark {
@@ -188,6 +202,42 @@
       place-items: center;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       box-shadow: 0 12px 30px rgba(74, 91, 255, 0.35);
+    }
+
+    .brand-mark-secondary {
+      background: rgba(20, 26, 61, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 30px rgba(7, 11, 31, 0.28);
+      overflow: hidden;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      display: block;
+    }
+
+   
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      line-height: 1.05;
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .nav-links {
@@ -1268,6 +1318,10 @@
         min-width: 0;
       }
 
+      .brand-subtitle {
+        font-size: 0.68rem;
+      }
+
       .nav-links {
         grid-area: links;
         width: 100%;
@@ -1353,6 +1407,10 @@
         gap: 0.75rem;
       }
 
+      .brand-copy {
+        display: none;
+      }
+
       .nav .lang-dropdown {
         width: auto;
       }
@@ -1392,9 +1450,20 @@
 <body>
   <header class="site-header">
     <div class="container nav">
-      <a href="#home" class="brand">
-        <span class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-        <span data-en="Social Media & AI" data-hu="Közösségi média és AI">Social Media & AI</span>
+      <a href="/" class="brand" aria-label="Back to CodeNest landing page">
+        <span class="brand-logos">
+          <span class="brand-mark brand-mark-secondary">
+            <img class="brand-logo " src="./wiseboys-logo.png" alt="WiseBoys logo">
+          </span>
+          <span class="brand-mark">
+            <img class="brand-logo" src="./logo_minimalista-modified.png" alt="CodeNest logo">
+          </span>
+          
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">CodeNest</span>
+          <span class="brand-subtitle" data-en="Back to landing" data-hu="Vissza a landingre">Back to landing</span>
+        </span>
       </a>
       <ul class="nav-links">
         <li><a href="#home" title="Home" data-tooltip-en="Home" data-tooltip-hu="Főoldal"><i class="fa-solid fa-house" aria-hidden="true"></i></a></li>
@@ -1909,9 +1978,10 @@
     <div class="video-card reveal" >
       <div class="video-frame">
         <iframe
-          src="https://www.youtube.com/embed/_heT1sp_9wQ"
+          src="https://www.youtube-nocookie.com/embed/_heT1sp_9wQ"
           title="WiseBoys social media and AI video"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen>
         </iframe>
       </div>
@@ -1952,9 +2022,10 @@
     <div class="video-card reveal">
       <div class="video-frame">
         <iframe
-          src="https://www.youtube.com/embed/w7CCnICIHIs"
+          src="https://www.youtube-nocookie.com/embed/w7CCnICIHIs"
           title="AI use in schools advantages and disadvantages"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen>
         </iframe>
       </div>
