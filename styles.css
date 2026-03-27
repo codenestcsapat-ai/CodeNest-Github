@@ -2475,8 +2475,8 @@ a {
     box-shadow: var(--shadow-xl);
 }
 
-.featured-case-section .section-title,
-.featured-case-section .section-subtitle {
+.featured-case-card .section-title,
+.featured-case-card .section-subtitle {
     color: var(--color-white);
 }
 
@@ -2548,9 +2548,25 @@ a {
 
 .featured-case-logo {
     display: block;
-    width: min(100%, 280px);
-    margin: 0 auto 1.5rem;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.1);
+    transform-origin: center;
+    margin: 0;
     filter: drop-shadow(0 24px 40px rgba(15, 23, 42, 0.3));
+}
+
+.featured-case-logo-shell {
+    width: min(100%, 280px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 1.5rem;
+    border-radius: 32px;
+    overflow: hidden;
+    background: radial-gradient(circle at top, rgba(124, 92, 255, 0.24), rgba(20, 26, 61, 0.92));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: grid;
+    place-items: center;
 }
 
 .featured-case-panel h3 {
