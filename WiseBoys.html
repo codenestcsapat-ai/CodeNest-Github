@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -425,14 +426,10 @@
       background: linear-gradient(135deg, rgba(124, 92, 255, 0.2), rgba(38, 183, 255, 0.15));
     }
 
-    .lang-flag {
+    .fi {
       width: 1.4em;
       height: 1.4em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.15rem;
-      line-height: 1;
+      border-radius: 4px;
       flex-shrink: 0;
     }
 
@@ -1575,17 +1572,17 @@
       </ul>
       <div class="lang-dropdown" id="langDropdown">
         <button class="lang-dropdown-btn" id="langToggle" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span class="lang-flag" aria-hidden="true">EN</span>
+          <span class="fi fi-gb" aria-hidden="true"></span>
           <span id="langLabel">EN</span>
           <i class="fa-solid fa-chevron-down lang-chevron"></i>
         </button>
         <ul class="lang-menu" role="listbox">
           <li class="lang-option active" data-lang="en" role="option" tabindex="0">
-            <span class="lang-flag" aria-hidden="true">EN</span>
+            <span class="fi fi-gb" aria-hidden="true"></span>
             <span>English</span>
           </li>
           <li class="lang-option" data-lang="hu" role="option" tabindex="0">
-            <span class="lang-flag" aria-hidden="true">HU</span>
+            <span class="fi fi-hu" aria-hidden="true"></span>
             <span>Magyar</span>
           </li>
         </ul>
@@ -2201,7 +2198,7 @@
     const langLabel = document.getElementById("langLabel");
     const langOptions = document.querySelectorAll(".lang-option");
     const langDropdownBtn = document.getElementById("langToggle");
-    const flagMap = { en: "EN", hu: "HU" };
+    const flagMap = { en: "fi-gb", hu: "fi-hu" };
     const translatableNodes = document.querySelectorAll("[data-en][data-hu]");
     const quizQuestion = document.getElementById("quizQuestion");
     const quizOptions = document.getElementById("quizOptions");
