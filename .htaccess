@@ -20,6 +20,9 @@ Options -Indexes
     RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
     RewriteRule ^index\.html$ / [R=301,L]
 
+    # Canonical WiseBoys game URL
+    RewriteRule ^wiseboys-game/?$ wiseboys-game.html [L]
+
     # Redirect /example.html to /example
     RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^/]+)\.html\ HTTP/
     RewriteRule ^(.+)\.html$ /$1 [R=301,L]
