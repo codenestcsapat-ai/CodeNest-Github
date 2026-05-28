@@ -367,8 +367,6 @@ function renderAuth(store) {
         </form>
       </section>
       <section class="auth-visual">
-        <div class="score-card"><span>Main Team</span><strong>1900+</strong><small>Scrim ready</small></div>
-        <div class="score-card accent"><span>Academy</span><strong>7.3</strong><small>Average tryout score</small></div>
       </section>
     </div>
   `;
