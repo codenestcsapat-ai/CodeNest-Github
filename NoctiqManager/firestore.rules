@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Ideiglenes, egyszeru publikus szabaly: barki olvashat/irhatja az app kozos adatdokumentumat.
+    // Ezt csak tesztelesre hasznald. Elesben Firebase Authentication + role alapu szabaly kell.
+    match /noctiqManager/main {
+      allow read, write: if true;
+    }
+  }
+}

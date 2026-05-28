@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07090f" />
+    <title>Noctiq Manager</title>
+    <link rel="icon" href="assets/noctiq-logo.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="auth-screen">
+        <section class="auth-panel">
+          <div class="brand">
+            <img class="brand-logo" src="assets/noctiq-logo.png" alt="Noctiq logo">
+            <div>
+              <strong>Noctiq Manager</strong>
+              <span>Az app JavaScript modulokkal indul.</span>
+            </div>
+          </div>
+          <p class="warning">
+            Ha ezt ZIP-bol duplakattal nyitottad meg, inditsd helyi szerverrol.
+            Pelda: a mappaban futtasd a <code>python -m http.server 8000</code> parancsot,
+            majd nyisd meg: <code>http://localhost:8000</code>.
+          </p>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
