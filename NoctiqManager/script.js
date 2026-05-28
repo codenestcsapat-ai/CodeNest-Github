@@ -350,11 +350,11 @@ function renderAuth(store) {
         </div>
         <form id="auth-form" data-mode="login" class="form-grid">
           <label class="auth-name hidden"><span>Name</span><input name="name" /></label>
-          <label><span>Username</span><input name="username" value="Kenz" required /></label>
+          <label><span>Username</span><input name="username" value="" required /></label>
           <label>
             <span>Password</span>
             <span class="password-field">
-              <input name="password" type="password" value="Kenz123" required />
+              <input name="password" type="password" value="" required />
               <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password" aria-pressed="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
