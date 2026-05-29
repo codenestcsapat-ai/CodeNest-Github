@@ -7,6 +7,17 @@ while (Test-NetConnection -ComputerName 127.0.0.1 -Port $port -InformationLevel 
   $port++
 }
 
+function Open-BrowserSoon {
+  param([int]$Port)
+
+  $url = "http://127.0.0.1:$Port"
+  Start-Job -ScriptBlock {
+    param($TargetUrl)
+    Start-Sleep -Seconds 1
+    Start-Process $TargetUrl
+  } -ArgumentList $url | Out-Null
+}
+
 function Start-WithNode {
   $serverFile = Join-Path $env:TEMP "noctiq-static-server.js"
   @'
@@ -62,6 +73,7 @@ server.listen(port, "127.0.0.1", () => {
 
   Push-Location $root
   try {
+    Open-BrowserSoon -Port $port
     node $serverFile $port
   } finally {
     Pop-Location
@@ -73,15 +85,30 @@ function Start-WithPython {
   try {
     Write-Host "Noctiq Manager fut: http://127.0.0.1:$port"
     Write-Host "Leallitas: Ctrl+C"
+    Open-BrowserSoon -Port $port
     python -m http.server $port --bind 127.0.0.1
   } finally {
     Pop-Location
   }
 }
 
+function Test-CommandWorks {
+  param(
+    [string]$Command,
+    [string[]]$Arguments
+  )
+
+  try {
+    $process = Start-Process -FilePath $Command -ArgumentList $Arguments -NoNewWindow -Wait -PassThru -RedirectStandardOutput "$env:TEMP\noctiq-command-check.out" -RedirectStandardError "$env:TEMP\noctiq-command-check.err"
+    return $process.ExitCode -eq 0
+  } catch {
+    return $false
+  }
+}
+
 if (Get-Command node -ErrorAction SilentlyContinue) {
   Start-WithNode
-} elseif (Get-Command python -ErrorAction SilentlyContinue) {
+} elseif ((Get-Command python -ErrorAction SilentlyContinue) -and (Test-CommandWorks -Command "python" -Arguments @("--version"))) {
   Start-WithPython
 } else {
   Write-Host "Nincs telepitve Node.js vagy Python."

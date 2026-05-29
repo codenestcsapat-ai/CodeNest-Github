@@ -6,17 +6,17 @@ ZIP-bol kibontva mindig helyi szerverrol inditsd.
 ## Gyors inditas Windows alatt
 
 1. Bontsd ki a ZIP-et egy normal mappaba.
-2. Nyisd meg a mappat PowerShellben.
-3. Futtasd:
-
-```powershell
-.\start-local-server.ps1
-```
-
-4. Nyisd meg bongeszoben:
+2. Duplakatt a `NoctiqManager-inditas.bat` fajlra.
+3. Nyisd meg bongeszoben:
 
 ```text
 http://127.0.0.1:8000
+```
+
+Alternativa PowerShellbol:
+
+```powershell
+.\start-local-server.ps1
 ```
 
 Ha a `8000`-es port mar foglalt, a script automatikusan masik portot valaszt.
@@ -26,7 +26,7 @@ Ilyenkor azt a cimet nyisd meg, amit a PowerShell kiir, peldaul:
 Noctiq Manager fut: http://127.0.0.1:8001
 ```
 
-5. Leallitas: a PowerShell ablakban `Ctrl+C`.
+Leallitas: a PowerShell ablakban `Ctrl+C`.
 
 ## Ha a PowerShell blokkolja a scriptet
 
@@ -38,7 +38,9 @@ powershell -ExecutionPolicy Bypass -File .\start-local-server.ps1
 
 ## Firebase beallitas
 
-Az app kozos adatbazishoz Firebase Firestore-t hasznal. A `firebaseConfig.js` fajlban jelenleg placeholder ertekek vannak:
+Az app kozos adatbazishoz Firebase Firestore-t hasznal, ha eleri. Ha a Firebase vagy az internet nem erheto el, automatikusan helyi modban indul, es a bongeszo `localStorage` tarolojaba ment.
+
+A `firebaseConfig.js` fajlban ezeknek valodi Firebase Web app ertekeknek kell lenniuk:
 
 ```js
 PASTE_YOUR_API_KEY_HERE
@@ -47,8 +49,7 @@ PASTE_YOUR_SENDER_ID
 PASTE_YOUR_APP_ID
 ```
 
-Ezeket ki kell cserelni a Firebase Console-ban kapott Web app config adatokra.
-Amig ez nincs kitoltve, az app nem fog a kozos adatbazishoz csatlakozni.
+Ezeket a Firebase Console-ban kapott Web app config adatokra kell cserelni, ha kozos adatbazist szeretnel. Helyi futtatashoz nem kotelezo.
 
 Reszletes Firebase leiras: `FIREBASE_SETUP.md`.
 

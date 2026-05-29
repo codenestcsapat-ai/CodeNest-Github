@@ -1,24 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { firebaseConfig } from "./firebaseConfig.js";
-
 const sessionKey = "noctiq-manager-session";
+const storeKey = "noctiq-manager-store";
 const app = document.querySelector("#app");
-const firebaseReady = Object.values(firebaseConfig).every((value) => typeof value === "string" && value && !value.startsWith("PASTE_"));
 let firebaseApp = null;
 let db = null;
 let storeRef = null;
-if (firebaseReady) {
-  firebaseApp = initializeApp(firebaseConfig);
-  db = getFirestore(firebaseApp);
-  storeRef = doc(db, "noctiqManager", "main");
-}
+let remoteApi = null;
 let currentStore = null;
+let storageMode = "local";
 
 let currentPage = "dashboard";
 let filters = {};
 let filterTimer;
 let calendarMonth = new Date();
+let calendarTimeZone = "CET";
+let selectedCalendarItemKey = "";
+let resultDraft = null;
 
 const teams = [
   { id: "main", name: "Noctiq eSports", label: "Main Team" },
@@ -28,12 +24,20 @@ const teams = [
 const eventColors = {
   Scrim: "#3f96ff",
   Tournament: "#f2f5ff",
+  "League match": "#36d399",
   Tryout: "#a65cff",
   Meeting: "#c34cff",
   "Free Play": "#7d5cff",
   Training: "#6fb6ff",
+  Hoops: "#42d3b4",
+  Dropshot: "#ffcf5a",
+  Snowday: "#9ee7ff",
+  Heatseeker: "#ff6b8a",
   Other: "#aab6d6",
 };
+const eventTypes = Object.keys(eventColors);
+const playerRoles = ["Captain", "Coach", "Manager", "Player", "Sub"];
+const weekModes = ["3s", "2s", "1s", "Hoops", "Dropshot", "Snowday", "Heatseeker", "4s", "Rumble", "Casual", "Freeplay", "Custom pack", "Workshop map"];
 
 const statKeys = ["mechanics", "rotation", "communication", "gameSense", "consistency", "mentality", "teamFit"];
 const emptyStats = Object.fromEntries(statKeys.map((key) => [key, 5]));
@@ -49,6 +53,8 @@ const statLabels = {
 const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const weekDayLabels = { Hetfo: "Monday", Kedd: "Tuesday", Szerda: "Wednesday", Csutortok: "Thursday", Pentek: "Friday", Szombat: "Saturday", Vasarnap: "Sunday" };
 const customMapOptions = ["Dribble Challenge 2", "Aim Training by Coco", "Speed Jump Rings", "Air Dribble Mele", "Hornets Nest", "Custom map"];
+const customPackOptions = ["Aerial consistency", "Shooting consistency", "Shadow defense", "Backboard reads", "Custom pack"];
+const workshopMapOptions = ["Dribble Challenge 2", "Aim Training by Coco", "Speed Jump Rings", "Air Dribble Mele", "Hornets Nest", "Custom workshop map"];
 const sortLabels = {
   dateTime: "Date",
   opponent: "Opponent",
@@ -65,8 +71,12 @@ const sortLabels = {
   creatorName: "Creator",
   weeklyDay: "Weekly day",
   totalHours: "Weekly hours",
+  peak1s: "Peak 1s MMR",
+  peak2s: "Peak 2s MMR",
+  peak3s: "Peak 3s MMR",
   contact: "Contact",
 };
+const resultTypes = ["Tournament", "League match"];
 const logoMarkup = `<img class="brand-logo" src="assets/noctiq-logo.png" alt="Noctiq logo">`;
 
 const adminUsers = [
@@ -86,69 +96,71 @@ const seedStore = {
   users: [],
   teams,
   players: [
-    { id: "p1", name: "Milan Kovacs", rlName: "Noctiq.Milo", discord: "milo.rl", teamId: "main", position: "Starter", mmr: "1900+ SSL", availability: "Weekdays after 18:00", notes: "Core rotation leader.", status: "active", stats: { mechanics: 8, rotation: 8, communication: 7, gameSense: 8, consistency: 8, mentality: 8, teamFit: 9 } },
-    { id: "p2", name: "Bence Varga", rlName: "Vargaa", discord: "vargaa", teamId: "academy", position: "Flex", mmr: "1700 GC3", availability: "Weekends and evenings", notes: "Developing mechanics, strong communication.", status: "active", stats: { mechanics: 7, rotation: 6, communication: 7, gameSense: 6, consistency: 6, mentality: 7, teamFit: 7 } },
+    { id: "p1", name: "Milan Kovacs", rlName: "Noctiq.Milo", discord: "milo.rl", teamId: "main", position: "Player", peak1s: "1740", peak2s: "1900", peak3s: "1915", profileLink: "", notes: "Core rotation leader.", stats: { mechanics: 8, rotation: 8, communication: 7, gameSense: 8, consistency: 8, mentality: 8, teamFit: 9 } },
+    { id: "p2", name: "Bence Varga", rlName: "Vargaa", discord: "vargaa", teamId: "academy", position: "Sub", peak1s: "1540", peak2s: "1700", peak3s: "1680", profileLink: "", notes: "Developing mechanics, strong communication.", stats: { mechanics: 7, rotation: 6, communication: 7, gameSense: 6, mentality: 7, teamFit: 7 } },
   ],
   tryouts: [
-    { id: "tr1", name: "Adam Toth", rlName: "Axi", discord: "axi_rl", rank: "1800 MMR", previousTeam: "Orbit Mix", availability: "Tuesday, Thursday 19:00", dateTime: "2026-06-02T19:00", teamId: "academy", opinion: "Confident third man, needs another comms test.", stats: { mechanics: 8, rotation: 7, communication: 6, gameSense: 8, consistency: 7, mentality: 8, teamFit: 7 } },
+    { id: "tr1", name: "Adam Toth", rlName: "Axi", discord: "axi_rl", rank: "1800 MMR", previousTeam: "Orbit Mix", availability: "Tuesday, Thursday 19:00", dateTime: "2026-06-02T19:00", durationMinutes: "60", teamId: "academy", opinion: "Confident third man, needs another comms test.", stats: { mechanics: 8, rotation: 7, communication: 6, gameSense: 8, consistency: 7, mentality: 8, teamFit: 7 } },
   ],
   scrims: [
-    { id: "s1", dateTime: "2026-05-29T20:00", opponent: "Velocity Blue", level: "1900+", teamId: "main", notes: "BO7 practice" },
-    { id: "s2", dateTime: "2026-05-30T18:30", opponent: "Neon Wolves", level: "1800", teamId: "academy", notes: "Rotation focus" },
+    { id: "s1", dateTime: "2026-05-29T20:00", durationMinutes: "90", opponent: "Velocity Blue", level: "1900+", teamId: "main", notes: "BO7 practice" },
+    { id: "s2", dateTime: "2026-05-30T18:30", durationMinutes: "90", opponent: "Neon Wolves", level: "1800", teamId: "academy", notes: "Rotation focus" },
   ],
   partners: [
-    { id: "sp1", name: "Neon Wolves", level: "1800", contact: "wolfcoach", notes: "Flexible schedule, Tuesdays work well." },
-    { id: "sp2", name: "Velocity Blue", level: "1900+", contact: "vel.blue", notes: "Strong opponent, ideal for the main team." },
+    { id: "sp1", name: "Neon Wolves", level: "1800", contact: "wolfcoach", availability: "Tuesdays after 19:00", records: "BO7: 4-3, players: Milo, Vargaa", notes: "Flexible schedule, Tuesdays work well." },
+    { id: "sp2", name: "Velocity Blue", level: "1900+", contact: "vel.blue", availability: "Weekends", records: "BO7: 2-4, players: Main roster", notes: "Strong opponent, ideal for the main team." },
   ],
   tournaments: [
-    { id: "t1", name: "RL Central Cup", dateTime: "2026-06-08T19:00", prizeEur: "500", maxTeams: "32", registeredTeams: "18", link: "https://example.com/rl-central", notes: "Main roster priority.", teamId: "main" },
-    { id: "t2", name: "Academy Open", dateTime: "2026-06-12T18:00", prizeEur: "150", maxTeams: "24", registeredTeams: "9", link: "", notes: "Good experience builder.", teamId: "academy" },
+    { id: "t1", name: "RL Central Cup", dateTime: "2026-06-08T19:00", durationMinutes: "180", prizeEur: "500", maxTeams: "32", registeredTeams: "18", link: "https://example.com/rl-central", notes: "Main roster priority.", teamId: "main" },
+    { id: "t2", name: "Academy Open", dateTime: "2026-06-12T18:00", durationMinutes: "180", prizeEur: "150", maxTeams: "24", registeredTeams: "9", link: "", notes: "Good experience builder.", teamId: "academy" },
   ],
+  results: [],
   events: [
-    { id: "e1", title: "Main review meeting", dateTime: "2026-05-29T20:00", type: "Meeting", teamId: "main", notes: "Post-scrim VOD review." },
-    { id: "e2", title: "Academy free play", dateTime: "2026-05-31T17:00", type: "Free Play", teamId: "academy", notes: "Optional." },
-    { id: "e3", title: "Main training block", dateTime: "2026-06-03T19:00", type: "Training", teamId: "main", notes: "Kickoff variations." },
+    { id: "e1", title: "Main review meeting", dateTime: "2026-05-29T20:00", durationMinutes: "60", type: "Meeting", teamId: "main", notes: "Post-scrim VOD review." },
+    { id: "e2", title: "Academy free play", dateTime: "2026-05-31T17:00", durationMinutes: "90", type: "Free Play", teamId: "academy", notes: "Optional." },
+    { id: "e3", title: "Main training block", dateTime: "2026-06-03T19:00", durationMinutes: "120", type: "Training", teamId: "main", notes: "Kickoff variations." },
   ],
   trainingRoutines: [
-    { id: "r1", title: "Academy mechanics week", creatorId: "academy-coach", creatorName: "Academy Coach", weeklyDay: "Tuesday", startTime: "18:00", totalHours: "6", onesMinutes: "45", twosMinutes: "60", threesMinutes: "90", freeplayMinutes: "45", customMaps: [{ name: "Dribble Challenge 2", minutes: "40" }, { name: "Aim Training by Coco", minutes: "40" }], favorites: [] },
+    { id: "r1", title: "Academy mechanics pack", creatorId: "academy-coach", creatorName: "Academy Coach", customPackMinutes: "45", workshopMapMinutes: "80", freeplayMinutes: "45", customPacks: [{ name: "Aerial consistency", minutes: "45" }], workshopMaps: [{ name: "Dribble Challenge 2", minutes: "40" }, { name: "Aim Training by Coco", minutes: "40" }], favorites: [] },
   ],
+  weeks: [],
 };
 
 const schemas = {
   scrims: {
     title: "Scrim entry",
-    empty: { id: "", dateTime: "", opponent: "", level: "", teamId: "main", notes: "" },
-    fields: [["dateTime", "Date and start time", "datetime-local"], ["opponent", "Opponent"], ["level", "Level / MMR"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
-    headers: ["Date", "Opponent", "Level", "Team", "Notes"],
-    cells: (item) => [fmt(item.dateTime), item.opponent, item.level, teamName(item.teamId), item.notes],
+    empty: { id: "", dateTime: "", durationMinutes: "90", opponent: "", level: "", teamId: "main", notes: "" },
+    fields: [["dateTime", "Date and start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["opponent", "Opponent"], ["level", "Level / MMR"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
+    headers: ["Date", "Duration", "Opponent", "Level", "Team", "Notes"],
+    cells: (item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.opponent, item.level, teamName(item.teamId), item.notes],
     search: (item) => `${item.opponent} ${item.level} ${item.notes}`,
     sort: ["dateTime", "opponent", "level", "teamId"],
   },
   tournaments: {
     title: "Tournament entry",
-    empty: { id: "", name: "", dateTime: "", prizeEur: "", maxTeams: "", registeredTeams: "", link: "", notes: "", teamId: "main" },
-    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["prizeEur", "Prize pool EUR", "number"], ["maxTeams", "Max teams", "number"], ["registeredTeams", "Registered teams", "number"], ["link", "Registration link", "url"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
-    headers: ["Date", "Name", "Prize", "Max", "Registered", "Team", "Link", "Notes"],
-    cells: (item) => [fmt(item.dateTime), item.name, `${item.prizeEur || "-"} EUR`, item.maxTeams || "-", item.registeredTeams || "-", teamName(item.teamId), item.link ? `<a href="${escapeAttr(item.link)}" target="_blank">Open</a>` : "-", item.notes],
+    empty: { id: "", name: "", dateTime: "", durationMinutes: "180", prizeEur: "", maxTeams: "", registeredTeams: "", link: "", notes: "", teamId: "main" },
+    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["prizeEur", "Prize pool EUR", "number"], ["maxTeams", "Max teams", "number"], ["registeredTeams", "Registered teams", "number"], ["link", "Registration link", "url"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
+    headers: ["Date", "Duration", "Name", "Prize", "Max", "Registered", "Team", "Link", "Notes"],
+    cells: (item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.name, `${item.prizeEur || "-"} EUR`, item.maxTeams || "-", item.registeredTeams || "-", teamName(item.teamId), item.link ? `<a href="${escapeAttr(item.link)}" target="_blank">Open</a>` : "-", item.notes],
     search: (item) => `${item.name} ${item.notes}`,
     sort: ["dateTime", "prizeEur", "maxTeams", "registeredTeams", "teamId"],
   },
   players: {
     title: "Player profile",
-    empty: { id: "", name: "", rlName: "", discord: "", teamId: "main", position: "", mmr: "", availability: "", notes: "", status: "active", stats: emptyStats },
-    fields: [["name", "Name"], ["rlName", "Rocket League name"], ["discord", "Discord"], ["teamId", "Team", "team"], ["position", "Role / position"], ["mmr", "MMR / rank"], ["availability", "Availability"], ["status", "Status", ["active", "inactive", "sub", "tryout"]], ["notes", "Notes", "textarea"]],
-    headers: ["Name", "RL", "Discord", "Team", "Role", "Rank", "Average", "Status", "Notes"],
-    cells: (item) => [item.name, item.rlName, item.discord, teamName(item.teamId), item.position, item.mmr, average(item.stats), item.status, item.notes],
-    search: (item) => `${item.name} ${item.rlName} ${item.discord} ${item.mmr}`,
-    sort: ["name", "rlName", "teamId", "status"],
+    empty: { id: "", name: "", rlName: "", discord: "", teamId: "main", position: "Player", peak1s: "", peak2s: "", peak3s: "", profileLink: "", notes: "", stats: emptyStats },
+    fields: [["name", "Name"], ["rlName", "Rocket League name"], ["discord", "Discord"], ["teamId", "Team", "team"], ["position", "Role / position", playerRoles], ["peak1s", "Peak 1s MMR", "number"], ["peak2s", "Peak 2s MMR", "number"], ["peak3s", "Peak 3s MMR", "number"], ["profileLink", "Profile / tracker link", "url"], ["notes", "Notes", "textarea"]],
+    headers: ["Name", "RL", "Discord", "Team", "Role", "Peak MMR", "Average", "Notes"],
+    cells: (item) => [item.name, item.rlName, item.discord, teamName(item.teamId), item.position, peakMmrStack(item), average(item.stats), item.notes],
+    search: (item) => `${item.name} ${item.rlName} ${item.discord} ${item.peak1s} ${item.peak2s} ${item.peak3s}`,
+    sort: ["name", "rlName", "teamId", "position"],
   },
   partners: {
     title: "Scrim partner",
-    empty: { id: "", name: "", level: "", contact: "", notes: "" },
-    fields: [["name", "Team name"], ["level", "Approx. level / MMR"], ["contact", "Contact / Discord"], ["notes", "Notes", "textarea"]],
-    headers: ["Team", "Level", "Contact", "Notes"],
-    cells: (item) => [item.name, item.level, item.contact, item.notes],
-    search: (item) => `${item.name} ${item.level} ${item.contact} ${item.notes}`,
+    empty: { id: "", name: "", level: "", contact: "", availability: "", records: "", notes: "" },
+    fields: [["name", "Team name"], ["level", "Approx. level / MMR"], ["contact", "Contact / Discord"], ["availability", "Availability", "textarea"], ["records", "Scrim records", "textarea"], ["notes", "Notes", "textarea"]],
+    headers: ["Team", "Level", "Contact", "Availability", "Scrim records", "Notes"],
+    cells: (item) => [item.name, item.level, item.contact, item.availability, multiline(item.records), item.notes],
+    search: (item) => `${item.name} ${item.level} ${item.contact} ${item.availability} ${item.records} ${item.notes}`,
     sort: ["name", "level", "contact"],
   },
 };
@@ -163,30 +175,73 @@ async function saveStore(store) {
     users: store.users.filter((user) => !isBuiltInUser(user)),
   };
   currentStore = normalizeStore(cleanStore);
-  await setDoc(storeRef, { ...cleanStore, updatedAt: serverTimestamp() }, { merge: true });
+  if (storageMode === "remote" && remoteApi && storeRef) {
+    try {
+      await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() }, { merge: true });
+      return;
+    } catch (error) {
+      console.warn("Remote save failed, switching to local storage.", error);
+      storageMode = "local";
+    }
+  }
+  localStorage.setItem(storeKey, JSON.stringify(cleanStore));
+}
+
+async function setupFirebase() {
+  try {
+    const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule] = await Promise.all([
+      import("./firebaseConfig.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
+    ]);
+    const firebaseReady = Object.values(firebaseConfig).every((value) => typeof value === "string" && value && !value.startsWith("PASTE_"));
+    if (!firebaseReady) return false;
+    firebaseApp = firebaseAppModule.initializeApp(firebaseConfig);
+    db = firebaseFirestoreModule.getFirestore(firebaseApp);
+    storeRef = firebaseFirestoreModule.doc(db, "noctiqManager", "main");
+    remoteApi = firebaseFirestoreModule;
+    return true;
+  } catch (error) {
+    console.warn("Firebase unavailable, using local storage.", error);
+    return false;
+  }
+}
+
+function initLocalStore() {
+  storageMode = "local";
+  try {
+    const savedStore = localStorage.getItem(storeKey);
+    currentStore = normalizeStore(savedStore ? JSON.parse(savedStore) : structuredClone(seedStore));
+  } catch (error) {
+    console.warn("Local store could not be loaded, using seed data.", error);
+    currentStore = normalizeStore(structuredClone(seedStore));
+  }
+  render();
 }
 
 async function initRemoteStore() {
-  if (!firebaseReady) {
-    app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Firebase config missing</span></div></div><p class="warning">Open firebaseConfig.js and replace the PASTE_YOUR... placeholder values with your Firebase web app config. If you opened index.html directly from the ZIP, run it from a local server too.</p></section></div>`;
-    return;
-  }
   app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Loading shared database...</span></div></div></section></div>`;
   try {
-    const firstSnapshot = await getDoc(storeRef);
+    const firebaseReady = await setupFirebase();
+    if (!firebaseReady) {
+      initLocalStore();
+      return;
+    }
+    storageMode = "remote";
+    const firstSnapshot = await remoteApi.getDoc(storeRef);
     if (!firstSnapshot.exists()) {
       await saveStore(structuredClone(seedStore));
     }
-    onSnapshot(storeRef, (snapshot) => {
+    remoteApi.onSnapshot(storeRef, (snapshot) => {
       currentStore = normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
       render();
     }, (error) => {
       console.error(error);
-      app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Database error</span></div></div><p class="warning">Firestore connection failed. Check firebaseConfig.js and Firestore rules.</p></section></div>`;
+      initLocalStore();
     });
   } catch (error) {
     console.error(error);
-    app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Database error</span></div></div><p class="warning">Firestore connection failed. Check firebaseConfig.js and Firestore rules.</p></section></div>`;
+    initLocalStore();
   }
 }
 
@@ -195,9 +250,31 @@ function normalizeStore(store) {
     .map((user) => ({ ...user, username: user.username || user.email || user.name || "" }))
     .filter((user) => !builtInUsers.some((builtInUser) => builtInUser.username.toLowerCase() === user.username.toLowerCase()))
     .map((user) => ({ ...user, name: user.name || user.username, role: user.role === "Viewer" ? "Player" : (user.role || "Player"), approved: true, canEdit: false, systemAdmin: false, playerStatsAccess: Boolean(user.playerStatsAccess), coachAccess: user.role === "Coach" || Boolean(user.coachAccess) }));
-  const players = (store.players || []).map((player) => ({ ...player, notes: player.notes || "", stats: { ...emptyStats, ...(player.stats || {}) } }));
-  const trainingRoutines = (store.trainingRoutines || []).map((routine) => ({ ...routine, weeklyDay: displayWeekDay(routine.weeklyDay), customMaps: routine.customMaps || [], favorites: routine.favorites || [] }));
-  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, trainingRoutines };
+  const players = (store.players || []).map((player) => ({
+    ...player,
+    position: normalizePlayerRole(player.position || player.status),
+    peak1s: player.peak1s || "",
+    peak2s: player.peak2s || player.mmr || "",
+    peak3s: player.peak3s || "",
+    profileLink: player.profileLink || "",
+    notes: player.notes || "",
+    stats: { ...emptyStats, ...(player.stats || {}) },
+  }));
+  const trainingRoutines = (store.trainingRoutines || []).map((routine) => ({
+    ...routine,
+    customPackMinutes: routine.customPackMinutes || routine.onesMinutes || "",
+    workshopMapMinutes: routine.workshopMapMinutes || routine.twosMinutes || routine.threesMinutes || "",
+    customPacks: routine.customPacks || [],
+    workshopMaps: routine.workshopMaps || routine.customMaps || [],
+    favorites: routine.favorites || [],
+  }));
+  const results = (store.results || []).map((result) => ({
+    ...result,
+    type: resultTypes.includes(result.type) ? result.type : "Tournament",
+    resultSource: result.resultSource || (result.tournamentId ? `tournaments:${result.tournamentId}` : ""),
+  }));
+  const weeks = (store.weeks || []).map((week) => ({ ...week, items: week.items || [] }));
+  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, trainingRoutines, results, weeks };
 }
 
 function uid() {
@@ -230,7 +307,7 @@ function canManagePlayerStats(user) {
 
 function canManageEntity(user, key) {
   if (isAdmin(user)) return true;
-  return isCoach(user) && ["scrims", "tryouts"].includes(key);
+  return isCoach(user) && ["scrims", "tryouts", "results"].includes(key);
 }
 
 function canCreateTrainingRoutine(user) {
@@ -256,6 +333,24 @@ function fmt(value) {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 }
 
+function fmtTime(value) {
+  if (!value) return "-";
+  return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: calendarTimeZone === "BST" ? "Europe/London" : "Europe/Budapest" }).format(new Date(value));
+}
+
+function endDate(item) {
+  const date = new Date(item.dateTime);
+  date.setMinutes(date.getMinutes() + Number(item.durationMinutes || 0));
+  return date;
+}
+
+function fmtRange(item) {
+  if (!item.dateTime) return "-";
+  const start = fmt(item.dateTime);
+  if (!Number(item.durationMinutes || 0)) return start;
+  return `${start} - ${fmtTime(endDate(item).toISOString())}`;
+}
+
 function teamName(teamId) {
   return teamId === "main" ? "Main Team" : "Academy";
 }
@@ -269,11 +364,24 @@ function displayWeekDay(day) {
   return weekDayLabels[day] || day;
 }
 
+function normalizePlayerRole(role = "Player") {
+  const found = playerRoles.find((item) => item.toLowerCase() === String(role).toLowerCase());
+  return found || "Player";
+}
+
+function peakMmrStack(player) {
+  return `<div class="stacked-cell"><span>1s: ${esc(player.peak1s || "-")}</span><span>2s: ${esc(player.peak2s || "-")}</span><span>3s: ${esc(player.peak3s || "-")}</span></div>`;
+}
+
+function multiline(value = "") {
+  return esc(value).replace(/\n/g, "<br>");
+}
+
 function allCalendarItems(store) {
   const events = store.events.map((item) => ({ ...item, source: "events", sourceId: item.id }));
-  const scrims = store.scrims.map((item) => ({ id: `scrim-${item.id}`, sourceId: item.id, title: `Scrim vs ${item.opponent || "TBA"}`, dateTime: item.dateTime, type: "Scrim", teamId: item.teamId, notes: item.notes, source: "scrims" }));
-  const tournaments = store.tournaments.map((item) => ({ id: `tournament-${item.id}`, sourceId: item.id, title: item.name || "Tournament", dateTime: item.dateTime, type: "Tournament", teamId: item.teamId, notes: item.notes, source: "tournaments" }));
-  const tryouts = store.tryouts.map((item) => ({ id: `tryout-${item.id}`, sourceId: item.id, title: `Tryout: ${item.rlName || item.name || "TBA"}`, dateTime: item.dateTime, type: "Tryout", teamId: item.teamId, notes: item.opinion, source: "tryouts" }));
+  const scrims = store.scrims.map((item) => ({ id: `scrim-${item.id}`, sourceId: item.id, title: `Scrim vs ${item.opponent || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Scrim", teamId: item.teamId, notes: item.notes, source: "scrims" }));
+  const tournaments = store.tournaments.map((item) => ({ id: `tournament-${item.id}`, sourceId: item.id, title: item.name || "Tournament", dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tournament", teamId: item.teamId, notes: item.notes, source: "tournaments" }));
+  const tryouts = store.tryouts.map((item) => ({ id: `tryout-${item.id}`, sourceId: item.id, title: `Tryout: ${item.rlName || item.name || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tryout", teamId: item.teamId, notes: item.opinion, source: "tryouts" }));
   return [...events, ...scrims, ...tournaments, ...tryouts].filter((item) => item.dateTime).sort((a, b) => a.dateTime.localeCompare(b.dateTime));
 }
 
@@ -288,15 +396,17 @@ function render() {
   app.innerHTML = `
     <div class="app-shell">
       <aside class="sidebar">
-        <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League team manager</span></div></div>
+        <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League Team Manager</span></div></div>
         <nav>
           ${navButton("dashboard", "Overview")}
           ${navButton("calendar", "Calendar")}
           ${navButton("scrims", "Scrims")}
           ${navButton("tournaments", "Tournaments")}
+          ${navButton("results", "Results")}
           ${navButton("players", "Players")}
           ${navButton("tryouts", "Tryouts")}
           ${navButton("training", "My training routine")}
+          ${navButton("week", "My week")}
           ${navButton("partners", "Scrim partners")}
           ${isAdmin(user) ? navButton("admin", "Admin") : ""}
         </nav>
@@ -322,9 +432,11 @@ function pageTitle(page) {
     calendar: "Calendar",
     scrims: "Scrims",
     tournaments: "Tournaments",
+    results: "Results",
     players: "Players",
     tryouts: "Tryouts",
     training: "My training routine",
+    week: "My week",
     partners: "Scrim partners",
     admin: "Admin",
   }[page];
@@ -332,9 +444,11 @@ function pageTitle(page) {
 
 function renderPage(store, user) {
   if (currentPage === "dashboard") return dashboard(store);
-  if (currentPage === "calendar") return calendarPage(store, canEdit(user));
+  if (currentPage === "calendar") return calendarPage(store, canEdit(user), canManageEntity(user, "results"));
+  if (currentPage === "results") return resultsPage(store, canManageEntity(user, "results"));
   if (currentPage === "tryouts") return tryoutsPage(store, canManageEntity(user, "tryouts"));
   if (currentPage === "training") return trainingPage(store, user);
+  if (currentPage === "week") return weekPage(store, user);
   if (currentPage === "admin") return isAdmin(user) ? adminPage(store, user) : dashboard(store);
   return crudPage(store, currentPage, canManageEntity(user, currentPage), user);
 }
@@ -364,6 +478,7 @@ function renderAuth(store) {
             </span>
           </label>
           <button class="primary">Log in</button>
+          <p id="auth-message" class="muted"></p>
         </form>
       </section>
       <section class="auth-visual">
@@ -418,12 +533,13 @@ function renderAuth(store) {
 
 function dashboard(store) {
   const calendar = allCalendarItems(store);
+  const upcomingCalendar = calendar.filter((item) => endDate(item) >= new Date());
   const nextTournament = [...store.tournaments].filter((item) => item.dateTime).sort((a, b) => a.dateTime.localeCompare(b.dateTime))[0];
   return `
     <section class="page-grid">
       ${metric("Next tournament", nextTournament?.name || "-", nextTournament ? fmt(nextTournament.dateTime) : "no tournament")}
       <section class="panel"><h2>Active tryouts</h2>${store.tryouts.map((item) => compact(item.rlName, `${teamName(item.teamId)} / average ${average(item.stats)}`)).join("") || `<p class="muted">No tryouts yet.</p>`}</section>
-      <section class="panel wide"><h2>Upcoming schedule</h2>${eventList(calendar.slice(0, 7))}</section>
+      <section class="panel wide"><h2>Upcoming schedule</h2>${eventList(upcomingCalendar.slice(0, 7))}</section>
     </section>
   `;
 }
@@ -460,17 +576,29 @@ function playerRecords(schema, rows, editable) {
   const mainRows = captainFirst(rows.filter((item) => item.teamId === "main"));
   const academyRows = captainFirst(rows.filter((item) => item.teamId === "academy"));
   return `
+    <section class="panel wide"><h2>Main Team player details</h2><div class="player-card-grid">${mainRows.map((player) => playerDetailCard(player, editable)).join("") || `<p class="muted">No main team players found.</p>`}</div></section>
+    <section class="panel wide"><h2>Academy player details</h2><div class="player-card-grid">${academyRows.map((player) => playerDetailCard(player, editable)).join("") || `<p class="muted">No academy players found.</p>`}</div></section>
     <section class="panel wide"><h2>Main Team records</h2>${recordTable(schema, mainRows, editable, "players")}</section>
     <section class="panel wide"><h2>Academy records</h2>${recordTable(schema, academyRows, editable, "players")}</section>
   `;
 }
 
 function captainFirst(rows) {
-  return [...rows].sort((a, b) => Number(isCaptain(b)) - Number(isCaptain(a)));
+  return [...rows].sort((a, b) => {
+    const coachOrder = Number(isCoachRole(a)) - Number(isCoachRole(b));
+    if (coachOrder) return coachOrder;
+    const captainOrder = Number(isCaptain(b)) - Number(isCaptain(a));
+    if (captainOrder) return captainOrder;
+    return String(a.rlName || a.name || "").localeCompare(String(b.rlName || b.name || ""));
+  });
 }
 
 function isCaptain(player) {
   return String(player.position || "").trim().toLowerCase() === "captain";
+}
+
+function isCoachRole(player) {
+  return String(player.position || "").trim().toLowerCase() === "coach";
 }
 
 
@@ -478,6 +606,30 @@ function isCaptain(player) {
 function recordTable(schema, rows, editable, key) {
   if (!rows.length) return `<p class="muted">No players found.</p>`;
   return table(schema.headers, rows.map((item) => [...schema.cells(item), rowActions(editable, key, item.id)]));
+}
+
+function playerDetailCard(player, editable) {
+  const coach = isCoachRole(player);
+  return `
+    <article class="routine-card">
+      <div class="routine-card-head">
+        <div><h3>${esc(player.rlName || player.name)}</h3><span>${esc(player.name)} / ${esc(player.position)} / ${teamName(player.teamId)}</span></div>
+        ${editable ? `<button data-edit="players:${player.id}">Edit</button>` : ""}
+      </div>
+      ${coach ? "" : `
+        <div class="routine-stats">
+          ${metricMini("1s peak", player.peak1s || "-")}
+          ${metricMini("2s peak", player.peak2s || "-")}
+          ${metricMini("3s peak", player.peak3s || "-")}
+          ${metricMini("Average", average(player.stats))}
+          ${player.profileLink ? `<a class="mini-metric player-link-box" href="${escapeAttr(player.profileLink)}" target="_blank" rel="noreferrer"><span>Link</span><strong>Open</strong></a>` : metricMini("Link", "-")}
+        </div>
+        <div class="stat-bars">
+          ${statKeys.map((key) => `<div><span>${statLabels[key]}</span><strong>${Number(player.stats?.[key] ?? 0)}</strong><meter min="0" max="10" value="${Number(player.stats?.[key] ?? 0)}"></meter></div>`).join("")}
+        </div>
+      `}
+    </article>
+  `;
 }
 
 function tryoutsPage(store, editable) {
@@ -489,43 +641,152 @@ function tryoutsPage(store, editable) {
     <section class="crud-layout">
       ${toolbar("tryouts", true, false, ["dateTime", "rlName", "rank", "teamId"])}
       ${editable ? tryoutForm() : ""}
-      <section class="panel wide"><h2>Tryout records</h2>${table(["Date", "Name", "RL", "Discord", "Rank", "Team", "Average", "Opinion"], rows.map((item) => [fmt(item.dateTime), item.name, item.rlName, item.discord, item.rank, teamName(item.teamId), average(item.stats), item.opinion, rowActions(editable, "tryouts", item.id)]))}</section>
+      <section class="panel wide"><h2>Tryout records</h2>${table(["Date", "Duration", "Name", "RL", "Discord", "Rank", "Team", "Average", "Opinion"], rows.map((item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.name, item.rlName, item.discord, item.rank, teamName(item.teamId), average(item.stats), item.opinion, rowActions(editable, "tryouts", item.id)]))}</section>
     </section>
+  `;
+}
+
+function resultsPage(store, editable) {
+  const rows = filteredResults(store);
+  const tournamentResults = rows.filter((item) => item.type === "Tournament");
+  const leagueResults = rows.filter((item) => item.type === "League match");
+  const draft = resultDraft || { id: "", resultSource: "", type: "Tournament", title: "", dateTime: "", teamId: "main", opponent: "", placement: "", score: "", notes: "" };
+  return `
+    <section class="crud-layout">
+      ${toolbar("results", true, false, ["dateTime", "title", "teamId"])}
+      ${editable ? resultForm(store, draft) : ""}
+      ${resultGroup("Tournament results", tournamentResults, editable)}
+      ${resultGroup("League match results", leagueResults, editable)}
+    </section>
+  `;
+}
+
+function filteredResults(store) {
+  const f = filters.results || {};
+  return [...(store.results || [])]
+    .filter((item) => !f.query || `${item.title} ${item.opponent} ${item.score} ${item.placement} ${item.notes} ${lineupText(item.ourLineup)} ${lineupText(item.opponentLineup)}`.toLowerCase().includes(f.query.toLowerCase()))
+    .filter((item) => !f.team || f.team === "all" || item.teamId === f.team)
+    .sort((a, b) => (f.sort || "dateTime") === "dateTime" ? String(b.dateTime || "").localeCompare(String(a.dateTime || "")) : sortCompare(a, b, f.sort || "title"));
+}
+
+function resultGroup(title, rows, editable) {
+  const mainRows = rows.filter((item) => item.teamId === "main");
+  const academyRows = rows.filter((item) => item.teamId === "academy");
+  return `
+    <section class="panel wide">
+      <h2>${title}</h2>
+      <div class="result-columns">
+        <div>
+          <h3>Main Team</h3>
+          ${resultTable(mainRows, editable)}
+        </div>
+        <div>
+          <h3>Academy</h3>
+          ${resultTable(academyRows, editable)}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function resultTable(rows, editable) {
+  if (!rows.length) return `<p class="muted">No results yet.</p>`;
+  return table(["Date", "Event", "Opponent", "Lineups", "Placement", "Score / result", "Notes"], rows.map((item) => [
+    fmt(item.dateTime),
+    item.title,
+    item.opponent || "-",
+    resultLineups(item),
+    item.placement || "-",
+    item.score || "-",
+    item.notes || "",
+    rowActions(editable, "results", item.id),
+  ]));
+}
+
+function lineupText(lineup = []) {
+  return lineup.map((item) => `${item.name || ""} ${item.link || ""}`).join(" ");
+}
+
+function resultLineups(item) {
+  const ourLineup = (item.ourLineup || []).map((player) => player.link ? `<a href="${escapeAttr(player.link)}" target="_blank" rel="noreferrer">${esc(player.name)}</a>` : esc(player.name)).join("<br>");
+  const opponentLineup = (item.opponentLineup || []).map((player) => player.link ? `<a href="${escapeAttr(player.link)}" target="_blank" rel="noreferrer">${esc(player.name)}</a>` : esc(player.name)).join("<br>");
+  return `<div class="stacked-cell"><strong>Us</strong>${ourLineup || "-"}<strong>Them</strong>${opponentLineup || "-"}</div>`;
+}
+
+function completedResultSources(store) {
+  return allCalendarItems(store)
+    .filter((item) => item.dateTime && endDate(item) < new Date())
+    .sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+}
+
+function resultSourceKey(item) {
+  return `${item.source}:${item.sourceId}`;
+}
+
+function findCalendarItem(store, key) {
+  return allCalendarItems(store).find((item) => resultSourceKey(item) === key);
+}
+
+function resultForm(store, item = { id: "", resultSource: "", type: "Tournament", title: "", dateTime: "", teamId: "main", opponent: "", placement: "", score: "", notes: "", ourLineup: [], opponentLineup: [] }) {
+  const sources = completedResultSources(store);
+  return `
+    <section class="panel"><h2>${item.id ? "Edit result" : "New result"}</h2>
+      <form class="entity-form" data-entity="results" data-id="${item.id || ""}">
+        <div class="form-grid">
+          <label><span>Played calendar item</span><select name="resultSource" required><option value="">Select played calendar item</option>${sources.map((source) => `<option value="${resultSourceKey(source)}" ${item.resultSource === resultSourceKey(source) ? "selected" : ""}>${esc(source.title)} / ${source.type} / ${teamName(source.teamId)} / ${fmt(source.dateTime)}</option>`).join("")}</select></label>
+          ${field("opponent", "Opponent", "text", item.opponent)}
+          ${field("placement", "Placement", "text", item.placement)}
+          ${field("score", "Score / result", "text", item.score)}
+          ${field("notes", "Notes", "textarea", item.notes)}
+        </div>
+        ${lineupHiddenInputs(item)}
+        <button class="primary">Save result</button>
+      </form>
+    </section>
+  `;
+}
+
+function lineupHiddenInputs(item) {
+  return `
+    ${(item.ourLineup || []).map((player, index) => `<input type="hidden" name="ourLineupName${index}" value="${escapeAttr(player.name || "")}"><input type="hidden" name="ourLineupLink${index}" value="${escapeAttr(player.link || "")}">`).join("")}
+    ${(item.opponentLineup || []).map((player, index) => `<input type="hidden" name="opponentLineupName${index}" value="${escapeAttr(player.name || "")}"><input type="hidden" name="opponentLineupLink${index}" value="${escapeAttr(player.link || "")}">`).join("")}
   `;
 }
 
 function trainingPage(store, user) {
   const routines = filteredRows(store.trainingRoutines, {
-    search: (item) => `${item.title} ${item.creatorName} ${item.weeklyDay} ${routineModes(item)} ${item.customMaps.map((map) => map.name).join(" ")}`,
-    sort: ["title", "creatorName", "weeklyDay", "totalHours"],
+    search: (item) => `${item.title} ${item.creatorName} ${routineModes(item)} ${(item.customPacks || []).map((pack) => pack.name).join(" ")} ${(item.workshopMaps || []).map((map) => map.name).join(" ")}`,
+    sort: ["title", "creatorName"],
   }, "training");
   return `
     <section class="crud-layout">
-      ${toolbar("training", false, false, ["title", "creatorName", "weeklyDay", "totalHours"])}
+      ${toolbar("training", false, false, ["title", "creatorName"])}
       ${canCreateTrainingRoutine(user) ? trainingRoutineForm() : ""}
       <section class="panel wide"><h2>Training packs</h2><div class="routine-grid">${routines.map((routine) => trainingRoutineCard(routine, user)).join("") || `<p class="muted">No training routines yet.</p>`}</div></section>
     </section>
   `;
 }
 
-function trainingRoutineForm() {
+function trainingRoutineForm(item = { id: "", title: "", customPackMinutes: "", workshopMapMinutes: "", freeplayMinutes: "", customPacks: [], workshopMaps: [] }) {
   return `
-    <section class="panel"><h2>New training routine</h2>
-      <form class="entity-form" data-entity="training-routines">
+    <section class="panel"><h2>${item.id ? "Edit training routine" : "New training routine"}</h2>
+      <form class="entity-form" data-entity="training-routines" data-id="${item.id || ""}">
         <div class="form-grid">
-          ${field("title", "Routine name")}
-          ${field("weeklyDay", "Weekly day", weekDays, "Monday")}
-          ${field("startTime", "Start time", "time")}
-          ${field("totalHours", "Weekly hours", "number")}
-          ${field("onesMinutes", "1s minutes", "number")}
-          ${field("twosMinutes", "2s minutes", "number")}
-          ${field("threesMinutes", "3s minutes", "number")}
-          ${field("freeplayMinutes", "Freeplay minutes", "number")}
+          ${field("title", "Routine name", "text", item.title)}
+          ${field("customPackMinutes", "Custom pack minutes", "number", item.customPackMinutes)}
+          ${field("workshopMapMinutes", "Workshop map minutes", "number", item.workshopMapMinutes)}
+          ${field("freeplayMinutes", "Freeplay minutes", "number", item.freeplayMinutes)}
         </div>
         <details class="custom-map-box">
-          <summary>Custom maps</summary>
+          <summary>Custom packs</summary>
           <div class="form-grid">
-            ${[0, 1, 2].map((index) => customMapFields(index)).join("")}
+            ${[0, 1, 2, 3, 4].map((index) => trainingItemFields("customPack", index, customPackOptions, item.customPacks?.[index])).join("")}
+          </div>
+        </details>
+        <details class="custom-map-box">
+          <summary>Workshop maps</summary>
+          <div class="form-grid">
+            ${[0, 1, 2, 3, 4].map((index) => trainingItemFields("workshopMap", index, workshopMapOptions, item.workshopMaps?.[index])).join("")}
           </div>
         </details>
         <button class="primary">Save routine</button>
@@ -534,10 +795,10 @@ function trainingRoutineForm() {
   `;
 }
 
-function customMapFields(index, map = {}) {
+function trainingItemFields(prefix, index, options, item = {}) {
   return `
-    <label><span>Custom map ${index + 1}</span><select name="customMapName${index}"><option value="">None</option>${customMapOptions.map((name) => `<option value="${name}" ${map.name === name ? "selected" : ""}>${name}</option>`).join("")}</select></label>
-    ${field(`customMapMinutes${index}`, "Minutes", "number", map.minutes || "")}
+    <label><span>${prefix === "customPack" ? "Custom pack" : "Workshop map"} ${index + 1}</span><select name="${prefix}Name${index}"><option value="">None</option>${options.map((name) => `<option value="${name}" ${item.name === name ? "selected" : ""}>${name}</option>`).join("")}</select></label>
+    ${field(`${prefix}Minutes${index}`, "Minutes", "number", item.minutes || "")}
   `;
 }
 
@@ -546,22 +807,25 @@ function trainingRoutineCard(routine, user) {
   return `
     <article class="routine-card">
       <div class="routine-card-head">
-        <div><h3>${esc(routine.title || "Untitled routine")}</h3><span>${esc(routine.creatorName || "Unknown")} / ${esc(displayWeekDay(routine.weeklyDay) || "-")} ${esc(routine.startTime || "")}</span></div>
+        <div><h3>${esc(routine.title || "Untitled routine")}</h3><span>${esc(routine.creatorName || "Unknown")}</span></div>
         ${canCreateTrainingRoutine(user) ? `<button class="chip ${favorite ? "ok" : ""}" data-routine-favorite="${routine.id}">${favorite ? "Favorited" : "Add favorite"}</button>` : ""}
       </div>
       <div class="routine-stats">
-        ${metricMini("Weekly hours", routine.totalHours || "0")}
-        ${metricMini("1s", `${routine.onesMinutes || 0} min`)}
-        ${metricMini("2s", `${routine.twosMinutes || 0} min`)}
-        ${metricMini("3s", `${routine.threesMinutes || 0} min`)}
+        ${metricMini("Custom pack", `${routine.customPackMinutes || 0} min`)}
+        ${metricMini("Workshop", `${routine.workshopMapMinutes || 0} min`)}
         ${metricMini("Freeplay", `${routine.freeplayMinutes || 0} min`)}
       </div>
       <details class="custom-map-box">
-        <summary>Custom map list</summary>
-        ${routine.customMaps.length ? routine.customMaps.map((map) => compact(map.name, `${map.minutes || 0} minutes`)).join("") : `<p class="muted">No custom maps.</p>`}
+        <summary>Custom packs</summary>
+        ${(routine.customPacks || []).length ? routine.customPacks.map((pack) => compact(pack.name, `${pack.minutes || 0} minutes`)).join("") : `<p class="muted">No custom packs.</p>`}
+      </details>
+      <details class="custom-map-box">
+        <summary>Workshop maps</summary>
+        ${(routine.workshopMaps || []).length ? routine.workshopMaps.map((map) => compact(map.name, `${map.minutes || 0} minutes`)).join("") : `<p class="muted">No workshop maps.</p>`}
       </details>
       <div class="routine-footer">
         <span>${routine.favorites.length} favorites</span>
+        ${canCreateTrainingRoutine(user) ? `<button data-routine-edit="${routine.id}">Edit pack</button>` : ""}
         ${isAdmin(user) ? `<button data-routine-delete="${routine.id}">Delete pack</button>` : ""}
       </div>
     </article>
@@ -573,14 +837,64 @@ function metricMini(title, value) {
 }
 
 function routineModes(item) {
-  return `1s ${item.onesMinutes || 0} 2s ${item.twosMinutes || 0} 3s ${item.threesMinutes || 0} freeplay ${item.freeplayMinutes || 0}`;
+  return `custom pack ${item.customPackMinutes || 0} workshop ${item.workshopMapMinutes || 0} freeplay ${item.freeplayMinutes || 0}`;
+}
+
+function weekPage(store, user) {
+  const selectedPlayerId = (filters.week || {}).playerId || store.players[0]?.id || "";
+  const selectedPlayer = store.players.find((player) => player.id === selectedPlayerId);
+  const week = store.weeks.find((item) => item.playerId === selectedPlayerId) || { title: selectedPlayer ? `${selectedPlayer.rlName || selectedPlayer.name}'s week` : "My week", playerId: selectedPlayerId, items: [] };
+  const teamEvents = selectedPlayer ? allCalendarItems(store).filter((item) => item.teamId === selectedPlayer.teamId || isAdmin(user)) : [];
+  return `
+    <section class="crud-layout">
+      <div class="toolbar">
+        <label><span>Player</span><select data-filter="week" data-filter-kind="playerId">${store.players.map((player) => `<option value="${player.id}" ${player.id === selectedPlayerId ? "selected" : ""}>${esc(player.rlName || player.name)}</option>`).join("")}</select></label>
+      </div>
+      ${canCreateTrainingRoutine(user) ? weekForm(week, selectedPlayerId) : ""}
+      <section class="panel wide"><h2>${esc(week.title || "My week")}</h2>${weekGrid(week.items || [])}</section>
+      <section class="panel wide"><h2>Player schedule from calendar</h2>${eventList(teamEvents.slice(0, 12))}</section>
+    </section>
+  `;
+}
+
+function weekForm(week, playerId) {
+  return `
+    <section class="panel"><h2>Plan week</h2>
+      <form class="entity-form" data-entity="week-items" data-player-id="${playerId}">
+        <div class="form-grid">
+          ${field("title", "Week name", "text", week.title || "")}
+          ${field("day", "Day", weekDays, "Monday")}
+          ${field("startTime", "Start time", "time")}
+          ${field("endTime", "End time", "time")}
+          ${field("mode", "Mode", weekModes, "3s")}
+          ${field("notes", "Notes", "textarea")}
+        </div>
+        <button class="primary">Add to week</button>
+      </form>
+    </section>
+  `;
+}
+
+function weekGrid(items) {
+  return `<div class="week-grid">${weekDays.map((day) => `
+    <section class="week-day">
+      <h3>${day}</h3>
+      ${items.filter((item) => item.day === day).sort((a, b) => String(a.startTime).localeCompare(String(b.startTime))).map((item) => `
+        <div class="compact-row">
+          <strong>${esc(item.startTime || "--:--")} - ${esc(item.endTime || "--:--")} / ${esc(item.mode)}</strong>
+          <span>${esc(item.notes || "")}</span>
+          <button data-week-delete="${item.id}">Delete</button>
+        </div>
+      `).join("") || `<p class="muted">No plan.</p>`}
+    </section>
+  `).join("")}</div>`;
 }
 
 function sortLabel(option) {
   return sortLabels[option] || option.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
 }
 
-function calendarPage(store, editable) {
+function calendarPage(store, editable, canRecordResults) {
   const f = filters.calendar || {};
   const events = allCalendarItems(store)
     .filter((item) => !f.query || `${item.title} ${item.notes}`.toLowerCase().includes(f.query.toLowerCase()))
@@ -597,6 +911,8 @@ function calendarPage(store, editable) {
         <div class="calendar-head">
           <h2>${monthLabel}</h2>
           <div class="row-actions">
+            <button class="${calendarTimeZone === "CET" ? "selected" : ""}" data-calendar-timezone="CET">CET</button>
+            <button class="${calendarTimeZone === "BST" ? "selected" : ""}" data-calendar-timezone="BST">BST</button>
             <button data-calendar-shift="-1">Prev</button>
             <button data-calendar-today="true">Today</button>
             <button data-calendar-shift="1">Next</button>
@@ -604,6 +920,7 @@ function calendarPage(store, editable) {
         </div>
         ${monthGrid(events, conflicts, monthStart, editable)}
       </section>
+      ${calendarEventDialog(store, canRecordResults)}
     </section>
   `;
 }
@@ -633,12 +950,65 @@ function monthGrid(events, conflicts, monthStart, editable) {
 }
 
 function calendarChip(item, conflict, editable) {
-  const time = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit" }).format(new Date(item.dateTime));
+  const time = fmtTime(item.dateTime);
+  const duration = Number(item.durationMinutes || 0);
+  const end = duration ? `-${fmtTime(endDate(item).toISOString())}` : "";
   return `
-    <div class="calendar-chip ${conflict ? "conflict-chip" : ""}" style="border-left-color:${eventColors[item.type]}">
-      <div class="chip-main"><strong>${time}</strong><span>${esc(item.title)}</span></div>
+    <div class="calendar-chip ${conflict ? "conflict-chip" : ""}" style="border-left-color:${eventColors[item.type]}" data-calendar-open="${resultSourceKey(item)}">
+      <div class="chip-main"><strong>${time}${end}</strong><span>${esc(item.title)}</span></div>
       <small>${item.type} / ${teamName(item.teamId)}</small>
       ${editable ? `<div class="chip-actions"><button data-edit="${item.source}:${item.sourceId}">Edit</button><button data-delete="${item.source}:${item.sourceId}">Delete</button></div>` : ""}
+    </div>
+  `;
+}
+
+function calendarEventDialog(store, canRecordResults) {
+  if (!selectedCalendarItemKey) return "";
+  const item = findCalendarItem(store, selectedCalendarItemKey);
+  if (!item) return "";
+  const played = endDate(item) < new Date();
+  const teamLabel = item.teamId === "academy" ? "Noctiq Academy" : "Noctiq";
+  const ownPlayers = store.players.filter((player) => player.teamId === item.teamId && !isCoachRole(player));
+  return `
+    <div class="modal-backdrop" data-calendar-close="true">
+      <section class="modal-panel" role="dialog" aria-modal="true">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">${fmtRange(item)}</p>
+            <h2>${teamLabel} VS <span data-opponent-title>TBA</span></h2>
+            <p class="muted">${esc(item.title)} / ${esc(item.type)} / ${teamName(item.teamId)}</p>
+          </div>
+          <button class="icon-button" data-calendar-close="true" title="Close">X</button>
+        </div>
+        <div class="form-grid">
+          <label><span>Opponent</span><input name="resultOpponentDraft" value="" data-opponent-input></label>
+        </div>
+        <div class="lineup-grid">
+          <section class="lineup-panel">
+            <h3>Our lineup</h3>
+            ${[0, 1, 2, 3].map((index) => `
+              <label><span>Player ${index + 1}</span><select name="ourLineup${index}">
+                <option value="">Unknown / empty</option>
+                ${ownPlayers.map((player) => `<option value="${player.id}">${esc(player.rlName || player.name)}</option>`).join("")}
+              </select></label>
+            `).join("")}
+          </section>
+          <section class="lineup-panel">
+            <h3>Opponent lineup</h3>
+            ${[0, 1, 2, 3].map((index) => `
+              <div class="lineup-row">
+                <label><span>Player ${index + 1}</span><input name="opponentLineupName${index}" value=""></label>
+                <label><span>Link</span><input name="opponentLineupLink${index}" type="url" value=""></label>
+              </div>
+            `).join("")}
+          </section>
+        </div>
+        ${!played ? `<p class="warning">Result can be recorded after this event has been played.</p>` : ""}
+        <div class="row-actions modal-actions">
+          ${canRecordResults && played ? `<button class="primary" data-record-result="${resultSourceKey(item)}">Record result</button>` : ""}
+          <button data-calendar-close="true">Close</button>
+        </div>
+      </section>
     </div>
   `;
 }
@@ -717,8 +1087,8 @@ function playerStatsForm(players, item = players[0]) {
   `;
 }
 
-function tryoutForm(item = { id: "", name: "", rlName: "", discord: "", rank: "", previousTeam: "", availability: "", dateTime: "", teamId: "main", opinion: "", stats: emptyStats }) {
-  const fields = [["name", "Name"], ["rlName", "RL name"], ["discord", "Discord"], ["rank", "Rank / MMR"], ["previousTeam", "Previous team"], ["availability", "Availability"], ["dateTime", "Tryout date", "datetime-local"], ["teamId", "Noctiq team", "team"], ["opinion", "Admin/coach opinion", "textarea"]];
+function tryoutForm(item = { id: "", name: "", rlName: "", discord: "", rank: "", previousTeam: "", availability: "", dateTime: "", durationMinutes: "60", teamId: "main", opinion: "", stats: emptyStats }) {
+  const fields = [["name", "Name"], ["rlName", "RL name"], ["discord", "Discord"], ["rank", "Rank / MMR"], ["previousTeam", "Previous team"], ["availability", "Availability"], ["dateTime", "Tryout date", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["teamId", "Noctiq team", "team"], ["opinion", "Admin/coach opinion", "textarea"]];
   const stats = { ...emptyStats, ...(item.stats || {}) };
   return `
     <section class="panel"><h2>Tryout entry</h2>
@@ -732,17 +1102,18 @@ function tryoutForm(item = { id: "", name: "", rlName: "", discord: "", rank: ""
 }
 
 function statSliders(stats) {
-  return `<div class="stat-grid">${statKeys.map((key) => `<label><span>${statLabels[key]}</span><input name="stat-${key}" type="range" min="1" max="10" value="${stats[key]}"><strong>${stats[key]}</strong></label>`).join("")}</div>`;
+  return `<div class="stat-grid">${statKeys.map((key) => `<label><span>${statLabels[key]}</span><input name="stat-${key}" type="range" min="0" max="10" value="${stats[key]}"><strong>${stats[key]}</strong></label>`).join("")}</div>`;
 }
 
-function calendarForm(item = { id: "", title: "", dateTime: "", type: "Meeting", teamId: "main", notes: "" }) {
+function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes: "60", type: "Meeting", teamId: "main", notes: "" }) {
   return `
     <section class="panel"><h2>Calendar event</h2>
       <form class="entity-form" data-entity="events" data-id="${item.id || ""}">
         <div class="form-grid">
           ${field("title", "Title", "text", item.title)}
           ${field("dateTime", "Date and time", "datetime-local", item.dateTime)}
-          ${field("type", "Type", Object.keys(eventColors).filter((type) => !["Scrim", "Tournament", "Tryout"].includes(type)), item.type)}
+          ${field("durationMinutes", "Duration minutes", "number", item.durationMinutes)}
+          ${field("type", "Type", eventTypes, item.type)}
           ${field("teamId", "Noctiq team", "team", item.teamId)}
           ${field("notes", "Notes", "textarea", item.notes)}
         </div>
@@ -788,17 +1159,73 @@ function sortCompare(a, b, key) {
 }
 
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("button");
-  if (!button) return;
   const store = loadStore();
   const activeUser = getUser(store);
+  const calendarChip = event.target.closest("[data-calendar-open]");
+
+  if (event.target.dataset?.calendarClose) {
+    selectedCalendarItemKey = "";
+    render();
+    return;
+  }
+
+  if (calendarChip && !event.target.closest("button")) {
+    selectedCalendarItemKey = calendarChip.dataset.calendarOpen;
+    render();
+    return;
+  }
+
+  const button = event.target.closest("button");
+  if (!button) return;
 
   if (button.dataset.page) {
     currentPage = button.dataset.page;
     render();
   }
 
+  if (button.dataset.calendarClose) {
+    selectedCalendarItemKey = "";
+    render();
+  }
+
+  if (button.dataset.recordResult) {
+    const source = findCalendarItem(store, button.dataset.recordResult);
+    if (!source) return;
+    const opponentInput = document.querySelector('input[name="resultOpponentDraft"]');
+    const ourLineup = [0, 1, 2, 3]
+      .map((index) => {
+        const playerId = document.querySelector(`[name="ourLineup${index}"]`)?.value;
+        const player = store.players.find((item) => item.id === playerId);
+        return player ? { name: player.rlName || player.name, link: player.profileLink || "" } : null;
+      })
+      .filter(Boolean);
+    const opponentLineup = [0, 1, 2, 3]
+      .map((index) => ({
+        name: document.querySelector(`[name="opponentLineupName${index}"]`)?.value || "",
+        link: document.querySelector(`[name="opponentLineupLink${index}"]`)?.value || "",
+      }))
+      .filter((player) => player.name || player.link);
+    resultDraft = {
+      id: "",
+      resultSource: button.dataset.recordResult,
+      type: source.type === "Tournament" ? "Tournament" : "League match",
+      title: source.title,
+      dateTime: source.dateTime,
+      teamId: source.teamId,
+      opponent: opponentInput?.value || "",
+      ourLineup,
+      opponentLineup,
+      placement: "",
+      score: "",
+      notes: "",
+    };
+    selectedCalendarItemKey = "";
+    currentPage = "results";
+    render();
+  }
+
   if (button.dataset.action === "logout") {
+    if (!confirm("Are you sure you want to log out?")) return;
     localStorage.removeItem(sessionKey);
     render();
   }
@@ -813,9 +1240,15 @@ document.addEventListener("click", (event) => {
     render();
   }
 
+  if (button.dataset.calendarTimezone) {
+    calendarTimeZone = button.dataset.calendarTimezone;
+    render();
+  }
+
   if (button.dataset.delete) {
     const [key, id] = button.dataset.delete.split(":");
     if (!canManageEntity(activeUser, key)) return;
+    if (["events", "scrims", "tournaments", "tryouts", "results"].includes(key) && !confirm("Are you sure you want to delete this item?")) return;
     store[key] = store[key].filter((item) => item.id !== id);
     saveStore(store);
     render();
@@ -830,6 +1263,7 @@ document.addEventListener("click", (event) => {
     if (key === "tryouts") formPanel.outerHTML = tryoutForm(item);
     else if (key === "events") formPanel.outerHTML = calendarForm(item);
     else if (key === "players") formPanel.outerHTML = playerForm(item);
+    else if (key === "results") formPanel.outerHTML = resultForm(store, item);
     else formPanel.outerHTML = entityForm(key, schemas[key], item);
   }
 
@@ -844,8 +1278,16 @@ document.addEventListener("click", (event) => {
     render();
   }
 
+  if (button.dataset.routineEdit) {
+    if (!canCreateTrainingRoutine(activeUser)) return;
+    const routine = store.trainingRoutines.find((item) => item.id === button.dataset.routineEdit);
+    const formPanel = document.querySelector(".crud-layout .panel");
+    if (routine && formPanel) formPanel.outerHTML = trainingRoutineForm(routine);
+  }
+
   if (button.dataset.routineDelete) {
     if (!isAdmin(activeUser)) return;
+    if (!confirm("Are you sure you want to delete this training pack?")) return;
     store.trainingRoutines = store.trainingRoutines.filter((item) => item.id !== button.dataset.routineDelete);
     saveStore(store);
     render();
@@ -865,6 +1307,15 @@ document.addEventListener("click", (event) => {
     saveStore(store);
     render();
   }
+
+  if (button.dataset.weekDelete) {
+    if (!canCreateTrainingRoutine(activeUser)) return;
+    for (const week of store.weeks) {
+      week.items = (week.items || []).filter((item) => item.id !== button.dataset.weekDelete);
+    }
+    saveStore(store);
+    render();
+  }
 });
 
 document.addEventListener("submit", (event) => {
@@ -876,7 +1327,8 @@ document.addEventListener("submit", (event) => {
   const key = form.dataset.entity;
   if (key === "player-stats" && !canManagePlayerStats(activeUser)) return;
   if (key === "training-routines" && !canCreateTrainingRoutine(activeUser)) return;
-  if (!["player-stats", "training-routines"].includes(key) && !canManageEntity(activeUser, key)) return;
+  if (key === "week-items" && !canCreateTrainingRoutine(activeUser)) return;
+  if (!["player-stats", "training-routines", "week-items"].includes(key) && !canManageEntity(activeUser, key)) return;
   const entry = Object.fromEntries(new FormData(form));
 
   if (key === "player-stats") {
@@ -890,27 +1342,69 @@ document.addEventListener("submit", (event) => {
   }
 
   if (key === "training-routines") {
-    const customMaps = [0, 1, 2]
-      .map((index) => ({ name: entry[`customMapName${index}`], minutes: entry[`customMapMinutes${index}`] }))
+    const customPacks = [0, 1, 2, 3, 4]
+      .map((index) => ({ name: entry[`customPackName${index}`], minutes: entry[`customPackMinutes${index}`] }))
+      .filter((pack) => pack.name && Number(pack.minutes || 0) > 0);
+    const workshopMaps = [0, 1, 2, 3, 4]
+      .map((index) => ({ name: entry[`workshopMapName${index}`], minutes: entry[`workshopMapMinutes${index}`] }))
       .filter((map) => map.name && Number(map.minutes || 0) > 0);
-    store.trainingRoutines.push({
-      id: uid(),
+    const routine = {
+      id: form.dataset.id || uid(),
       title: entry.title || "Untitled routine",
       creatorId: activeUser.id,
       creatorName: activeUser.name,
-      weeklyDay: entry.weeklyDay,
-      startTime: entry.startTime,
-      totalHours: entry.totalHours,
-      onesMinutes: entry.onesMinutes,
-      twosMinutes: entry.twosMinutes,
-      threesMinutes: entry.threesMinutes,
+      customPackMinutes: entry.customPackMinutes,
+      workshopMapMinutes: entry.workshopMapMinutes,
       freeplayMinutes: entry.freeplayMinutes,
-      customMaps,
-      favorites: [],
-    });
+      customPacks,
+      workshopMaps,
+      favorites: store.trainingRoutines.find((item) => item.id === form.dataset.id)?.favorites || [],
+    };
+    const index = store.trainingRoutines.findIndex((item) => item.id === routine.id);
+    if (index >= 0) store.trainingRoutines[index] = routine;
+    else store.trainingRoutines.push(routine);
     saveStore(store);
     render();
     return;
+  }
+
+  if (key === "week-items") {
+    const playerId = form.dataset.playerId;
+    let week = store.weeks.find((item) => item.playerId === playerId);
+    if (!week) {
+      week = { id: uid(), playerId, title: entry.title || "My week", items: [] };
+      store.weeks.push(week);
+    }
+    week.title = entry.title || week.title || "My week";
+    week.items.push({ id: uid(), day: entry.day, startTime: entry.startTime, endTime: entry.endTime, mode: entry.mode, notes: entry.notes });
+    saveStore(store);
+    render();
+    return;
+  }
+
+  if (key === "results") {
+    const source = completedResultSources(store).find((item) => resultSourceKey(item) === entry.resultSource);
+    if (!source) return;
+    entry.type = source.type === "Tournament" ? "Tournament" : "League match";
+    entry.title = source.title;
+    entry.dateTime = source.dateTime;
+    entry.teamId = source.teamId;
+    entry.source = source.source;
+    entry.sourceId = source.sourceId;
+    entry.tournamentId = source.source === "tournaments" ? source.sourceId : "";
+    entry.ourLineup = [0, 1, 2, 3]
+      .map((index) => ({ name: entry[`ourLineupName${index}`] || "", link: entry[`ourLineupLink${index}`] || "" }))
+      .filter((player) => player.name || player.link);
+    entry.opponentLineup = [0, 1, 2, 3]
+      .map((index) => ({ name: entry[`opponentLineupName${index}`] || "", link: entry[`opponentLineupLink${index}`] || "" }))
+      .filter((player) => player.name || player.link);
+    [0, 1, 2, 3].forEach((index) => {
+      delete entry[`ourLineupName${index}`];
+      delete entry[`ourLineupLink${index}`];
+      delete entry[`opponentLineupName${index}`];
+      delete entry[`opponentLineupLink${index}`];
+    });
+    resultDraft = null;
   }
 
   if (key === "tryouts" || key === "players") {
@@ -941,6 +1435,11 @@ document.addEventListener("input", (event) => {
 
   if (event.target.matches('input[type="range"]')) {
     event.target.nextElementSibling.textContent = event.target.value;
+  }
+
+  if (event.target.matches("[data-opponent-input]")) {
+    const target = document.querySelector("[data-opponent-title]");
+    if (target) target.textContent = event.target.value || "TBA";
   }
 });
 
