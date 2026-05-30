@@ -494,6 +494,10 @@ tbody tr:hover {
   gap: 8px;
 }
 
+.admin-actions {
+  margin-bottom: 14px;
+}
+
 .row-actions button,
 .chip {
   display: inline-flex;

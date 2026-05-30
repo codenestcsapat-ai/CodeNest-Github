@@ -88,39 +88,28 @@ const adminUsers = [];
 const playerStatUsers = [];
 const playerUsers = [];
 const builtInUsers = [...adminUsers, ...playerStatUsers, ...playerUsers];
+const dataKeys = ["players", "tryouts", "scrims", "partners", "tournaments", "results", "events", "trainingRoutines", "weeks"];
+const demoIds = {
+  players: new Set(["p1", "p2"]),
+  tryouts: new Set(["tr1"]),
+  scrims: new Set(["s1", "s2"]),
+  partners: new Set(["sp1", "sp2"]),
+  tournaments: new Set(["t1", "t2"]),
+  events: new Set(["e1", "e2", "e3"]),
+  trainingRoutines: new Set(["r1"]),
+};
 
 // Structured data model: User, Team, Player, Tryout, Scrim, ScrimPartner, Tournament, CalendarEvent.
 const seedStore = {
   users: [],
-  teams,
-  players: [
-    { id: "p1", name: "Milan Kovacs", rlName: "Noctiq.Milo", discord: "milo.rl", teamId: "main", position: "Player", peak1s: "1740", peak2s: "1900", peak3s: "1915", profileLink: "", notes: "Core rotation leader.", stats: { mechanics: 8, rotation: 8, communication: 7, gameSense: 8, consistency: 8, mentality: 8, teamFit: 9 } },
-    { id: "p2", name: "Bence Varga", rlName: "Vargaa", discord: "vargaa", teamId: "academy", position: "Sub", peak1s: "1540", peak2s: "1700", peak3s: "1680", profileLink: "", notes: "Developing mechanics, strong communication.", stats: { mechanics: 7, rotation: 6, communication: 7, gameSense: 6, mentality: 7, teamFit: 7 } },
-  ],
-  tryouts: [
-    { id: "tr1", name: "Adam Toth", rlName: "Axi", discord: "axi_rl", rank: "1800 MMR", previousTeam: "Orbit Mix", availability: "Tuesday, Thursday 19:00", dateTime: "2026-06-02T19:00", durationMinutes: "60", teamId: "academy", opinion: "Confident third man, needs another comms test.", stats: { mechanics: 8, rotation: 7, communication: 6, gameSense: 8, consistency: 7, mentality: 8, teamFit: 7 } },
-  ],
-  scrims: [
-    { id: "s1", dateTime: "2026-05-29T20:00", durationMinutes: "90", opponent: "Velocity Blue", level: "1900+", teamId: "main", notes: "BO7 practice" },
-    { id: "s2", dateTime: "2026-05-30T18:30", durationMinutes: "90", opponent: "Neon Wolves", level: "1800", teamId: "academy", notes: "Rotation focus" },
-  ],
-  partners: [
-    { id: "sp1", name: "Neon Wolves", level: "1800", contact: "wolfcoach", availability: "Tuesdays after 19:00", records: "BO7: 4-3, players: Milo, Vargaa", notes: "Flexible schedule, Tuesdays work well." },
-    { id: "sp2", name: "Velocity Blue", level: "1900+", contact: "vel.blue", availability: "Weekends", records: "BO7: 2-4, players: Main roster", notes: "Strong opponent, ideal for the main team." },
-  ],
-  tournaments: [
-    { id: "t1", name: "RL Central Cup", dateTime: "2026-06-08T19:00", durationMinutes: "180", prizeEur: "500", maxTeams: "32", registeredTeams: "18", link: "https://example.com/rl-central", notes: "Main roster priority.", teamId: "main" },
-    { id: "t2", name: "Academy Open", dateTime: "2026-06-12T18:00", durationMinutes: "180", prizeEur: "150", maxTeams: "24", registeredTeams: "9", link: "", notes: "Good experience builder.", teamId: "academy" },
-  ],
+  players: [],
+  tryouts: [],
+  scrims: [],
+  partners: [],
+  tournaments: [],
   results: [],
-  events: [
-    { id: "e1", title: "Main review meeting", dateTime: "2026-05-29T20:00", durationMinutes: "60", type: "Meeting", teamId: "main", notes: "Post-scrim VOD review." },
-    { id: "e2", title: "Academy free play", dateTime: "2026-05-31T17:00", durationMinutes: "90", type: "Free Play", teamId: "academy", notes: "Optional." },
-    { id: "e3", title: "Main training block", dateTime: "2026-06-03T19:00", durationMinutes: "120", type: "Training", teamId: "main", notes: "Kickoff variations." },
-  ],
-  trainingRoutines: [
-    { id: "r1", title: "Academy mechanics pack", creatorId: "academy-coach", creatorName: "Academy Coach", customPackMinutes: "45", workshopMapMinutes: "80", freeplayMinutes: "45", customPacks: [{ name: "Aerial consistency", minutes: "45" }], workshopMaps: [{ name: "Dribble Challenge 2", minutes: "40" }, { name: "Aim Training by Coco", minutes: "40" }], favorites: [] },
-  ],
+  events: [],
+  trainingRoutines: [],
   weeks: [],
 };
 
@@ -167,22 +156,36 @@ function loadStore() {
   return currentStore || normalizeStore(structuredClone(seedStore));
 }
 
-async function saveStore(store) {
+function stripDemoRows(key, rows = []) {
+  const ids = demoIds[key];
+  return ids ? rows.filter((item) => !ids.has(item.id)) : rows;
+}
+
+function cleanStoreForSave(store) {
   const cleanStore = {
-    ...store,
-    users: store.users.filter((user) => !isBuiltInUser(user)).map(({ password, ...user }) => user),
+    users: (store.users || []).filter((user) => !isBuiltInUser(user)).map(({ password, ...user }) => user),
   };
+  dataKeys.forEach((key) => {
+    const rows = stripDemoRows(key, store[key] || []);
+    if (rows.length) cleanStore[key] = rows;
+  });
+  return cleanStore;
+}
+
+async function saveStore(store) {
+  const cleanStore = cleanStoreForSave(store);
   currentStore = normalizeStore(cleanStore);
   if (storageMode === "remote" && remoteApi && storeRef) {
     try {
-      await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() }, { merge: true });
-      return;
+      await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() });
+      return true;
     } catch (error) {
-      console.warn("Remote save failed, switching to local storage.", error);
-      storageMode = "local";
+      console.error("Remote save failed.", error);
+      throw error;
     }
   }
   localStorage.setItem(storeKey, JSON.stringify(cleanStore));
+  return true;
 }
 
 async function setupFirebase() {
@@ -275,7 +278,7 @@ function normalizeStore(store) {
       const { password, ...safeUser } = user;
       return { ...safeUser, name: safeUser.name || safeUser.username, email: safeUser.email || "", authUid: safeUser.authUid || safeUser.id, role, approved: safeUser.approved !== false, canEdit: role === "Admin" || Boolean(safeUser.canEdit), systemAdmin: false, playerStatsAccess: role === "Coach" || Boolean(safeUser.playerStatsAccess), coachAccess: Boolean(safeUser.coachAccess) };
     });
-  const players = (store.players || []).map((player) => ({
+  const players = stripDemoRows("players", store.players || []).map((player) => ({
     ...player,
     position: normalizePlayerRole(player.position || player.status),
     peak1s: player.peak1s || "",
@@ -285,7 +288,7 @@ function normalizeStore(store) {
     notes: player.notes || "",
     stats: { ...emptyStats, ...(player.stats || {}) },
   }));
-  const trainingRoutines = (store.trainingRoutines || []).map((routine) => ({
+  const trainingRoutines = stripDemoRows("trainingRoutines", store.trainingRoutines || []).map((routine) => ({
     ...routine,
     customPackMinutes: routine.customPackMinutes || routine.onesMinutes || "",
     workshopMapMinutes: routine.workshopMapMinutes || routine.twosMinutes || routine.threesMinutes || "",
@@ -293,13 +296,18 @@ function normalizeStore(store) {
     workshopMaps: routine.workshopMaps || routine.customMaps || [],
     favorites: routine.favorites || [],
   }));
-  const results = (store.results || []).map((result) => ({
+  const results = stripDemoRows("results", store.results || []).map((result) => ({
     ...result,
     type: resultTypes.includes(result.type) ? result.type : "Tournament",
     resultSource: result.resultSource || (result.tournamentId ? `tournaments:${result.tournamentId}` : ""),
   }));
-  const weeks = (store.weeks || []).map((week) => ({ ...week, items: week.items || [] }));
-  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, trainingRoutines, results, weeks };
+  const tryouts = stripDemoRows("tryouts", store.tryouts || []);
+  const scrims = stripDemoRows("scrims", store.scrims || []);
+  const partners = stripDemoRows("partners", store.partners || []);
+  const tournaments = stripDemoRows("tournaments", store.tournaments || []);
+  const events = stripDemoRows("events", store.events || []);
+  const weeks = stripDemoRows("weeks", store.weeks || []).map((week) => ({ ...week, items: week.items || [] }));
+  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, tryouts, scrims, partners, tournaments, results, events, trainingRoutines, weeks };
 }
 
 function uid() {
@@ -380,6 +388,8 @@ function escapeAttr(value = "") {
 
 function authMessage(error) {
   const code = error?.code || "";
+  if (code.includes("permission-denied")) return "Firestore refused the save. Check that firestore.rules is deployed and the user is signed in.";
+  if (code.includes("unavailable")) return "Firestore is unavailable right now. Please try again.";
   if (code.includes("invalid-credential") || code.includes("user-not-found") || code.includes("wrong-password")) return "Invalid username or password.";
   if (code.includes("email-already-in-use")) return "This username is already registered.";
   if (code.includes("weak-password")) return "Password should be at least 6 characters.";
@@ -681,6 +691,7 @@ function renderAuth(store) {
       if (!profile.approved) await authApi.signOut(auth);
     } catch (error) {
       message.textContent = authMessage(error);
+      console.error(error);
     } finally {
       authProfileCreationInProgress = false;
     }
@@ -1221,6 +1232,9 @@ function adminPage(store, user) {
   return `
     <section class="panel wide">
       <h2>Created accounts</h2>
+      <div class="row-actions admin-actions">
+        <button data-admin-clean-store="true">Clean database</button>
+      </div>
       ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Status", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
     </section>
   `;
@@ -1476,6 +1490,13 @@ document.addEventListener("click", (event) => {
     if (!isAdmin(activeUser)) return;
     if (!confirm("Are you sure you want to delete this training pack?")) return;
     store.trainingRoutines = store.trainingRoutines.filter((item) => item.id !== button.dataset.routineDelete);
+    saveStore(store);
+    render();
+  }
+
+  if (button.dataset.adminCleanStore) {
+    if (!isAdmin(activeUser)) return;
+    if (!confirm("Clean template data from Firestore and keep only real saved data?")) return;
     saveStore(store);
     render();
   }
