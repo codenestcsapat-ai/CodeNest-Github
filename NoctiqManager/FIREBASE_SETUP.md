@@ -20,7 +20,7 @@ Helyi inditashoz lasd: `INDITAS.md`.
 3. Kapcsold be az Email/Password provider-t.
 4. Az app feluleten username + password latszik. A username-bol az app belso Firebase Auth email azonositot keszit, igy a jelszot tovabbra is Firebase kezeli.
 5. A regi frontendben tarolt jelszavas accountok mar nem hasznalatosak.
-6. Ures adatbazisnal az elso regisztralt account bootstrap adminkent jon letre. Utana az uj accountok admin jovahagyasra varnak.
+6. Az ujonnan regisztralt accountok automatikusan Player szerepkort kapnak. Admin az Admin oldalon tud kesobb jogosultsagot vagy szerepkort adni.
 
 ## 3. Firestore bekapcsolasa
 

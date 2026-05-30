@@ -5,12 +5,16 @@ let firebaseApp = null;
 let db = null;
 let auth = null;
 let storeRef = null;
+let usersRef = null;
 let remoteApi = null;
 let authApi = null;
 let currentStore = null;
+let currentRemoteData = null;
+let currentRemoteUsers = [];
 let storageMode = "local";
 let currentAuthUser = null;
 let unsubscribeStore = null;
+let unsubscribeUsers = null;
 let authProfileCreationInProgress = false;
 
 let currentPage = "dashboard";
@@ -178,6 +182,14 @@ async function saveStore(store) {
   if (storageMode === "remote" && remoteApi && storeRef) {
     try {
       await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() });
+      if (usersRef) {
+        const userIds = new Set(cleanStore.users.map((user) => user.id));
+        await Promise.all(cleanStore.users.map((user) => remoteApi.setDoc(remoteApi.doc(db, "users", user.id), user)));
+        const existingUsers = await remoteApi.getDocs(usersRef);
+        await Promise.all(existingUsers.docs
+          .filter((docSnap) => !userIds.has(docSnap.id))
+          .map((docSnap) => remoteApi.deleteDoc(remoteApi.doc(db, "users", docSnap.id))));
+      }
       return true;
     } catch (error) {
       console.error("Remote save failed.", error);
@@ -186,6 +198,39 @@ async function saveStore(store) {
   }
   localStorage.setItem(storeKey, JSON.stringify(cleanStore));
   return true;
+}
+
+async function persistStore(store) {
+  try {
+    await saveStore(store);
+    render();
+    return true;
+  } catch (error) {
+    console.error(error);
+    alert(authMessage(error));
+    return false;
+  }
+}
+
+async function saveUserProfile(profile) {
+  if (storageMode !== "remote" || !remoteApi || !db) return;
+  try {
+    const profileRef = remoteApi.doc(db, "users", profile.id);
+    await remoteApi.setDoc(profileRef, profile);
+    const savedProfile = await remoteApi.getDoc(profileRef);
+    if (!savedProfile.exists()) throw new Error(`Firestore user profile was not created: users/${profile.id}`);
+    console.info(`Saved user profile to Firestore: users/${profile.id}`);
+  } catch (error) {
+    console.error("User profile save failed.", error);
+    throw error;
+  }
+}
+
+function applyRemoteStore() {
+  const baseStore = currentRemoteData || structuredClone(seedStore);
+  const users = currentRemoteUsers.length ? currentRemoteUsers : (baseStore.users || []);
+  currentStore = normalizeStore({ ...baseStore, users });
+  render();
 }
 
 async function setupFirebase() {
@@ -202,6 +247,7 @@ async function setupFirebase() {
     db = firebaseFirestoreModule.getFirestore(firebaseApp);
     auth = firebaseAuthModule.getAuth(firebaseApp);
     storeRef = firebaseFirestoreModule.doc(db, "noctiqManager", "main");
+    usersRef = firebaseFirestoreModule.collection(db, "users");
     remoteApi = firebaseFirestoreModule;
     authApi = firebaseAuthModule;
     return true;
@@ -238,24 +284,32 @@ async function initRemoteStore() {
         unsubscribeStore();
         unsubscribeStore = null;
       }
+      if (unsubscribeUsers) {
+        unsubscribeUsers();
+        unsubscribeUsers = null;
+      }
       if (!firebaseUser) {
         localStorage.removeItem(sessionKey);
+        currentRemoteData = null;
+        currentRemoteUsers = [];
         currentStore = normalizeStore(structuredClone(seedStore));
         render();
         return;
       }
       localStorage.setItem(sessionKey, firebaseUser.uid);
       try {
-        const firstSnapshot = await remoteApi.getDoc(storeRef);
-        if (!firstSnapshot.exists()) {
-          await saveStore(structuredClone(seedStore));
-        }
         unsubscribeStore = remoteApi.onSnapshot(storeRef, (snapshot) => {
-          currentStore = normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
-          render();
+          currentRemoteData = snapshot.exists() ? snapshot.data() : structuredClone(seedStore);
+          applyRemoteStore();
         }, (error) => {
           console.error(error);
           initLocalStore();
+        });
+        unsubscribeUsers = remoteApi.onSnapshot(usersRef, (snapshot) => {
+          currentRemoteUsers = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+          applyRemoteStore();
+        }, (error) => {
+          console.error(error);
         });
       } catch (error) {
         console.error(error);
@@ -363,10 +417,6 @@ function roleSelect(user) {
   </select>`;
 }
 
-function accountStatusButton(user) {
-  return `<button class="chip ${user.approved ? "" : "ok"}" data-user-approved="${user.id}">${user.approved ? "Deactivate" : "Approve"}</button>`;
-}
-
 function accountAccessControls(user) {
   const coachChecked = user.coachAccess || user.role === "Coach" ? "checked" : "";
   const statsChecked = user.playerStatsAccess || user.role === "Coach" ? "checked" : "";
@@ -407,8 +457,6 @@ function authEmailFromUsername(username = "") {
 }
 
 function authProfile(user, store, name = "", username = "") {
-  const existingUsers = (store.users || []).filter((item) => !isBuiltInUser(item));
-  const bootstrapAdmin = existingUsers.length === 0;
   const displayUsername = normalizeUsername(username || user.displayName || user.email?.split("@")[0] || "");
   return {
     id: user.uid,
@@ -416,9 +464,9 @@ function authProfile(user, store, name = "", username = "") {
     name: name || displayUsername || user.displayName || user.email,
     username: displayUsername,
     email: user.email,
-    role: bootstrapAdmin ? "Admin" : "Player",
-    approved: bootstrapAdmin,
-    canEdit: bootstrapAdmin,
+    role: "Player",
+    approved: true,
+    canEdit: false,
     playerStatsAccess: false,
     coachAccess: false,
     createdAt: new Date().toISOString(),
@@ -428,7 +476,10 @@ function authProfile(user, store, name = "", username = "") {
 async function loadWritableStore() {
   if (storageMode === "remote" && remoteApi && storeRef && (currentAuthUser || auth?.currentUser)) {
     const snapshot = await remoteApi.getDoc(storeRef);
-    return normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
+    const userSnapshot = usersRef ? await remoteApi.getDocs(usersRef) : null;
+    const users = userSnapshot ? userSnapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })) : [];
+    const data = snapshot.exists() ? snapshot.data() : structuredClone(seedStore);
+    return normalizeStore({ ...data, users: users.length ? users : (data.users || []) });
   }
   return loadStore();
 }
@@ -511,16 +562,10 @@ function render() {
   const user = getUser(store);
   if (!user && currentAuthUser && storageMode === "remote" && !authProfileCreationInProgress) {
     store.users.push(authProfile(currentAuthUser, store));
-    saveStore(store);
+    persistStore(store);
     return;
   }
   if (!user) {
-    renderAuth(store);
-    return;
-  }
-  if (!user.approved) {
-    localStorage.removeItem(sessionKey);
-    if (authApi && auth) authApi.signOut(auth);
     renderAuth(store);
     return;
   }
@@ -596,7 +641,7 @@ function renderAuth(store) {
           <button data-auth-mode="register">Register</button>
         </div>
         <form id="auth-form" data-mode="login" class="form-grid">
-          <label class="auth-name hidden"><span>Name</span><input name="name" /></label>
+          <label class="auth-name hidden"><span>Name</span><input name="name" autocomplete="name" /></label>
           <label><span>Username</span><input name="username" value="" autocomplete="username" required /></label>
           <label>
             <span>Password</span>
@@ -660,10 +705,7 @@ function renderAuth(store) {
         const credential = await authApi.signInWithEmailAndPassword(auth, authEmail, data.password);
         const freshStore = await loadWritableStore();
         const user = freshStore.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
-        if (user && !user.approved) {
-          await authApi.signOut(auth);
-          message.textContent = "This account is still waiting for admin approval.";
-        }
+        if (!user) console.warn("Firebase Auth login succeeded, but no app profile was found yet.");
       } catch (error) {
         message.textContent = authMessage(error);
       }
@@ -684,11 +726,11 @@ function renderAuth(store) {
         return;
       }
       const profile = authProfile(credential.user, writableStore, data.name, username);
+      await saveUserProfile(profile);
       writableStore.users.push(profile);
       await saveStore(writableStore);
       message.className = "success";
-      message.textContent = profile.approved ? "Admin account created. You can continue." : "Registration sent. An admin has to approve the account before login.";
-      if (!profile.approved) await authApi.signOut(auth);
+      message.textContent = "Account created. You can continue with Player access.";
     } catch (error) {
       message.textContent = authMessage(error);
       console.error(error);
@@ -1225,7 +1267,6 @@ function adminPage(store, user) {
     permissionLabel(item),
     roleSelect(item),
     accountAccessControls(item),
-    accountStatusButton(item),
     item.createdAt ? new Date(item.createdAt).toLocaleDateString("en-US") : "-",
     `<button data-user-delete="${item.id}">Delete</button>`,
   ]);
@@ -1235,7 +1276,7 @@ function adminPage(store, user) {
       <div class="row-actions admin-actions">
         <button data-admin-clean-store="true">Clean database</button>
       </div>
-      ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Status", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
+      ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
     </section>
   `;
 }
@@ -1364,7 +1405,7 @@ function sortCompare(a, b, key) {
   return String(a[key] || "").localeCompare(String(b[key] || ""));
 }
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", async (event) => {
   const store = loadStore();
   const activeUser = getUser(store);
   const calendarChip = event.target.closest("[data-calendar-open]");
@@ -1397,8 +1438,7 @@ document.addEventListener("click", (event) => {
   if (button.dataset.calendarSaveLineup) {
     if (!canManageEntity(activeUser, "results")) return;
     if (!saveCalendarLineup(store, button.dataset.calendarSaveLineup)) return;
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.recordResult) {
@@ -1406,7 +1446,7 @@ document.addEventListener("click", (event) => {
     const source = findCalendarItem(store, button.dataset.recordResult);
     if (!source) return;
     const lineupDraft = saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
-    saveStore(store);
+    if (!(await persistStore(store))) return;
     resultDraft = {
       id: "",
       resultSource: button.dataset.recordResult,
@@ -1451,8 +1491,7 @@ document.addEventListener("click", (event) => {
     if (!canManageEntity(activeUser, key)) return;
     if (["events", "scrims", "tournaments", "tryouts", "results"].includes(key) && !confirm("Are you sure you want to delete this item?")) return;
     store[key] = store[key].filter((item) => item.id !== id);
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.edit) {
@@ -1475,8 +1514,7 @@ document.addEventListener("click", (event) => {
     routine.favorites = routine.favorites || [];
     if (routine.favorites.includes(activeUser.id)) routine.favorites = routine.favorites.filter((id) => id !== activeUser.id);
     else routine.favorites.push(activeUser.id);
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.routineEdit) {
@@ -1490,25 +1528,13 @@ document.addEventListener("click", (event) => {
     if (!isAdmin(activeUser)) return;
     if (!confirm("Are you sure you want to delete this training pack?")) return;
     store.trainingRoutines = store.trainingRoutines.filter((item) => item.id !== button.dataset.routineDelete);
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.adminCleanStore) {
     if (!isAdmin(activeUser)) return;
     if (!confirm("Clean template data from Firestore and keep only real saved data?")) return;
-    saveStore(store);
-    render();
-  }
-
-  if (button.dataset.userApproved) {
-    if (!isAdmin(activeUser)) return;
-    const user = store.users.find((item) => item.id === button.dataset.userApproved);
-    if (!user || isBuiltInUser(user)) return;
-    user.approved = !user.approved;
-    if (!user.approved && localStorage.getItem(sessionKey) === user.id) localStorage.removeItem(sessionKey);
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.userDelete) {
@@ -1518,8 +1544,7 @@ document.addEventListener("click", (event) => {
     if (!confirm(`Are you sure you want to delete ${user.username}?`)) return;
     store.users = store.users.filter((item) => item.id !== button.dataset.userDelete);
     if (localStorage.getItem(sessionKey) === button.dataset.userDelete) localStorage.removeItem(sessionKey);
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (button.dataset.weekDelete) {
@@ -1527,12 +1552,11 @@ document.addEventListener("click", (event) => {
     for (const week of store.weeks) {
       week.items = (week.items || []).filter((item) => item.id !== button.dataset.weekDelete);
     }
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 });
 
-document.addEventListener("submit", (event) => {
+document.addEventListener("submit", async (event) => {
   if (!event.target.matches(".entity-form")) return;
   event.preventDefault();
   const store = loadStore();
@@ -1550,8 +1574,7 @@ document.addEventListener("submit", (event) => {
     if (!player) return;
     player.stats = Object.fromEntries(statKeys.map((stat) => [stat, Number(entry[`stat-${stat}`] || 5)]));
     player.notes = entry.notes || "";
-    saveStore(store);
-    render();
+    await persistStore(store);
     return;
   }
 
@@ -1577,8 +1600,7 @@ document.addEventListener("submit", (event) => {
     const index = store.trainingRoutines.findIndex((item) => item.id === routine.id);
     if (index >= 0) store.trainingRoutines[index] = routine;
     else store.trainingRoutines.push(routine);
-    saveStore(store);
-    render();
+    await persistStore(store);
     return;
   }
 
@@ -1591,8 +1613,7 @@ document.addEventListener("submit", (event) => {
     }
     week.title = entry.title || week.title || "My week";
     week.items.push({ id: uid(), day: entry.day, startTime: entry.startTime, endTime: entry.endTime, mode: entry.mode, notes: entry.notes });
-    saveStore(store);
-    render();
+    await persistStore(store);
     return;
   }
 
@@ -1618,8 +1639,7 @@ document.addEventListener("submit", (event) => {
   const index = store[key].findIndex((item) => item.id === entry.id);
   if (index >= 0) store[key][index] = entry;
   else store[key].push(entry);
-  saveStore(store);
-  render();
+  await persistStore(store);
 });
 
 document.addEventListener("input", (event) => {
@@ -1645,7 +1665,7 @@ document.addEventListener("input", (event) => {
   }
 });
 
-document.addEventListener("change", (event) => {
+document.addEventListener("change", async (event) => {
   const store = loadStore();
   const activeUser = getUser(store);
 
@@ -1666,8 +1686,7 @@ document.addEventListener("change", (event) => {
       user.coachAccess = true;
       user.playerStatsAccess = true;
     }
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (event.target.matches("[data-user-coach-access]")) {
@@ -1675,8 +1694,7 @@ document.addEventListener("change", (event) => {
     const user = store.users.find((item) => item.id === event.target.dataset.userCoachAccess);
     if (!user || isBuiltInUser(user)) return;
     user.coachAccess = event.target.checked;
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (event.target.matches("[data-user-stats-access]")) {
@@ -1684,8 +1702,7 @@ document.addEventListener("change", (event) => {
     const user = store.users.find((item) => item.id === event.target.dataset.userStatsAccess);
     if (!user || isBuiltInUser(user)) return;
     user.playerStatsAccess = event.target.checked;
-    saveStore(store);
-    render();
+    await persistStore(store);
   }
 
   if (event.target.matches("[data-player-stat-select]")) {
