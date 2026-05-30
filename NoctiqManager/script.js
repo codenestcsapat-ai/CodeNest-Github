@@ -249,7 +249,10 @@ function normalizeStore(store) {
   const storedUsers = (store.users || [])
     .map((user) => ({ ...user, username: user.username || user.email || user.name || "" }))
     .filter((user) => !builtInUsers.some((builtInUser) => builtInUser.username.toLowerCase() === user.username.toLowerCase()))
-    .map((user) => ({ ...user, name: user.name || user.username, role: user.role === "Viewer" ? "Player" : (user.role || "Player"), approved: true, canEdit: false, systemAdmin: false, playerStatsAccess: Boolean(user.playerStatsAccess), coachAccess: user.role === "Coach" || Boolean(user.coachAccess) }));
+    .map((user) => {
+      const role = user.role === "Viewer" ? "Player" : (user.role || "Player");
+      return { ...user, name: user.name || user.username, role, approved: user.approved !== false, canEdit: role === "Admin" || Boolean(user.canEdit), systemAdmin: false, playerStatsAccess: role === "Coach" || Boolean(user.playerStatsAccess), coachAccess: Boolean(user.coachAccess) };
+    });
   const players = (store.players || []).map((player) => ({
     ...player,
     position: normalizePlayerRole(player.position || player.status),
@@ -286,7 +289,7 @@ function getUser(store) {
 }
 
 function isAdmin(user) {
-  return Boolean(user?.systemAdmin || adminUsers.some((admin) => admin.id === user?.id));
+  return Boolean(user?.systemAdmin || user?.role === "Admin" || adminUsers.some((admin) => admin.id === user?.id));
 }
 
 function isBuiltInUser(user) {
@@ -298,11 +301,11 @@ function canEdit(user) {
 }
 
 function isCoach(user) {
-  return Boolean(user?.coachAccess || user?.role === "Coach" || user?.playerStatsAccess);
+  return Boolean(user?.coachAccess || user?.role === "Coach");
 }
 
 function canManagePlayerStats(user) {
-  return isAdmin(user) || isCoach(user);
+  return isAdmin(user) || isCoach(user) || Boolean(user?.playerStatsAccess);
 }
 
 function canManageEntity(user, key) {
@@ -315,9 +318,32 @@ function canCreateTrainingRoutine(user) {
 }
 
 function permissionLabel(user) {
-  if (isAdmin(user)) return "Built-in admin";
+  if (isBuiltInUser(user) && isAdmin(user)) return "Built-in admin";
+  if (isAdmin(user)) return "Admin";
   if (isCoach(user)) return "Coach";
+  if (user?.playerStatsAccess) return "Player stats";
   return "Player";
+}
+
+function roleSelect(user) {
+  return `<select data-user-role="${user.id}">
+    ${["Player", "Coach", "Admin"].map((role) => `<option value="${role}" ${user.role === role ? "selected" : ""}>${role}</option>`).join("")}
+  </select>`;
+}
+
+function accountStatusButton(user) {
+  return `<button class="chip ${user.approved ? "" : "ok"}" data-user-approved="${user.id}">${user.approved ? "Deactivate" : "Approve"}</button>`;
+}
+
+function accountAccessControls(user) {
+  const coachChecked = user.coachAccess || user.role === "Coach" ? "checked" : "";
+  const statsChecked = user.playerStatsAccess || user.role === "Coach" ? "checked" : "";
+  return `
+    <div class="checkbox-stack">
+      <label><input type="checkbox" data-user-coach-access="${user.id}" ${coachChecked}> Coach tools</label>
+      <label><input type="checkbox" data-user-stats-access="${user.id}" ${statsChecked}> Player stats</label>
+    </div>
+  `;
 }
 
 function esc(value = "") {
@@ -342,6 +368,22 @@ function endDate(item) {
   const date = new Date(item.dateTime);
   date.setMinutes(date.getMinutes() + Number(item.durationMinutes || 0));
   return date;
+}
+
+function eventsOverlap(a, b) {
+  if (!a.dateTime || !b.dateTime || a.teamId !== b.teamId) return false;
+  const aStart = new Date(a.dateTime);
+  const bStart = new Date(b.dateTime);
+  const aDuration = Number(a.durationMinutes || 0);
+  const bDuration = Number(b.durationMinutes || 0);
+  if (!aDuration || !bDuration) return aStart.getTime() === bStart.getTime();
+  return aStart < endDate(b) && bStart < endDate(a);
+}
+
+function conflictKeys(events) {
+  return new Set(events
+    .filter((item) => events.some((other) => resultSourceKey(other) !== resultSourceKey(item) && eventsOverlap(item, other)))
+    .map((item) => resultSourceKey(item)));
 }
 
 function fmtRange(item) {
@@ -379,9 +421,9 @@ function multiline(value = "") {
 
 function allCalendarItems(store) {
   const events = store.events.map((item) => ({ ...item, source: "events", sourceId: item.id }));
-  const scrims = store.scrims.map((item) => ({ id: `scrim-${item.id}`, sourceId: item.id, title: `Scrim vs ${item.opponent || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Scrim", teamId: item.teamId, notes: item.notes, source: "scrims" }));
-  const tournaments = store.tournaments.map((item) => ({ id: `tournament-${item.id}`, sourceId: item.id, title: item.name || "Tournament", dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tournament", teamId: item.teamId, notes: item.notes, source: "tournaments" }));
-  const tryouts = store.tryouts.map((item) => ({ id: `tryout-${item.id}`, sourceId: item.id, title: `Tryout: ${item.rlName || item.name || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tryout", teamId: item.teamId, notes: item.opinion, source: "tryouts" }));
+  const scrims = store.scrims.map((item) => ({ id: `scrim-${item.id}`, sourceId: item.id, title: `Scrim vs ${item.opponent || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Scrim", teamId: item.teamId, notes: item.notes, opponent: item.opponent, lineupOpponent: item.lineupOpponent, ourLineup: item.ourLineup || [], opponentLineup: item.opponentLineup || [], source: "scrims" }));
+  const tournaments = store.tournaments.map((item) => ({ id: `tournament-${item.id}`, sourceId: item.id, title: item.name || "Tournament", dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tournament", teamId: item.teamId, notes: item.notes, lineupOpponent: item.lineupOpponent, ourLineup: item.ourLineup || [], opponentLineup: item.opponentLineup || [], source: "tournaments" }));
+  const tryouts = store.tryouts.map((item) => ({ id: `tryout-${item.id}`, sourceId: item.id, title: `Tryout: ${item.rlName || item.name || "TBA"}`, dateTime: item.dateTime, durationMinutes: item.durationMinutes, type: "Tryout", teamId: item.teamId, notes: item.opinion, lineupOpponent: item.lineupOpponent, ourLineup: item.ourLineup || [], opponentLineup: item.opponentLineup || [], source: "tryouts" }));
   return [...events, ...scrims, ...tournaments, ...tryouts].filter((item) => item.dateTime).sort((a, b) => a.dateTime.localeCompare(b.dateTime));
 }
 
@@ -392,6 +434,12 @@ function render() {
     renderAuth(store);
     return;
   }
+  if (!user.approved) {
+    localStorage.removeItem(sessionKey);
+    renderAuth(store);
+    return;
+  }
+  if (currentPage === "admin" && !isAdmin(user)) currentPage = "dashboard";
 
   app.innerHTML = `
     <div class="app-shell">
@@ -524,10 +572,10 @@ function renderAuth(store) {
       message.textContent = "This username is already registered.";
       return;
     }
-    store.users.push({ id: uid(), name: data.name || data.username, username: data.username, password: data.password, role: "Player", approved: true, canEdit: false, createdAt: new Date().toISOString() });
+    store.users.push({ id: uid(), name: data.name || data.username, username: data.username, password: data.password, role: "Player", approved: false, canEdit: false, playerStatsAccess: false, coachAccess: false, createdAt: new Date().toISOString() });
     saveStore(store);
     message.className = "success";
-    message.textContent = "Registration complete. You can log in with player read-only access.";
+    message.textContent = "Registration sent. An admin has to approve the account before login.";
   });
 }
 
@@ -664,7 +712,7 @@ function resultsPage(store, editable) {
 function filteredResults(store) {
   const f = filters.results || {};
   return [...(store.results || [])]
-    .filter((item) => !f.query || `${item.title} ${item.opponent} ${item.score} ${item.placement} ${item.notes} ${lineupText(item.ourLineup)} ${lineupText(item.opponentLineup)}`.toLowerCase().includes(f.query.toLowerCase()))
+    .filter((item) => !f.query || `${item.title} ${item.opponent} ${item.score} ${item.placement} ${item.notes}`.toLowerCase().includes(f.query.toLowerCase()))
     .filter((item) => !f.team || f.team === "all" || item.teamId === f.team)
     .sort((a, b) => (f.sort || "dateTime") === "dateTime" ? String(b.dateTime || "").localeCompare(String(a.dateTime || "")) : sortCompare(a, b, f.sort || "title"));
 }
@@ -691,26 +739,15 @@ function resultGroup(title, rows, editable) {
 
 function resultTable(rows, editable) {
   if (!rows.length) return `<p class="muted">No results yet.</p>`;
-  return table(["Date", "Event", "Opponent", "Lineups", "Placement", "Score / result", "Notes"], rows.map((item) => [
+  return table(["Date", "Event", "Opponent", "Placement", "Score / result", "Notes"], rows.map((item) => [
     fmt(item.dateTime),
     item.title,
     item.opponent || "-",
-    resultLineups(item),
     item.placement || "-",
     item.score || "-",
     item.notes || "",
     rowActions(editable, "results", item.id),
   ]));
-}
-
-function lineupText(lineup = []) {
-  return lineup.map((item) => `${item.name || ""} ${item.link || ""}`).join(" ");
-}
-
-function resultLineups(item) {
-  const ourLineup = (item.ourLineup || []).map((player) => player.link ? `<a href="${escapeAttr(player.link)}" target="_blank" rel="noreferrer">${esc(player.name)}</a>` : esc(player.name)).join("<br>");
-  const opponentLineup = (item.opponentLineup || []).map((player) => player.link ? `<a href="${escapeAttr(player.link)}" target="_blank" rel="noreferrer">${esc(player.name)}</a>` : esc(player.name)).join("<br>");
-  return `<div class="stacked-cell"><strong>Us</strong>${ourLineup || "-"}<strong>Them</strong>${opponentLineup || "-"}</div>`;
 }
 
 function completedResultSources(store) {
@@ -727,7 +764,55 @@ function findCalendarItem(store, key) {
   return allCalendarItems(store).find((item) => resultSourceKey(item) === key);
 }
 
-function resultForm(store, item = { id: "", resultSource: "", type: "Tournament", title: "", dateTime: "", teamId: "main", opponent: "", placement: "", score: "", notes: "", ourLineup: [], opponentLineup: [] }) {
+function findCalendarSource(store, key) {
+  const [source, sourceId] = key.split(":");
+  if (!store[source]) return null;
+  return store[source].find((item) => item.id === sourceId) || null;
+}
+
+function selectedOurLineupOption(savedLineup, player) {
+  return savedLineup.some((item) => item.id === player.id || item.name === player.rlName || item.name === player.name);
+}
+
+function ourLineupOptions(savedPlayer, ownPlayers) {
+  const saved = savedPlayer ? [savedPlayer] : [];
+  const hasSavedPlayer = savedPlayer && ownPlayers.some((player) => selectedOurLineupOption(saved, player));
+  return `
+    <option value="">Unknown / empty</option>
+    ${savedPlayer && !hasSavedPlayer ? `<option value="" selected disabled>${esc(savedPlayer.name || "Saved player")}</option>` : ""}
+    ${ownPlayers.map((player) => `<option value="${player.id}" ${selectedOurLineupOption(saved, player) ? "selected" : ""}>${esc(player.rlName || player.name)}</option>`).join("")}
+  `;
+}
+
+function collectLineupDraft(store) {
+  const opponentInput = document.querySelector('input[name="resultOpponentDraft"]');
+  const ourLineup = [0, 1, 2, 3]
+    .map((index) => {
+      const playerId = document.querySelector(`[name="ourLineup${index}"]`)?.value;
+      const player = store.players.find((item) => item.id === playerId);
+      return player ? { id: player.id, name: player.rlName || player.name, link: player.profileLink || "" } : null;
+    })
+    .filter(Boolean);
+  const opponentLineup = [0, 1, 2, 3]
+    .map((index) => ({
+      name: document.querySelector(`[name="opponentLineupName${index}"]`)?.value || "",
+      link: document.querySelector(`[name="opponentLineupLink${index}"]`)?.value || "",
+    }))
+    .filter((player) => player.name || player.link);
+  return { lineupOpponent: opponentInput?.value || "", ourLineup, opponentLineup };
+}
+
+function saveCalendarLineup(store, key) {
+  const source = findCalendarSource(store, key);
+  if (!source) return null;
+  const draft = collectLineupDraft(store);
+  source.lineupOpponent = draft.lineupOpponent;
+  source.ourLineup = draft.ourLineup;
+  source.opponentLineup = draft.opponentLineup;
+  return draft;
+}
+
+function resultForm(store, item = { id: "", resultSource: "", type: "Tournament", title: "", dateTime: "", teamId: "main", opponent: "", placement: "", score: "", notes: "" }) {
   const sources = completedResultSources(store);
   return `
     <section class="panel"><h2>${item.id ? "Edit result" : "New result"}</h2>
@@ -739,17 +824,9 @@ function resultForm(store, item = { id: "", resultSource: "", type: "Tournament"
           ${field("score", "Score / result", "text", item.score)}
           ${field("notes", "Notes", "textarea", item.notes)}
         </div>
-        ${lineupHiddenInputs(item)}
         <button class="primary">Save result</button>
       </form>
     </section>
-  `;
-}
-
-function lineupHiddenInputs(item) {
-  return `
-    ${(item.ourLineup || []).map((player, index) => `<input type="hidden" name="ourLineupName${index}" value="${escapeAttr(player.name || "")}"><input type="hidden" name="ourLineupLink${index}" value="${escapeAttr(player.link || "")}">`).join("")}
-    ${(item.opponentLineup || []).map((player, index) => `<input type="hidden" name="opponentLineupName${index}" value="${escapeAttr(player.name || "")}"><input type="hidden" name="opponentLineupLink${index}" value="${escapeAttr(player.link || "")}">`).join("")}
   `;
 }
 
@@ -900,7 +977,7 @@ function calendarPage(store, editable, canRecordResults) {
     .filter((item) => !f.query || `${item.title} ${item.notes}`.toLowerCase().includes(f.query.toLowerCase()))
     .filter((item) => !f.team || f.team === "all" || item.teamId === f.team)
     .filter((item) => !f.type || f.type === "all" || item.type === f.type);
-  const conflicts = new Set(events.filter((item) => events.filter((other) => other.dateTime === item.dateTime).length > 1).map((item) => item.dateTime));
+  const conflicts = conflictKeys(events);
   const monthStart = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
   const monthLabel = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long" }).format(monthStart);
   return `
@@ -941,7 +1018,7 @@ function monthGrid(events, conflicts, monthStart, editable) {
       <div class="calendar-cell ${inMonth ? "" : "muted-cell"} ${today ? "today-cell" : ""}">
         <div class="day-number">${date.getDate()}</div>
         <div class="day-events">
-          ${dayEvents.map((item) => calendarChip(item, conflicts.has(item.dateTime), editable)).join("")}
+          ${dayEvents.map((item) => calendarChip(item, conflicts.has(resultSourceKey(item)), editable)).join("")}
         </div>
       </div>
     `;
@@ -955,7 +1032,7 @@ function calendarChip(item, conflict, editable) {
   const end = duration ? `-${fmtTime(endDate(item).toISOString())}` : "";
   return `
     <div class="calendar-chip ${conflict ? "conflict-chip" : ""}" style="border-left-color:${eventColors[item.type]}" data-calendar-open="${resultSourceKey(item)}">
-      <div class="chip-main"><strong>${time}${end}</strong><span>${esc(item.title)}</span></div>
+      <div class="chip-main"><strong>${time}${end}</strong><span title="${escapeAttr(item.title)}">${esc(item.title)}</span></div>
       <small>${item.type} / ${teamName(item.teamId)}</small>
       ${editable ? `<div class="chip-actions"><button data-edit="${item.source}:${item.sourceId}">Edit</button><button data-delete="${item.source}:${item.sourceId}">Delete</button></div>` : ""}
     </div>
@@ -969,27 +1046,29 @@ function calendarEventDialog(store, canRecordResults) {
   const played = endDate(item) < new Date();
   const teamLabel = item.teamId === "academy" ? "Noctiq Academy" : "Noctiq";
   const ownPlayers = store.players.filter((player) => player.teamId === item.teamId && !isCoachRole(player));
+  const savedOurLineup = item.ourLineup || [];
+  const savedOpponentLineup = item.opponentLineup || [];
+  const opponentName = item.lineupOpponent || item.opponent || "";
   return `
     <div class="modal-backdrop" data-calendar-close="true">
       <section class="modal-panel" role="dialog" aria-modal="true">
         <div class="modal-head">
           <div>
             <p class="eyebrow">${fmtRange(item)}</p>
-            <h2>${teamLabel} VS <span data-opponent-title>TBA</span></h2>
+            <h2>${teamLabel} VS <span data-opponent-title>${esc(opponentName || "TBA")}</span></h2>
             <p class="muted">${esc(item.title)} / ${esc(item.type)} / ${teamName(item.teamId)}</p>
           </div>
           <button class="icon-button" data-calendar-close="true" title="Close">X</button>
         </div>
         <div class="form-grid">
-          <label><span>Opponent</span><input name="resultOpponentDraft" value="" data-opponent-input></label>
+          <label><span>Opponent</span><input name="resultOpponentDraft" value="${escapeAttr(opponentName)}" data-opponent-input></label>
         </div>
         <div class="lineup-grid">
           <section class="lineup-panel">
             <h3>Our lineup</h3>
             ${[0, 1, 2, 3].map((index) => `
               <label><span>Player ${index + 1}</span><select name="ourLineup${index}">
-                <option value="">Unknown / empty</option>
-                ${ownPlayers.map((player) => `<option value="${player.id}">${esc(player.rlName || player.name)}</option>`).join("")}
+                ${ourLineupOptions(savedOurLineup[index], ownPlayers)}
               </select></label>
             `).join("")}
           </section>
@@ -997,14 +1076,15 @@ function calendarEventDialog(store, canRecordResults) {
             <h3>Opponent lineup</h3>
             ${[0, 1, 2, 3].map((index) => `
               <div class="lineup-row">
-                <label><span>Player ${index + 1}</span><input name="opponentLineupName${index}" value=""></label>
-                <label><span>Link</span><input name="opponentLineupLink${index}" type="url" value=""></label>
+                <label><span>Player ${index + 1}</span><input name="opponentLineupName${index}" value="${escapeAttr(savedOpponentLineup[index]?.name || "")}"></label>
+                <label><span>Link</span><input name="opponentLineupLink${index}" type="url" value="${escapeAttr(savedOpponentLineup[index]?.link || "")}"></label>
               </div>
             `).join("")}
           </section>
         </div>
         ${!played ? `<p class="warning">Result can be recorded after this event has been played.</p>` : ""}
         <div class="row-actions modal-actions">
+          ${canRecordResults ? `<button class="primary" data-calendar-save-lineup="${resultSourceKey(item)}">Save lineup</button>` : ""}
           ${canRecordResults && played ? `<button class="primary" data-record-result="${resultSourceKey(item)}">Record result</button>` : ""}
           <button data-calendar-close="true">Close</button>
         </div>
@@ -1019,16 +1099,31 @@ function sameDay(a, b) {
 
 function adminPage(store, user) {
   if (!isAdmin(user)) return `<section class="panel"><h2>Admin</h2><p class="warning">Admin access is required for this page.</p></section>`;
+  const createdUsers = store.users.filter((item) => !isBuiltInUser(item));
+  const userRows = createdUsers.map((item) => [
+    esc(item.name),
+    esc(item.username),
+    permissionLabel(item),
+    roleSelect(item),
+    accountAccessControls(item),
+    accountStatusButton(item),
+    item.createdAt ? new Date(item.createdAt).toLocaleDateString("en-US") : "-",
+    `<button data-user-delete="${item.id}">Delete</button>`,
+  ]);
   return `
     <section class="panel wide">
-      <h2>Users</h2>
-      ${table(["Name", "Username", "Permission", "Status", "Created"], store.users.map((item) => [
-        item.name,
-        item.username,
+      <h2>Created accounts</h2>
+      ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Status", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
+    </section>
+    <section class="panel wide">
+      <h2>Built-in admins</h2>
+      ${table(["Name", "Username", "Permission", "Status", "Created"], adminUsers.map((item) => [
+        esc(item.name),
+        esc(item.username),
         permissionLabel(item),
-        item.approved ? "Active" : "Pending",
+        "Active",
         new Date(item.createdAt).toLocaleDateString("en-US"),
-        !isBuiltInUser(item) ? `<button data-user-delete="${item.id}">Delete</button>` : "-",
+        "-",
       ]))}
     </section>
   `;
@@ -1188,23 +1283,19 @@ document.addEventListener("click", (event) => {
     render();
   }
 
+  if (button.dataset.calendarSaveLineup) {
+    if (!canManageEntity(activeUser, "results")) return;
+    if (!saveCalendarLineup(store, button.dataset.calendarSaveLineup)) return;
+    saveStore(store);
+    render();
+  }
+
   if (button.dataset.recordResult) {
+    if (!canManageEntity(activeUser, "results")) return;
     const source = findCalendarItem(store, button.dataset.recordResult);
     if (!source) return;
-    const opponentInput = document.querySelector('input[name="resultOpponentDraft"]');
-    const ourLineup = [0, 1, 2, 3]
-      .map((index) => {
-        const playerId = document.querySelector(`[name="ourLineup${index}"]`)?.value;
-        const player = store.players.find((item) => item.id === playerId);
-        return player ? { name: player.rlName || player.name, link: player.profileLink || "" } : null;
-      })
-      .filter(Boolean);
-    const opponentLineup = [0, 1, 2, 3]
-      .map((index) => ({
-        name: document.querySelector(`[name="opponentLineupName${index}"]`)?.value || "",
-        link: document.querySelector(`[name="opponentLineupLink${index}"]`)?.value || "",
-      }))
-      .filter((player) => player.name || player.link);
+    const lineupDraft = saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
+    saveStore(store);
     resultDraft = {
       id: "",
       resultSource: button.dataset.recordResult,
@@ -1212,9 +1303,7 @@ document.addEventListener("click", (event) => {
       title: source.title,
       dateTime: source.dateTime,
       teamId: source.teamId,
-      opponent: opponentInput?.value || "",
-      ourLineup,
-      opponentLineup,
+      opponent: lineupDraft.lineupOpponent || source.opponent || "",
       placement: "",
       score: "",
       notes: "",
@@ -1296,14 +1385,20 @@ document.addEventListener("click", (event) => {
   if (button.dataset.userApproved) {
     if (!isAdmin(activeUser)) return;
     const user = store.users.find((item) => item.id === button.dataset.userApproved);
+    if (!user || isBuiltInUser(user)) return;
     user.approved = !user.approved;
+    if (!user.approved && localStorage.getItem(sessionKey) === user.id) localStorage.removeItem(sessionKey);
     saveStore(store);
     render();
   }
 
   if (button.dataset.userDelete) {
     if (!isAdmin(activeUser)) return;
-    store.users = store.users.filter((item) => item.id !== button.dataset.userDelete && !isBuiltInUser(item));
+    const user = store.users.find((item) => item.id === button.dataset.userDelete);
+    if (!user || isBuiltInUser(user)) return;
+    if (!confirm(`Are you sure you want to delete ${user.username}?`)) return;
+    store.users = store.users.filter((item) => item.id !== button.dataset.userDelete);
+    if (localStorage.getItem(sessionKey) === button.dataset.userDelete) localStorage.removeItem(sessionKey);
     saveStore(store);
     render();
   }
@@ -1392,18 +1487,6 @@ document.addEventListener("submit", (event) => {
     entry.source = source.source;
     entry.sourceId = source.sourceId;
     entry.tournamentId = source.source === "tournaments" ? source.sourceId : "";
-    entry.ourLineup = [0, 1, 2, 3]
-      .map((index) => ({ name: entry[`ourLineupName${index}`] || "", link: entry[`ourLineupLink${index}`] || "" }))
-      .filter((player) => player.name || player.link);
-    entry.opponentLineup = [0, 1, 2, 3]
-      .map((index) => ({ name: entry[`opponentLineupName${index}`] || "", link: entry[`opponentLineupLink${index}`] || "" }))
-      .filter((player) => player.name || player.link);
-    [0, 1, 2, 3].forEach((index) => {
-      delete entry[`ourLineupName${index}`];
-      delete entry[`ourLineupLink${index}`];
-      delete entry[`opponentLineupName${index}`];
-      delete entry[`opponentLineupLink${index}`];
-    });
     resultDraft = null;
   }
 
@@ -1457,17 +1540,33 @@ document.addEventListener("change", (event) => {
   if (event.target.matches("[data-user-role]")) {
     if (!isAdmin(activeUser)) return;
     const user = store.users.find((item) => item.id === event.target.dataset.userRole);
+    if (!user || isBuiltInUser(user)) return;
     user.role = event.target.value;
-    if (["Admin", "Coach"].includes(user.role)) user.canEdit = true;
+    user.canEdit = user.role === "Admin";
+    if (user.role === "Coach") {
+      user.coachAccess = true;
+      user.playerStatsAccess = true;
+    }
     saveStore(store);
     render();
   }
 
-  if (event.target.matches("[data-user-edit]")) {
+  if (event.target.matches("[data-user-coach-access]")) {
     if (!isAdmin(activeUser)) return;
-    const user = store.users.find((item) => item.id === event.target.dataset.userEdit);
-    user.canEdit = event.target.checked;
+    const user = store.users.find((item) => item.id === event.target.dataset.userCoachAccess);
+    if (!user || isBuiltInUser(user)) return;
+    user.coachAccess = event.target.checked;
     saveStore(store);
+    render();
+  }
+
+  if (event.target.matches("[data-user-stats-access]")) {
+    if (!isAdmin(activeUser)) return;
+    const user = store.users.find((item) => item.id === event.target.dataset.userStatsAccess);
+    if (!user || isBuiltInUser(user)) return;
+    user.playerStatsAccess = event.target.checked;
+    saveStore(store);
+    render();
   }
 
   if (event.target.matches("[data-player-stat-select]")) {
