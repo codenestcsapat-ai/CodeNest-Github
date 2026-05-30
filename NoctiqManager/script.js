@@ -3,10 +3,15 @@ const storeKey = "noctiq-manager-store";
 const app = document.querySelector("#app");
 let firebaseApp = null;
 let db = null;
+let auth = null;
 let storeRef = null;
 let remoteApi = null;
+let authApi = null;
 let currentStore = null;
 let storageMode = "local";
+let currentAuthUser = null;
+let unsubscribeStore = null;
+let authProfileCreationInProgress = false;
 
 let currentPage = "dashboard";
 let filters = {};
@@ -79,16 +84,9 @@ const sortLabels = {
 const resultTypes = ["Tournament", "League match"];
 const logoMarkup = `<img class="brand-logo" src="assets/noctiq-logo.png" alt="Noctiq logo">`;
 
-const adminUsers = [
-  { id: "admin-kenz", name: "Kenz", username: "Kenz", password: "Kenz123", role: "Admin", approved: true, canEdit: true, systemAdmin: true, createdAt: "2026-05-27T00:00:00.000Z" },
-  { id: "admin-zemsta", name: "Zemsta", username: "Zemsta", password: "Zemsta123", role: "Admin", approved: true, canEdit: true, systemAdmin: true, createdAt: "2026-05-27T00:00:00.000Z" },
-];
-const playerStatUsers = [
-  { id: "coach-gg07", name: "GG07", username: "GG07", password: "GG07123", role: "Coach", approved: true, canEdit: false, playerStatsAccess: true, coachAccess: true, createdAt: "2026-05-27T00:00:00.000Z" },
-];
-const playerUsers = [
-  { id: "player-prxu", name: "Prxu", username: "Prxu", password: "Prxu123", role: "Player", approved: true, canEdit: false, playerStatsAccess: false, coachAccess: false, createdAt: "2026-05-27T00:00:00.000Z" },
-];
+const adminUsers = [];
+const playerStatUsers = [];
+const playerUsers = [];
 const builtInUsers = [...adminUsers, ...playerStatUsers, ...playerUsers];
 
 // Structured data model: User, Team, Player, Tryout, Scrim, ScrimPartner, Tournament, CalendarEvent.
@@ -172,7 +170,7 @@ function loadStore() {
 async function saveStore(store) {
   const cleanStore = {
     ...store,
-    users: store.users.filter((user) => !isBuiltInUser(user)),
+    users: store.users.filter((user) => !isBuiltInUser(user)).map(({ password, ...user }) => user),
   };
   currentStore = normalizeStore(cleanStore);
   if (storageMode === "remote" && remoteApi && storeRef) {
@@ -189,17 +187,20 @@ async function saveStore(store) {
 
 async function setupFirebase() {
   try {
-    const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule] = await Promise.all([
+    const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule, firebaseAuthModule] = await Promise.all([
       import("./firebaseConfig.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
     ]);
     const firebaseReady = Object.values(firebaseConfig).every((value) => typeof value === "string" && value && !value.startsWith("PASTE_"));
     if (!firebaseReady) return false;
     firebaseApp = firebaseAppModule.initializeApp(firebaseConfig);
     db = firebaseFirestoreModule.getFirestore(firebaseApp);
+    auth = firebaseAuthModule.getAuth(firebaseApp);
     storeRef = firebaseFirestoreModule.doc(db, "noctiqManager", "main");
     remoteApi = firebaseFirestoreModule;
+    authApi = firebaseAuthModule;
     return true;
   } catch (error) {
     console.warn("Firebase unavailable, using local storage.", error);
@@ -220,7 +221,7 @@ function initLocalStore() {
 }
 
 async function initRemoteStore() {
-  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Loading shared database...</span></div></div></section></div>`;
+  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Loading Firebase...</span></div></div></section></div>`;
   try {
     const firebaseReady = await setupFirebase();
     if (!firebaseReady) {
@@ -228,16 +229,36 @@ async function initRemoteStore() {
       return;
     }
     storageMode = "remote";
-    const firstSnapshot = await remoteApi.getDoc(storeRef);
-    if (!firstSnapshot.exists()) {
-      await saveStore(structuredClone(seedStore));
-    }
-    remoteApi.onSnapshot(storeRef, (snapshot) => {
-      currentStore = normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
-      render();
-    }, (error) => {
-      console.error(error);
-      initLocalStore();
+    authApi.onAuthStateChanged(auth, async (firebaseUser) => {
+      currentAuthUser = firebaseUser;
+      if (unsubscribeStore) {
+        unsubscribeStore();
+        unsubscribeStore = null;
+      }
+      if (!firebaseUser) {
+        localStorage.removeItem(sessionKey);
+        currentStore = normalizeStore(structuredClone(seedStore));
+        render();
+        return;
+      }
+      localStorage.setItem(sessionKey, firebaseUser.uid);
+      try {
+        const firstSnapshot = await remoteApi.getDoc(storeRef);
+        if (!firstSnapshot.exists()) {
+          await saveStore(structuredClone(seedStore));
+        }
+        unsubscribeStore = remoteApi.onSnapshot(storeRef, (snapshot) => {
+          currentStore = normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
+          render();
+        }, (error) => {
+          console.error(error);
+          initLocalStore();
+        });
+      } catch (error) {
+        console.error(error);
+        currentStore = normalizeStore(structuredClone(seedStore));
+        render();
+      }
     });
   } catch (error) {
     console.error(error);
@@ -251,7 +272,8 @@ function normalizeStore(store) {
     .filter((user) => !builtInUsers.some((builtInUser) => builtInUser.username.toLowerCase() === user.username.toLowerCase()))
     .map((user) => {
       const role = user.role === "Viewer" ? "Player" : (user.role || "Player");
-      return { ...user, name: user.name || user.username, role, approved: user.approved !== false, canEdit: role === "Admin" || Boolean(user.canEdit), systemAdmin: false, playerStatsAccess: role === "Coach" || Boolean(user.playerStatsAccess), coachAccess: Boolean(user.coachAccess) };
+      const { password, ...safeUser } = user;
+      return { ...safeUser, name: safeUser.name || safeUser.username, email: safeUser.email || "", authUid: safeUser.authUid || safeUser.id, role, approved: safeUser.approved !== false, canEdit: role === "Admin" || Boolean(safeUser.canEdit), systemAdmin: false, playerStatsAccess: role === "Coach" || Boolean(safeUser.playerStatsAccess), coachAccess: Boolean(safeUser.coachAccess) };
     });
   const players = (store.players || []).map((player) => ({
     ...player,
@@ -285,7 +307,9 @@ function uid() {
 }
 
 function getUser(store) {
-  return store.users.find((user) => user.id === localStorage.getItem(sessionKey));
+  const uid = currentAuthUser?.uid || localStorage.getItem(sessionKey);
+  const email = currentAuthUser?.email?.toLowerCase();
+  return store.users.find((user) => user.id === uid || user.authUid === uid || (email && user.email?.toLowerCase() === email));
 }
 
 function isAdmin(user) {
@@ -352,6 +376,43 @@ function esc(value = "") {
 
 function escapeAttr(value = "") {
   return esc(value).replace(/`/g, "&#096;");
+}
+
+function authMessage(error) {
+  const code = error?.code || "";
+  if (code.includes("invalid-credential") || code.includes("user-not-found") || code.includes("wrong-password")) return "Invalid username or password.";
+  if (code.includes("email-already-in-use")) return "This username is already registered.";
+  if (code.includes("weak-password")) return "Password should be at least 6 characters.";
+  if (code.includes("invalid-email")) return "Please enter a valid username.";
+  return "Authentication failed. Please try again.";
+}
+
+function normalizeUsername(username = "") {
+  return String(username).trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
+}
+
+function authEmailFromUsername(username = "") {
+  const normalized = normalizeUsername(username);
+  return normalized.includes("@") ? normalized : `${normalized}@noctiq.local`;
+}
+
+function authProfile(user, store, name = "", username = "") {
+  const existingUsers = (store.users || []).filter((item) => !isBuiltInUser(item));
+  const bootstrapAdmin = existingUsers.length === 0;
+  const displayUsername = normalizeUsername(username || user.displayName || user.email?.split("@")[0] || "");
+  return {
+    id: user.uid,
+    authUid: user.uid,
+    name: name || displayUsername || user.displayName || user.email,
+    username: displayUsername,
+    email: user.email,
+    role: bootstrapAdmin ? "Admin" : "Player",
+    approved: bootstrapAdmin,
+    canEdit: bootstrapAdmin,
+    playerStatsAccess: false,
+    coachAccess: false,
+    createdAt: new Date().toISOString(),
+  };
 }
 
 function fmt(value) {
@@ -430,12 +491,18 @@ function allCalendarItems(store) {
 function render() {
   const store = loadStore();
   const user = getUser(store);
+  if (!user && currentAuthUser && storageMode === "remote" && !authProfileCreationInProgress) {
+    store.users.push(authProfile(currentAuthUser, store));
+    saveStore(store);
+    return;
+  }
   if (!user) {
     renderAuth(store);
     return;
   }
   if (!user.approved) {
     localStorage.removeItem(sessionKey);
+    if (authApi && auth) authApi.signOut(auth);
     renderAuth(store);
     return;
   }
@@ -512,11 +579,11 @@ function renderAuth(store) {
         </div>
         <form id="auth-form" data-mode="login" class="form-grid">
           <label class="auth-name hidden"><span>Name</span><input name="name" /></label>
-          <label><span>Username</span><input name="username" value="" required /></label>
+          <label><span>Username</span><input name="username" value="" autocomplete="username" required /></label>
           <label>
             <span>Password</span>
             <span class="password-field">
-              <input name="password" type="password" value="" required />
+              <input name="password" type="password" value="" autocomplete="current-password" required />
               <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password" aria-pressed="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
@@ -539,7 +606,8 @@ function renderAuth(store) {
       const mode = button.dataset.authMode;
       document.querySelector("#auth-form").dataset.mode = mode;
       document.querySelector(".auth-name").classList.toggle("hidden", mode === "login");
-      document.querySelector(".primary").textContent = mode === "login" ? "Log in" : "Send registration";
+      document.querySelector('input[name="password"]').autocomplete = mode === "login" ? "current-password" : "new-password";
+      document.querySelector(".primary").textContent = mode === "login" ? "Log in" : "Create account";
       document.querySelectorAll("[data-auth-mode]").forEach((item) => item.classList.toggle("selected", item === button));
     });
   });
@@ -554,28 +622,53 @@ function renderAuth(store) {
     toggle.title = shouldShow ? "Hide password" : "Show password";
   });
 
-  document.querySelector("#auth-form").addEventListener("submit", (event) => {
+  document.querySelector("#auth-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
     const message = document.querySelector("#auth-message");
+    if (!authApi || !auth) {
+      message.textContent = "Firebase Authentication is not available.";
+      return;
+    }
+    const username = normalizeUsername(data.username);
+    if (!username) {
+      message.textContent = "Please enter a valid username.";
+      return;
+    }
     if (event.currentTarget.dataset.mode === "login") {
-      const user = store.users.find((item) => item.username.toLowerCase() === data.username.toLowerCase() && item.password === data.password);
-      if (!user) message.textContent = "Invalid username or password.";
-      else if (!user.approved) message.textContent = "This account is still waiting for admin approval.";
-      else {
-        localStorage.setItem(sessionKey, user.id);
-        render();
+      try {
+        const storedUser = store.users.find((item) => item.username?.toLowerCase() === username || item.email?.toLowerCase() === username);
+        const authEmail = storedUser?.email || authEmailFromUsername(username);
+        const credential = await authApi.signInWithEmailAndPassword(auth, authEmail, data.password);
+        const user = store.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
+        if (user && !user.approved) {
+          await authApi.signOut(auth);
+          message.textContent = "This account is still waiting for admin approval.";
+        }
+      } catch (error) {
+        message.textContent = authMessage(error);
       }
       return;
     }
-    if (store.users.some((item) => item.username.toLowerCase() === data.username.toLowerCase())) {
+    if (store.users.some((item) => item.username?.toLowerCase() === username)) {
       message.textContent = "This username is already registered.";
       return;
     }
-    store.users.push({ id: uid(), name: data.name || data.username, username: data.username, password: data.password, role: "Player", approved: false, canEdit: false, playerStatsAccess: false, coachAccess: false, createdAt: new Date().toISOString() });
-    saveStore(store);
-    message.className = "success";
-    message.textContent = "Registration sent. An admin has to approve the account before login.";
+    try {
+      authProfileCreationInProgress = true;
+      const credential = await authApi.createUserWithEmailAndPassword(auth, authEmailFromUsername(username), data.password);
+      if (authApi.updateProfile) await authApi.updateProfile(credential.user, { displayName: username });
+      const profile = authProfile(credential.user, store, data.name, username);
+      store.users.push(profile);
+      await saveStore(store);
+      message.className = "success";
+      message.textContent = profile.approved ? "Admin account created. You can continue." : "Registration sent. An admin has to approve the account before login.";
+      if (!profile.approved) await authApi.signOut(auth);
+    } catch (error) {
+      message.textContent = authMessage(error);
+    } finally {
+      authProfileCreationInProgress = false;
+    }
   });
 }
 
@@ -1115,17 +1208,6 @@ function adminPage(store, user) {
       <h2>Created accounts</h2>
       ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Status", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
     </section>
-    <section class="panel wide">
-      <h2>Built-in admins</h2>
-      ${table(["Name", "Username", "Permission", "Status", "Created"], adminUsers.map((item) => [
-        esc(item.name),
-        esc(item.username),
-        permissionLabel(item),
-        "Active",
-        new Date(item.createdAt).toLocaleDateString("en-US"),
-        "-",
-      ]))}
-    </section>
   `;
 }
 
@@ -1316,6 +1398,7 @@ document.addEventListener("click", (event) => {
   if (button.dataset.action === "logout") {
     if (!confirm("Are you sure you want to log out?")) return;
     localStorage.removeItem(sessionKey);
+    if (authApi && auth) authApi.signOut(auth);
     render();
   }
 
