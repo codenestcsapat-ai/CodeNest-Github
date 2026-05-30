@@ -415,6 +415,14 @@ function authProfile(user, store, name = "", username = "") {
   };
 }
 
+async function loadWritableStore() {
+  if (storageMode === "remote" && remoteApi && storeRef && (currentAuthUser || auth?.currentUser)) {
+    const snapshot = await remoteApi.getDoc(storeRef);
+    return normalizeStore(snapshot.exists() ? snapshot.data() : structuredClone(seedStore));
+  }
+  return loadStore();
+}
+
 function fmt(value) {
   if (!value) return "-";
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
@@ -640,7 +648,8 @@ function renderAuth(store) {
         const storedUser = store.users.find((item) => item.username?.toLowerCase() === username || item.email?.toLowerCase() === username);
         const authEmail = storedUser?.email || authEmailFromUsername(username);
         const credential = await authApi.signInWithEmailAndPassword(auth, authEmail, data.password);
-        const user = store.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
+        const freshStore = await loadWritableStore();
+        const user = freshStore.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
         if (user && !user.approved) {
           await authApi.signOut(auth);
           message.textContent = "This account is still waiting for admin approval.";
@@ -658,9 +667,15 @@ function renderAuth(store) {
       authProfileCreationInProgress = true;
       const credential = await authApi.createUserWithEmailAndPassword(auth, authEmailFromUsername(username), data.password);
       if (authApi.updateProfile) await authApi.updateProfile(credential.user, { displayName: username });
-      const profile = authProfile(credential.user, store, data.name, username);
-      store.users.push(profile);
-      await saveStore(store);
+      const writableStore = await loadWritableStore();
+      if (writableStore.users.some((item) => item.username?.toLowerCase() === username)) {
+        message.textContent = "This username is already registered.";
+        await authApi.signOut(auth);
+        return;
+      }
+      const profile = authProfile(credential.user, writableStore, data.name, username);
+      writableStore.users.push(profile);
+      await saveStore(writableStore);
       message.className = "success";
       message.textContent = profile.approved ? "Admin account created. You can continue." : "Registration sent. An admin has to approve the account before login.";
       if (!profile.approved) await authApi.signOut(auth);
