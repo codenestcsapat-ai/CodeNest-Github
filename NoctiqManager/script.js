@@ -8,6 +8,10 @@ let storeRef = null;
 let usersRef = null;
 let remoteApi = null;
 let authApi = null;
+let firebaseAppApi = null;
+let firebaseConfigValue = null;
+let accountCreationApp = null;
+let accountCreationAuth = null;
 let currentStore = null;
 let currentRemoteData = null;
 let currentRemoteUsers = [];
@@ -207,7 +211,7 @@ async function persistStore(store) {
     return true;
   } catch (error) {
     console.error(error);
-    alert(authMessage(error));
+    await showAlert(authMessage(error), { title: "Save failed", tone: "warning" });
     return false;
   }
 }
@@ -243,6 +247,8 @@ async function setupFirebase() {
     ]);
     const firebaseReady = Object.values(firebaseConfig).every((value) => typeof value === "string" && value && !value.startsWith("PASTE_"));
     if (!firebaseReady) return false;
+    firebaseAppApi = firebaseAppModule;
+    firebaseConfigValue = firebaseConfig;
     firebaseApp = firebaseAppModule.initializeApp(firebaseConfig);
     db = firebaseFirestoreModule.getFirestore(firebaseApp);
     auth = firebaseAuthModule.getAuth(firebaseApp);
@@ -447,6 +453,57 @@ function authMessage(error) {
   return "Authentication failed. Please try again.";
 }
 
+function showDialog({ title = "Notice", message = "", confirmText = "OK", cancelText = "", tone = "default" } = {}) {
+  return new Promise((resolve) => {
+    const modal = document.createElement("div");
+    modal.className = "modal-backdrop app-dialog-backdrop";
+    modal.innerHTML = `
+      <section class="modal-panel app-dialog ${tone ? `app-dialog-${tone}` : ""}" role="dialog" aria-modal="true" aria-labelledby="app-dialog-title">
+        <div class="dialog-icon" aria-hidden="true">${tone === "danger" ? "!" : tone === "warning" ? "!" : "i"}</div>
+        <div class="modal-head dialog-head">
+          <div>
+            <h2 id="app-dialog-title">${esc(title)}</h2>
+            <p>${esc(message)}</p>
+          </div>
+        </div>
+        <div class="row-actions modal-actions dialog-actions">
+          ${cancelText ? `<button data-dialog-action="cancel">${esc(cancelText)}</button>` : ""}
+          <button class="primary ${tone === "danger" ? "danger-action" : ""}" data-dialog-action="confirm">${esc(confirmText)}</button>
+        </div>
+      </section>
+    `;
+
+    const close = (result) => {
+      document.removeEventListener("keydown", onKeydown);
+      modal.remove();
+      resolve(result);
+    };
+
+    const onKeydown = (event) => {
+      if (event.key === "Escape") close(false);
+    };
+
+    modal.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-dialog-action]")?.dataset.dialogAction;
+      if (action === "confirm") close(true);
+      if (action === "cancel") close(false);
+      if (event.target === modal && cancelText) close(false);
+    });
+
+    document.addEventListener("keydown", onKeydown);
+    document.body.appendChild(modal);
+    modal.querySelector("[data-dialog-action='confirm']")?.focus();
+  });
+}
+
+function showAlert(message, options = {}) {
+  return showDialog({ ...options, message, confirmText: options.confirmText || "OK" });
+}
+
+function showConfirm(message, options = {}) {
+  return showDialog({ ...options, message, confirmText: options.confirmText || "Yes", cancelText: options.cancelText || "Cancel" });
+}
+
 function normalizeUsername(username = "") {
   return String(username).trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
 }
@@ -471,6 +528,62 @@ function authProfile(user, store, name = "", username = "") {
     coachAccess: false,
     createdAt: new Date().toISOString(),
   };
+}
+
+function adminCreatedProfile(user, name = "", username = "", temporaryPassword = "") {
+  return {
+    id: user.uid,
+    authUid: user.uid,
+    name: name || username,
+    username,
+    email: user.email,
+    role: "Player",
+    approved: true,
+    canEdit: false,
+    playerStatsAccess: false,
+    coachAccess: false,
+    temporaryPasswordSet: true,
+    temporaryPasswordHint: temporaryPassword ? "Admin-created temporary password" : "",
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function passwordInput(name, autocomplete, label = "Password") {
+  return `
+    <label>
+      <span>${label}</span>
+      <span class="password-field">
+        <input name="${name}" type="password" value="" autocomplete="${autocomplete}" required />
+        <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </span>
+    </label>
+  `;
+}
+
+function bindPasswordToggles(root = document) {
+  root.querySelectorAll("[data-password-toggle]").forEach((toggle) => {
+    toggle.addEventListener("click", (event) => {
+      const button = event.currentTarget;
+      const input = button.closest(".password-field").querySelector("input");
+      const shouldShow = input.type === "password";
+      input.type = shouldShow ? "text" : "password";
+      button.setAttribute("aria-pressed", String(shouldShow));
+      button.setAttribute("aria-label", shouldShow ? "Hide password" : "Show password");
+      button.title = shouldShow ? "Hide password" : "Show password";
+    });
+  });
+}
+
+function secondaryAuth() {
+  if (!authApi || !firebaseAppApi || !firebaseConfigValue) return null;
+  if (!accountCreationApp) accountCreationApp = firebaseAppApi.initializeApp(firebaseConfigValue, "adminAccountCreation");
+  if (!accountCreationAuth) accountCreationAuth = authApi.getAuth(accountCreationApp);
+  return accountCreationAuth;
 }
 
 async function loadWritableStore() {
@@ -592,12 +705,23 @@ function render() {
       <main>
         <header class="topbar">
           <div><p class="eyebrow">Noctiq eSports</p><h1>${pageTitle(currentPage)}</h1></div>
-          <div class="user-pill"><span>${esc(user.name)}</span><strong>${user.role}</strong><button class="icon-button" data-action="logout" title="Log out">X</button></div>
+          <details class="account-menu">
+            <summary class="user-pill">
+              <span>${esc(user.name)}</span>
+              <strong>${user.role}</strong>
+              <span class="account-chevron">v</span>
+            </summary>
+            <div class="account-dropdown">
+              <button data-page="account">Account settings</button>
+              <button data-action="logout">Log out</button>
+            </div>
+          </details>
         </header>
         ${renderPage(store, user)}
       </main>
     </div>
   `;
+  bindPasswordToggles(document);
 }
 
 function navButton(page, label) {
@@ -617,6 +741,7 @@ function pageTitle(page) {
     week: "My week",
     partners: "Scrim partners",
     admin: "Admin",
+    account: "Account settings",
   }[page];
 }
 
@@ -628,6 +753,7 @@ function renderPage(store, user) {
   if (currentPage === "training") return trainingPage(store, user);
   if (currentPage === "week") return weekPage(store, user);
   if (currentPage === "admin") return isAdmin(user) ? adminPage(store, user) : dashboard(store);
+  if (currentPage === "account") return accountPage(user);
   return crudPage(store, currentPage, canManageEntity(user, currentPage), user);
 }
 
@@ -636,25 +762,9 @@ function renderAuth(store) {
     <div class="auth-screen">
       <section class="auth-panel">
         <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League team manager</span></div></div>
-        <div class="segmented">
-          <button class="selected" data-auth-mode="login">Log in</button>
-          <button data-auth-mode="register">Register</button>
-        </div>
         <form id="auth-form" data-mode="login" class="form-grid">
-          <label class="auth-name hidden"><span>Name</span><input name="name" autocomplete="name" /></label>
           <label><span>Username</span><input name="username" value="" autocomplete="username" required /></label>
-          <label>
-            <span>Password</span>
-            <span class="password-field">
-              <input name="password" type="password" value="" autocomplete="current-password" required />
-              <button type="button" class="password-toggle" data-password-toggle aria-label="Show password" title="Show password" aria-pressed="false">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
-            </span>
-          </label>
+          ${passwordInput("password", "current-password")}
           <button class="primary">Log in</button>
           <p id="auth-message" class="muted"></p>
         </form>
@@ -664,26 +774,7 @@ function renderAuth(store) {
     </div>
   `;
 
-  document.querySelectorAll("[data-auth-mode]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const mode = button.dataset.authMode;
-      document.querySelector("#auth-form").dataset.mode = mode;
-      document.querySelector(".auth-name").classList.toggle("hidden", mode === "login");
-      document.querySelector('input[name="password"]').autocomplete = mode === "login" ? "current-password" : "new-password";
-      document.querySelector(".primary").textContent = mode === "login" ? "Log in" : "Create account";
-      document.querySelectorAll("[data-auth-mode]").forEach((item) => item.classList.toggle("selected", item === button));
-    });
-  });
-
-  document.querySelector("[data-password-toggle]").addEventListener("click", (event) => {
-    const toggle = event.currentTarget;
-    const input = toggle.closest(".password-field").querySelector('input[name="password"]');
-    const shouldShow = input.type === "password";
-    input.type = shouldShow ? "text" : "password";
-    toggle.setAttribute("aria-pressed", String(shouldShow));
-    toggle.setAttribute("aria-label", shouldShow ? "Hide password" : "Show password");
-    toggle.title = shouldShow ? "Hide password" : "Show password";
-  });
+  bindPasswordToggles(document);
 
   document.querySelector("#auth-form").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -698,44 +789,15 @@ function renderAuth(store) {
       message.textContent = "Please enter a valid username.";
       return;
     }
-    if (event.currentTarget.dataset.mode === "login") {
-      try {
-        const storedUser = store.users.find((item) => item.username?.toLowerCase() === username || item.email?.toLowerCase() === username);
-        const authEmail = storedUser?.email || authEmailFromUsername(username);
-        const credential = await authApi.signInWithEmailAndPassword(auth, authEmail, data.password);
-        const freshStore = await loadWritableStore();
-        const user = freshStore.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
-        if (!user) console.warn("Firebase Auth login succeeded, but no app profile was found yet.");
-      } catch (error) {
-        message.textContent = authMessage(error);
-      }
-      return;
-    }
-    if (store.users.some((item) => item.username?.toLowerCase() === username)) {
-      message.textContent = "This username is already registered.";
-      return;
-    }
     try {
-      authProfileCreationInProgress = true;
-      const credential = await authApi.createUserWithEmailAndPassword(auth, authEmailFromUsername(username), data.password);
-      if (authApi.updateProfile) await authApi.updateProfile(credential.user, { displayName: username });
-      const writableStore = await loadWritableStore();
-      if (writableStore.users.some((item) => item.username?.toLowerCase() === username)) {
-        message.textContent = "This username is already registered.";
-        await authApi.signOut(auth);
-        return;
-      }
-      const profile = authProfile(credential.user, writableStore, data.name, username);
-      await saveUserProfile(profile);
-      writableStore.users.push(profile);
-      await saveStore(writableStore);
-      message.className = "success";
-      message.textContent = "Account created. You can continue with Player access.";
+      const storedUser = store.users.find((item) => item.username?.toLowerCase() === username || item.email?.toLowerCase() === username);
+      const authEmail = storedUser?.email || authEmailFromUsername(username);
+      const credential = await authApi.signInWithEmailAndPassword(auth, authEmail, data.password);
+      const freshStore = await loadWritableStore();
+      const user = freshStore.users.find((item) => item.id === credential.user.uid || item.authUid === credential.user.uid || item.username?.toLowerCase() === username || item.email?.toLowerCase() === credential.user.email?.toLowerCase());
+      if (!user) console.warn("Firebase Auth login succeeded, but no app profile was found yet.");
     } catch (error) {
       message.textContent = authMessage(error);
-      console.error(error);
-    } finally {
-      authProfileCreationInProgress = false;
     }
   });
 }
@@ -1258,6 +1320,21 @@ function sameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
+function adminRegisterForm() {
+  return `
+    <section class="panel wide">
+      <h2>Register player</h2>
+      <form id="admin-register-form" class="form-grid">
+        <label><span>Name</span><input name="name" autocomplete="name" required></label>
+        <label><span>Username</span><input name="username" autocomplete="username" required></label>
+        ${passwordInput("password", "new-password", "Temporary password")}
+        <button class="primary">Create player account</button>
+        <p id="admin-register-message" class="muted"></p>
+      </form>
+    </section>
+  `;
+}
+
 function adminPage(store, user) {
   if (!isAdmin(user)) return `<section class="panel"><h2>Admin</h2><p class="warning">Admin access is required for this page.</p></section>`;
   const createdUsers = store.users.filter((item) => !isBuiltInUser(item));
@@ -1271,12 +1348,29 @@ function adminPage(store, user) {
     `<button data-user-delete="${item.id}">Delete</button>`,
   ]);
   return `
+    ${adminRegisterForm()}
     <section class="panel wide">
       <h2>Created accounts</h2>
       <div class="row-actions admin-actions">
         <button data-admin-clean-store="true">Clean database</button>
       </div>
       ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
+    </section>
+  `;
+}
+
+function accountPage(user) {
+  return `
+    <section class="panel">
+      <h2>Account settings</h2>
+      <form id="password-change-form" class="form-grid">
+        <label><span>Username</span><input value="${escapeAttr(user.username || user.email || user.name)}" disabled></label>
+        ${passwordInput("currentPassword", "current-password", "Current password")}
+        ${passwordInput("newPassword", "new-password", "New password")}
+        ${passwordInput("confirmPassword", "new-password", "Confirm new password")}
+        <button class="primary">Change password</button>
+        <p id="password-change-message" class="muted"></p>
+      </form>
     </section>
   `;
 }
@@ -1465,7 +1559,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (button.dataset.action === "logout") {
-    if (!confirm("Are you sure you want to log out?")) return;
+    if (!(await showConfirm("Are you sure you want to log out?", { title: "Log out", confirmText: "Log out" }))) return;
     localStorage.removeItem(sessionKey);
     if (authApi && auth) authApi.signOut(auth);
     render();
@@ -1489,7 +1583,7 @@ document.addEventListener("click", async (event) => {
   if (button.dataset.delete) {
     const [key, id] = button.dataset.delete.split(":");
     if (!canManageEntity(activeUser, key)) return;
-    if (["events", "scrims", "tournaments", "tryouts", "results"].includes(key) && !confirm("Are you sure you want to delete this item?")) return;
+    if (["events", "scrims", "tournaments", "tryouts", "results"].includes(key) && !(await showConfirm("Are you sure you want to delete this item?", { title: "Delete item", confirmText: "Delete", tone: "danger" }))) return;
     store[key] = store[key].filter((item) => item.id !== id);
     await persistStore(store);
   }
@@ -1526,14 +1620,14 @@ document.addEventListener("click", async (event) => {
 
   if (button.dataset.routineDelete) {
     if (!isAdmin(activeUser)) return;
-    if (!confirm("Are you sure you want to delete this training pack?")) return;
+    if (!(await showConfirm("Are you sure you want to delete this training pack?", { title: "Delete training pack", confirmText: "Delete", tone: "danger" }))) return;
     store.trainingRoutines = store.trainingRoutines.filter((item) => item.id !== button.dataset.routineDelete);
     await persistStore(store);
   }
 
   if (button.dataset.adminCleanStore) {
     if (!isAdmin(activeUser)) return;
-    if (!confirm("Clean template data from Firestore and keep only real saved data?")) return;
+    if (!(await showConfirm("Clean template data from Firestore and keep only real saved data?", { title: "Clean database", confirmText: "Clean", tone: "warning" }))) return;
     await persistStore(store);
   }
 
@@ -1541,7 +1635,7 @@ document.addEventListener("click", async (event) => {
     if (!isAdmin(activeUser)) return;
     const user = store.users.find((item) => item.id === button.dataset.userDelete);
     if (!user || isBuiltInUser(user)) return;
-    if (!confirm(`Are you sure you want to delete ${user.username}?`)) return;
+    if (!(await showConfirm(`Are you sure you want to delete ${user.username}?`, { title: "Delete account", confirmText: "Delete", tone: "danger" }))) return;
     store.users = store.users.filter((item) => item.id !== button.dataset.userDelete);
     if (localStorage.getItem(sessionKey) === button.dataset.userDelete) localStorage.removeItem(sessionKey);
     await persistStore(store);
@@ -1557,6 +1651,85 @@ document.addEventListener("click", async (event) => {
 });
 
 document.addEventListener("submit", async (event) => {
+  if (event.target.matches("#admin-register-form")) {
+    event.preventDefault();
+    const store = loadStore();
+    const activeUser = getUser(store);
+    const message = document.querySelector("#admin-register-message");
+    if (!isAdmin(activeUser)) return;
+    if (!authApi || !auth) {
+      message.textContent = "Firebase Authentication is not available.";
+      return;
+    }
+    const entry = Object.fromEntries(new FormData(event.target));
+    const username = normalizeUsername(entry.username);
+    const password = String(entry.password || "");
+    if (!username) {
+      message.textContent = "Please enter a valid username.";
+      return;
+    }
+    if (password.length < 6) {
+      message.textContent = "Temporary password should be at least 6 characters.";
+      return;
+    }
+    const writableStore = await loadWritableStore();
+    if (writableStore.users.some((item) => item.username?.toLowerCase() === username || item.email?.toLowerCase() === authEmailFromUsername(username).toLowerCase())) {
+      message.textContent = "This username is already registered.";
+      return;
+    }
+    try {
+      const creatorAuth = secondaryAuth();
+      if (!creatorAuth) throw new Error("Secondary Firebase Auth is not available.");
+      const credential = await authApi.createUserWithEmailAndPassword(creatorAuth, authEmailFromUsername(username), password);
+      if (authApi.updateProfile) await authApi.updateProfile(credential.user, { displayName: username });
+      const profile = adminCreatedProfile(credential.user, entry.name, username, password);
+      await saveUserProfile(profile);
+      writableStore.users.push(profile);
+      await saveStore(writableStore);
+      await authApi.signOut(creatorAuth);
+      message.className = "success";
+      message.textContent = `Player account created for ${username}.`;
+      event.target.reset();
+    } catch (error) {
+      message.className = "warning";
+      message.textContent = authMessage(error);
+      console.error(error);
+    }
+    return;
+  }
+
+  if (event.target.matches("#password-change-form")) {
+    event.preventDefault();
+    const message = document.querySelector("#password-change-message");
+    if (!authApi || !auth?.currentUser) {
+      message.textContent = "Firebase Authentication is not available.";
+      return;
+    }
+    const entry = Object.fromEntries(new FormData(event.target));
+    if (entry.newPassword !== entry.confirmPassword) {
+      message.textContent = "The new passwords do not match.";
+      return;
+    }
+    if (String(entry.newPassword || "").length < 6) {
+      message.textContent = "New password should be at least 6 characters.";
+      return;
+    }
+    try {
+      const email = auth.currentUser.email;
+      const credential = authApi.EmailAuthProvider.credential(email, entry.currentPassword);
+      await authApi.reauthenticateWithCredential(auth.currentUser, credential);
+      await authApi.updatePassword(auth.currentUser, entry.newPassword);
+      message.className = "success";
+      message.textContent = "Password changed successfully.";
+      event.target.reset();
+    } catch (error) {
+      message.className = "warning";
+      message.textContent = authMessage(error);
+      console.error(error);
+    }
+    return;
+  }
+
   if (!event.target.matches(".entity-form")) return;
   event.preventDefault();
   const store = loadStore();
