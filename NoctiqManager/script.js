@@ -542,10 +542,13 @@ function canManageTournaments(user) {
   return isStaff(user) || isTeamCaptain(user);
 }
 
-function canManageCalendarEvent(user, event = null) {
-  if (isStaff(user)) return true;
-  if (!isTeamCaptain(user)) return false;
-  return !event || !event.teamId || event.teamId === user.teamId;
+function canManageCalendarEvent(user, event = null, store = loadStore()) {
+  if (!user) return false;
+  if (isAdmin(user) || isCoach(user)) return true;
+  if (!event) return true;
+  const player = matchingPlayerForUser(store, user);
+  if (event.playerId) return Boolean((player && event.playerId === player.id) || event.createdBy === user.id);
+  return false;
 }
 
 function permissionLabel(user) {
@@ -801,7 +804,30 @@ function eventDateValue(itemOrValue) {
 }
 
 function teamName(teamId) {
-  return teamId === "main" ? "Main Team" : "Academy";
+  if (teamId === "both") return "Both teams";
+  if (teamId === "main") return "Main Team";
+  if (teamId === "academy") return "Academy";
+  return "Personal";
+}
+
+function playerNameById(store, playerId) {
+  const player = (store?.players || []).find((item) => item.id === playerId);
+  return player ? (player.rlName || player.name || "Player") : "Player";
+}
+
+function calendarTargetLabel(item, store = loadStore()) {
+  if (item.playerId) return `Player: ${playerNameById(store, item.playerId)}`;
+  if (item.teamId === "both") return "Both teams";
+  return teamName(item.teamId);
+}
+
+function canSeeCalendarItem(user, item, store = loadStore()) {
+  if (!user) return false;
+  if (isAdmin(user) || isCoach(user)) return true;
+  const player = matchingPlayerForUser(store, user);
+  if (item.playerId) return Boolean((player && item.playerId === player.id) || item.createdBy === user.id);
+  if (item.teamId === "both") return true;
+  return Boolean(player?.teamId && item.teamId === player.teamId);
 }
 
 function displayWeekDay(day) {
@@ -968,7 +994,7 @@ function renderAuth(store) {
 function dashboard(store, user) {
   const activePlayer = matchingPlayerForUser(store, user);
   const broadOverview = isStaff(user) || isTeamCaptain(user);
-  const calendar = allCalendarItems(store, user).filter((item) => broadOverview || !activePlayer || item.teamId === activePlayer.teamId);
+  const calendar = allCalendarItems(store, user).filter((item) => broadOverview || canSeeCalendarItem(user, item, store));
   const upcomingCalendar = calendar.filter((item) => endDate(item) >= new Date());
   const nextEvent = upcomingCalendar[0];
   const visibleTryouts = (store.tryouts || []).filter((item) => broadOverview || !activePlayer || item.teamId === activePlayer.teamId).slice(0, 6);
@@ -990,7 +1016,7 @@ function compact(title, subtitle) {
 }
 
 function eventList(events) {
-  return `<div class="event-list">${events.map((item) => compact(item.title, `${fmt(item)} / ${item.type} / ${teamName(item.teamId)}`)).join("") || `<p class="muted">No upcoming events.</p>`}</div>`;
+  return `<div class="event-list">${events.map((item) => compact(item.title, `${fmt(item)} / ${item.type} / ${calendarTargetLabel(item)}`)).join("") || `<p class="muted">No upcoming events.</p>`}</div>`;
 }
 
 function tryoutSummaryList(rows) {
@@ -1059,7 +1085,7 @@ function playerDetailCard(player, editable, showPrivateNotes) {
     <article class="routine-card player-card">
       <div class="routine-card-head">
         <div><h3>${esc(player.rlName || "Unnamed player")}</h3><span>${esc(player.position)} / ${teamName(player.teamId)}</span></div>
-        ${editable ? `<button data-edit="players:${player.id}">Edit</button>` : ""}
+        ${editable ? `<div class="row-actions"><button data-edit="players:${player.id}">Edit</button><button data-delete="players:${player.id}">Delete</button></div>` : ""}
       </div>
       <div class="routine-stats">
         ${metricMini("1s peak", player.peak1s || "-")}
@@ -1084,7 +1110,7 @@ function playerProfilePanel(player, editable, showPrivateNotes) {
           <p class="muted">${esc(player.position)} / ${teamName(player.teamId)}</p>
         </div>
         <div class="row-actions">
-          ${editable ? `<button data-edit="players:${player.id}">Edit</button>` : ""}
+          ${editable ? `<button data-edit="players:${player.id}">Edit</button><button data-delete="players:${player.id}">Delete</button>` : ""}
           <button data-player-profile-close="true">Close</button>
         </div>
       </div>
@@ -1263,7 +1289,7 @@ function resultForm(store, item = { id: "", resultSource: "", type: "Match", tit
     <section class="panel result-editor"><h2>${item.id ? "Edit result" : "Add result"}</h2>
       <form class="entity-form" data-entity="results" data-id="${item.id || ""}">
         <div class="form-grid">
-          <label><span>Played calendar item</span><select name="resultSource" required><option value="">Select played calendar item</option>${sources.map((source) => `<option value="${resultSourceKey(source)}" ${item.resultSource === resultSourceKey(source) ? "selected" : ""}>${esc(source.title)} / ${source.type} / ${teamName(source.teamId)} / ${fmt(source)}</option>`).join("")}</select></label>
+          <label><span>Played calendar item</span><select name="resultSource" required><option value="">Select played calendar item</option>${sources.map((source) => `<option value="${resultSourceKey(source)}" ${item.resultSource === resultSourceKey(source) ? "selected" : ""}>${esc(source.title)} / ${source.type} / ${calendarTargetLabel(source, store)} / ${fmt(source)}</option>`).join("")}</select></label>
           ${field("opponent", "Opponent", "text", item.opponent)}
           ${field("averageMmr", "Ave. MMR", "number", item.averageMmr)}
           ${field("score", "Score / result", "text", item.score)}
@@ -1515,8 +1541,9 @@ function sortLabel(option) {
 function calendarPage(store, editable, canRecordResults, user) {
   const f = filters.calendar || {};
   const events = allCalendarItems(store, user)
-    .filter((item) => !f.query || `${item.title} ${item.notes}`.toLowerCase().includes(f.query.toLowerCase()))
-    .filter((item) => !f.team || f.team === "all" || item.teamId === f.team)
+    .filter((item) => canSeeCalendarItem(user, item, store))
+    .filter((item) => !f.query || `${item.title} ${item.notes} ${calendarTargetLabel(item, store)}`.toLowerCase().includes(f.query.toLowerCase()))
+    .filter((item) => !f.team || f.team === "all" || item.teamId === f.team || (!item.playerId && item.teamId === "both"))
     .filter((item) => !f.type || f.type === "all" || item.type === f.type);
   const conflicts = conflictKeys(events);
   const monthStart = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
@@ -1524,7 +1551,7 @@ function calendarPage(store, editable, canRecordResults, user) {
   return `
     <section class="crud-layout">
       ${toolbar("calendar", true, true, [])}
-      ${editable ? calendarForm() : ""}
+      ${editable ? calendarForm(undefined, store, user) : ""}
       <section class="panel wide calendar-panel">
         <div class="calendar-head">
           <h2>${monthLabel}</h2>
@@ -1535,14 +1562,14 @@ function calendarPage(store, editable, canRecordResults, user) {
             <button data-calendar-shift="1">Next</button>
           </div>
         </div>
-        ${monthGrid(events, conflicts, monthStart, editable)}
+        ${monthGrid(events, conflicts, monthStart, editable, store, user)}
       </section>
-      ${calendarEventDialog(store, canRecordResults)}
+      ${calendarEventDialog(store, canRecordResults, user)}
     </section>
   `;
 }
 
-function monthGrid(events, conflicts, monthStart, editable) {
+function monthGrid(events, conflicts, monthStart, editable, store, user) {
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const first = new Date(monthStart);
   const mondayOffset = (first.getDay() + 6) % 7;
@@ -1558,7 +1585,7 @@ function monthGrid(events, conflicts, monthStart, editable) {
       <div class="calendar-cell ${inMonth ? "" : "muted-cell"} ${today ? "today-cell" : ""}">
         <div class="day-number">${date.getDate()}</div>
         <div class="day-events">
-          ${dayEvents.map((item) => calendarChip(item, conflicts.has(resultSourceKey(item)), editable)).join("")}
+          ${dayEvents.map((item) => calendarChip(item, conflicts.has(resultSourceKey(item)), editable && canManageCalendarEvent(user, item, store), store)).join("")}
         </div>
       </div>
     `;
@@ -1566,27 +1593,27 @@ function monthGrid(events, conflicts, monthStart, editable) {
   return `<div class="calendar-grid">${weekdays.map((day) => `<div class="weekday">${day}</div>`).join("")}${cells.join("")}</div>`;
 }
 
-function calendarChip(item, conflict, editable) {
+function calendarChip(item, conflict, editable, store = loadStore()) {
   const time = fmtTime(item.dateTime);
   const duration = Number(item.durationMinutes || 0);
   const end = duration ? `-${fmtTime(endDate(item).toISOString())}` : "";
   return `
     <div class="calendar-chip ${conflict ? "conflict-chip" : ""}" style="border-left-color:${eventColors[item.type]}" data-calendar-open="${resultSourceKey(item)}">
       <div class="chip-main"><strong>${time}${end}</strong><span title="${escapeAttr(item.title)}">${esc(item.title)}</span></div>
-      <small>${item.type} / ${teamName(item.teamId)}</small>
+      <small>${item.type} / ${calendarTargetLabel(item, store)}</small>
       ${editable ? `<div class="chip-actions"><button data-edit="${item.source}:${item.sourceId}">Edit</button><button data-delete="${item.source}:${item.sourceId}">Delete</button></div>` : ""}
     </div>
   `;
 }
 
-function calendarEventDialog(store, canRecordResults) {
+function calendarEventDialog(store, canRecordResults, user) {
   if (!selectedCalendarItemKey) return "";
   const item = findCalendarItem(store, selectedCalendarItemKey);
   if (!item) return "";
   const played = endDate(item) < new Date();
   const existingResult = resultForSource(store, resultSourceKey(item));
-  const teamLabel = item.teamId === "academy" ? "Noctiq Academy" : "Noctiq";
-  const ownPlayers = store.players.filter((player) => player.teamId === item.teamId && !isCoachRole(player));
+  const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "academy" ? "Noctiq Academy" : (item.teamId === "both" ? "Noctiq" : "Noctiq"));
+  const ownPlayers = store.players.filter((player) => (item.teamId === "both" || player.teamId === item.teamId || player.id === item.playerId) && !isCoachRole(player));
   const savedOurLineup = item.ourLineup || [];
   const savedOpponentLineup = item.opponentLineup || [];
   const opponentName = item.lineupOpponent || item.opponent || "";
@@ -1597,7 +1624,7 @@ function calendarEventDialog(store, canRecordResults) {
           <div>
             <p class="eyebrow">${fmtRange(item)}</p>
             <h2>${teamLabel} VS <span data-opponent-title>${esc(opponentName || "TBA")}</span></h2>
-            <p class="muted">${esc(item.title)} / ${esc(item.type)} / ${teamName(item.teamId)}</p>
+            <p class="muted">${esc(item.title)} / ${esc(item.type)} / ${calendarTargetLabel(item, store)}</p>
           </div>
           <button class="icon-button" data-calendar-close="true" title="Close">X</button>
         </div>
@@ -1698,7 +1725,7 @@ function toolbar(key, hasTeam, hasType, sortOptions) {
   return `
     <div class="toolbar">
       <label><span>Search</span><input data-filter="${key}" data-filter-kind="query" value="${escapeAttr(f.query || "")}" placeholder="Search by name, note, rank..."></label>
-      ${hasTeam ? `<label><span>Filter by team</span><select data-filter="${key}" data-filter-kind="team"><option value="all">All teams</option><option value="main" ${f.team === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${f.team === "academy" ? "selected" : ""}>Academy</option></select></label>` : ""}
+      ${hasTeam ? `<label><span>Filter by team</span><select data-filter="${key}" data-filter-kind="team"><option value="all">All teams</option><option value="main" ${f.team === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${f.team === "academy" ? "selected" : ""}>Academy</option>${key === "calendar" ? `<option value="both" ${f.team === "both" ? "selected" : ""}>Both teams</option>` : ""}</select></label>` : ""}
       ${hasType ? `<label><span>Filter by type</span><select data-filter="${key}" data-filter-kind="type"><option value="all">All types</option>${Object.keys(eventColors).map((type) => `<option ${f.type === type ? "selected" : ""}>${type}</option>`).join("")}</select></label>` : ""}
       ${sortOptions.length ? `<label><span>Sort by</span><select data-filter="${key}" data-filter-kind="sort">${sortOptions.map((item) => `<option value="${item}" ${f.sort === item ? "selected" : ""}>${sortLabel(item)}</option>`).join("")}</select></label>` : ""}
     </div>
@@ -1755,7 +1782,12 @@ function tryoutForm(item = { id: "", name: "", rlName: "", discord: "", rank: ""
   `;
 }
 
-function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes: "60", type: "Meeting", teamId: "main", notes: "" }) {
+function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes: "60", type: "Meeting", teamId: "main", playerId: "", targetType: "team", notes: "" }, store = loadStore(), user = null) {
+  const staffCalendar = isAdmin(user) || isCoach(user);
+  const ownPlayer = matchingPlayerForUser(store, user);
+  const selectedTarget = item.playerId ? "player" : (item.teamId === "both" ? "both" : "team");
+  const playerOptions = (store.players || []).map((player) => `<option value="${player.id}" ${item.playerId === player.id ? "selected" : ""}>${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
+  const ownTargetText = ownPlayer ? `${esc(ownPlayer.rlName || ownPlayer.name)} / ${teamName(ownPlayer.teamId)}` : "My personal calendar";
   return `
     <section class="panel"><h2>Calendar event</h2>
       <form class="entity-form" data-entity="events" data-id="${item.id || ""}">
@@ -1764,10 +1796,23 @@ function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes:
           ${field("dateTime", "Date and time", "datetime-local", item.dateTime)}
           ${field("durationMinutes", "Duration minutes", "number", item.durationMinutes)}
           ${field("type", "Type", eventTypes, item.type)}
-          ${field("teamId", "Noctiq team", "team", item.teamId)}
+          ${staffCalendar ? `
+            <label><span>Calendar target</span><select name="targetType">
+              <option value="team" ${selectedTarget === "team" ? "selected" : ""}>One team</option>
+              <option value="both" ${selectedTarget === "both" ? "selected" : ""}>Both teams</option>
+              <option value="player" ${selectedTarget === "player" ? "selected" : ""}>One player</option>
+            </select></label>
+            <label><span>Team</span><select name="teamId"><option value="main" ${item.teamId === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${item.teamId === "academy" ? "selected" : ""}>Academy</option></select></label>
+            <label><span>Player</span><select name="playerId"><option value="">Select player</option>${playerOptions}</select></label>
+          ` : `
+            <label><span>Calendar target</span><input value="${ownTargetText}" disabled></label>
+            <input type="hidden" name="targetType" value="player">
+            <input type="hidden" name="playerId" value="${escapeAttr(ownPlayer?.id || "")}">
+            <input type="hidden" name="teamId" value="${escapeAttr(ownPlayer?.teamId || user?.teamId || "")}">
+          `}
           ${field("notes", "Notes", "textarea", item.notes)}
         </div>
-        <p class="muted">Times are saved as UTC and shown in each user's local timezone (${esc(viewerTimeZone())}).</p>
+       
         <button class="primary">Save</button>
       </form>
     </section>
@@ -1944,8 +1989,10 @@ document.addEventListener("click", async (event) => {
 
   if (button.dataset.delete) {
     const [key, id] = button.dataset.delete.split(":");
+    const item = store[key]?.find((entry) => entry.id === id);
     if (!canManageEntity(activeUser, key)) return;
-    if (["events", "scrims", "tournaments", "tryouts", "results"].includes(key) && !(await showConfirm("Are you sure you want to delete this item?", { title: "Delete item", confirmText: "Delete", tone: "danger" }))) return;
+    if (key === "events" && !canManageCalendarEvent(activeUser, item, store)) return;
+    if (["events", "scrims", "tournaments", "tryouts", "results", "players"].includes(key) && !(await showConfirm("Are you sure you want to delete this item?", { title: "Delete item", confirmText: "Delete", tone: "danger" }))) return;
     store[key] = store[key].filter((item) => item.id !== id);
     await persistStore(store);
   }
@@ -1954,6 +2001,7 @@ document.addEventListener("click", async (event) => {
     const [key, id] = button.dataset.edit.split(":");
     if (!canManageEntity(activeUser, key)) return;
     const item = store[key].find((entry) => entry.id === id);
+    if (key === "events" && !canManageCalendarEvent(activeUser, item, store)) return;
     if (key === "results") {
       resultDraft = item ? { ...item } : null;
       currentPage = "results";
@@ -1963,7 +2011,7 @@ document.addEventListener("click", async (event) => {
     const formPanel = document.querySelector(".crud-layout .panel");
     if (!item || !formPanel) return;
     if (key === "tryouts") formPanel.outerHTML = tryoutForm(item, canManagePlayerStats(activeUser));
-    else if (key === "events") formPanel.outerHTML = calendarForm(item);
+    else if (key === "events") formPanel.outerHTML = calendarForm(item, store, activeUser);
     else if (key === "players") formPanel.outerHTML = playerForm(item, canManagePlayerStats(activeUser));
     else formPanel.outerHTML = entityForm(key, schemas[key], item);
   }
@@ -2123,6 +2171,8 @@ document.addEventListener("submit", async (event) => {
   if (key === "week-items" && !activeUser) return;
   if (!["player-stats", "training-routines", "training-presets", "week-items"].includes(key) && !canManageEntity(activeUser, key)) return;
   const entry = Object.fromEntries(new FormData(form));
+  const existingEntry = store[key]?.find((item) => item.id === form.dataset.id);
+  if (key === "events" && existingEntry && !canManageCalendarEvent(activeUser, existingEntry, store)) return;
 
   if (key === "player-stats") {
     const player = store.players.find((item) => item.id === entry.playerId);
@@ -2217,10 +2267,33 @@ document.addEventListener("submit", async (event) => {
   }
 
   if (key === "tryouts" || key === "players") {
-    const existing = store[key].find((item) => item.id === form.dataset.id);
+    const existing = existingEntry;
     if (existing?.stats) entry.stats = existing.stats;
     if (!canManagePlayerStats(activeUser) && existing?.opinion && key === "tryouts") entry.opinion = existing.opinion;
     if (!canManagePlayerStats(activeUser) && existing?.notes && key === "players") entry.notes = existing.notes;
+  }
+
+  if (key === "events") {
+    const staffCalendar = isAdmin(activeUser) || isCoach(activeUser);
+    const ownPlayer = matchingPlayerForUser(store, activeUser);
+    entry.createdBy = existingEntry?.createdBy || activeUser.id;
+    entry.createdByName = existingEntry?.createdByName || activeUser.name || activeUser.username || "";
+    if (!staffCalendar) {
+      entry.targetType = "player";
+      entry.playerId = ownPlayer?.id || "";
+      entry.teamId = ownPlayer?.teamId || activeUser.teamId || "";
+    } else if (entry.targetType === "both") {
+      entry.teamId = "both";
+      entry.playerId = "";
+    } else if (entry.targetType === "player") {
+      const targetPlayer = store.players.find((player) => player.id === entry.playerId);
+      if (!targetPlayer) return;
+      entry.teamId = targetPlayer.teamId || "";
+    } else {
+      entry.targetType = "team";
+      entry.playerId = "";
+      entry.teamId = ["main", "academy"].includes(entry.teamId) ? entry.teamId : "main";
+    }
   }
 
   if (["events", "scrims", "tournaments", "tryouts"].includes(key)) {
