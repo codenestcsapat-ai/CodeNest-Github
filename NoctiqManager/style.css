@@ -649,6 +649,12 @@ tbody tr:hover {
   gap: 16px;
 }
 
+.overview-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: 18px;
+}
+
 .result-columns h3 {
   margin: 0 0 10px;
   font-size: 1rem;
@@ -674,6 +680,15 @@ tbody tr:hover {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(6, 10, 32, 0.72);
+}
+
+.result-tabs {
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), max-content));
+  justify-content: start;
+}
+
+.player-card {
+  align-content: start;
 }
 
 .routine-card-head,
@@ -735,6 +750,61 @@ tbody tr:hover {
 .player-link-box:hover {
   border-color: rgba(63, 150, 255, 0.5);
   background: rgba(63, 150, 255, 0.12);
+}
+
+.public-player-info {
+  display: grid;
+  gap: 8px;
+}
+
+.secondary-action {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(18, 28, 49, 0.78);
+  color: #d9e5f5;
+  font-weight: 800;
+}
+
+.timezone-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(16, 22, 58, 0.64);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.secondary-action:hover,
+.secondary-action:focus-visible {
+  border-color: rgba(63, 150, 255, 0.5);
+  background: rgba(63, 150, 255, 0.12);
+}
+
+.player-profile-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  gap: 8px;
+}
+
+code {
+  display: inline-block;
+  max-width: 100%;
+  padding: 3px 7px;
+  border: 1px solid rgba(164, 179, 204, 0.18);
+  border-radius: 5px;
+  background: rgba(3, 7, 18, 0.78);
+  color: #e2e8f0;
+  overflow-wrap: anywhere;
 }
 
 .custom-map-box {
@@ -1167,6 +1237,7 @@ tbody tr:hover {
   .routine-grid,
   .player-card-grid,
   .result-columns,
+  .overview-split,
   .routine-stats,
   .segmented {
     grid-template-columns: 1fr;
