@@ -402,8 +402,60 @@ function normalizeTrainingItems(items = []) {
 
 function normalizeReplayLinks(value) {
   const rows = Array.isArray(value) ? value : String(value || "").split(/\r?\n|,/);
-  return rows.map((item) => typeof item === "string" ? { label: item.trim(), url: item.trim() } : { label: item.label || item.name || item.url || "", url: item.url || item.link || "" })
-    .filter((item) => item.url);
+  return rows.map((item) => {
+    if (typeof item === "string") return { type: "link", label: item.trim(), url: item.trim() };
+    return {
+      type: item.type === "file" ? "file" : "link",
+      label: item.label || item.name || item.fileName || item.url || "",
+      url: item.url || item.link || item.dataUrl || "",
+      dataUrl: item.dataUrl || item.url || item.link || "",
+      fileName: item.fileName || item.name || item.label || "replay.replay",
+      mimeType: item.mimeType || "application/octet-stream",
+      size: item.size || 0,
+      uploadedAt: item.uploadedAt || "",
+    };
+  }).filter((item) => item.url || item.dataUrl);
+}
+
+function replayDisplayName(link) {
+  return link.label || link.fileName || link.url || "Replay";
+}
+
+function replayHref(link) {
+  return link.type === "file" ? (link.dataUrl || link.url) : link.url;
+}
+
+function replayDownloadName(link) {
+  const name = link.fileName || link.label || "replay.replay";
+  return name.toLowerCase().endsWith(".replay") ? name : `${name}.replay`;
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function replayFilesFromForm(form) {
+  const input = form.querySelector('input[name="replayFiles"]');
+  const files = [...(input?.files || [])];
+  const validFiles = files.filter((file) => file.name.toLowerCase().endsWith(".replay"));
+  return Promise.all(validFiles.map(async (file) => {
+    const dataUrl = await readFileAsDataUrl(file);
+    return {
+      type: "file",
+      label: file.name,
+      fileName: file.name,
+      mimeType: file.type || "application/octet-stream",
+      size: file.size,
+      uploadedAt: new Date().toISOString(),
+      dataUrl,
+      url: dataUrl,
+    };
+  }));
 }
 
 function normalizeEventType(type = "Other") {
@@ -1168,8 +1220,8 @@ function resultsPage(store, editable) {
     <section class="crud-layout">
       ${toolbar("results", true, false, ["dateTime", "title", "teamId"])}
       <div class="toolbar result-tabs">
-        <button class="${view === "matches" ? "selected" : ""}" data-results-view="matches">Match Results</button>
-        <button class="${view === "tournaments" ? "selected" : ""}" data-results-view="tournaments">Tournaments / Leagues</button>
+        <button class="primary ${view === "matches" ? "selected" : ""}" data-results-view="matches">Match Results</button>
+        <button class="primary ${view === "tournaments" ? "selected" : ""}" data-results-view="tournaments">Tournaments / Leagues</button>
         ${editable ? `<button class="primary" data-result-add="true">Add Result</button>` : ""}
       </div>
       ${editable && draft ? resultForm(store, draft) : ""}
@@ -1293,7 +1345,9 @@ function resultForm(store, item = { id: "", resultSource: "", type: "Match", tit
           ${field("opponent", "Opponent", "text", item.opponent)}
           ${field("averageMmr", "Ave. MMR", "number", item.averageMmr)}
           ${field("score", "Score / result", "text", item.score)}
-          ${field("replayLinksText", "Replay links", "textarea", (item.replayLinks || []).map((link) => link.url || link).join("\n"))}
+          ${field("replayLinksText", "Replay links", "textarea", (item.replayLinks || []).filter((link) => (typeof link === "string") || link.type !== "file").map((link) => link.url || link).join("\n"))}
+          <label><span>Replay files (.replay)</span><input name="replayFiles" type="file" accept=".replay" multiple></label>
+          ${(item.replayLinks || []).filter((link) => link.type === "file").length ? `<div class="compact-row full-span"><strong>Saved replay files</strong><span>${(item.replayLinks || []).filter((link) => link.type === "file").map((link) => esc(replayDisplayName(link))).join(", ")}</span></div>` : ""}
           ${field("notes", "Notes", "textarea", item.notes)}
         </div>
         <div class="row-actions"><button class="primary">Save result</button><button type="button" data-result-cancel="true">Cancel</button></div>
@@ -1319,7 +1373,12 @@ function resultReplayDialog(store) {
           <button class="icon-button" data-replay-close="true" title="Close">X</button>
         </div>
         <div class="custom-map-box">
-          ${links.length ? links.map((link) => `<div class="compact-row"><strong>${esc(link.label || link.url)}</strong><span><a href="${escapeAttr(link.url)}" target="_blank" rel="noreferrer">Open replay</a></span></div>`).join("") : `<p class="muted">No replay links saved for this result.</p>`}
+          ${links.length ? links.map((link) => {
+            const href = replayHref(link);
+            const download = link.type === "file" ? ` download="${escapeAttr(replayDownloadName(link))}"` : "";
+            const text = link.type === "file" ? "Download replay" : "Open replay";
+            return `<div class="compact-row"><strong>${esc(replayDisplayName(link))}</strong><span><a href="${escapeAttr(href)}"${download} target="_blank" rel="noreferrer">${text}</a></span></div>`;
+          }).join("") : `<p class="muted">No replay links or files saved for this result.</p>`}
         </div>
         <div class="row-actions modal-actions"><button data-replay-close="true">Close</button></div>
       </section>
@@ -1812,7 +1871,7 @@ function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes:
           `}
           ${field("notes", "Notes", "textarea", item.notes)}
         </div>
-       
+        <p class="muted">Times are saved as UTC and shown in each user's local timezone (${esc(viewerTimeZone())}). Players can create calendar events only for themselves; admins and coaches can target one player, one team, or both teams.</p>
         <button class="primary">Save</button>
       </form>
     </section>
@@ -2261,8 +2320,11 @@ document.addEventListener("submit", async (event) => {
     entry.sourceId = source.sourceId;
     entry.tournamentId = source.source === "tournaments" ? source.sourceId : "";
     entry.averageMmr = entry.averageMmr || "";
-    entry.replayLinks = normalizeReplayLinks(entry.replayLinksText || "");
+    const existingReplays = normalizeReplayLinks(existingEntry?.replayLinks || []).filter((link) => link.type === "file");
+    const uploadedReplays = await replayFilesFromForm(form);
+    entry.replayLinks = [...normalizeReplayLinks(entry.replayLinksText || ""), ...existingReplays, ...uploadedReplays];
     delete entry.replayLinksText;
+    delete entry.replayFiles;
     resultDraft = null;
   }
 
