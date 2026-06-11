@@ -90,7 +90,7 @@ const adminUsers = [];
 const playerStatUsers = [];
 const playerUsers = [];
 const builtInUsers = [...adminUsers, ...playerStatUsers, ...playerUsers];
-const dataKeys = ["players", "tryouts", "scrims", "partners", "tournaments", "results", "events", "trainingRoutines", "trainingPresets", "weeks"];
+const dataKeys = ["players", "tryouts", "scrims", "partners", "tournaments", "results", "events", "trainingRoutines", "trainingPresets", "weeks", "availability", "confirmationTemplates", "notifications"];
 const demoIds = {
   players: new Set(["p1", "p2"]),
   tryouts: new Set(["tr1"]),
@@ -114,6 +114,9 @@ const seedStore = {
   trainingRoutines: [],
   trainingPresets: [],
   weeks: [],
+  availability: [],
+  confirmationTemplates: [],
+  notifications: [],
 };
 
 const schemas = {
@@ -152,6 +155,24 @@ const schemas = {
     cells: (item) => [item.name, item.level, item.contact, item.availability, multiline(item.records), item.notes],
     search: (item) => `${item.name} ${item.level} ${item.contact} ${item.availability} ${item.records} ${item.notes}`,
     sort: ["name", "level", "contact"],
+  },
+  availability: {
+    title: "Availability entry",
+    empty: { id: "", playerName: "", teamId: "main", day: "", date: "", startTime: "", endTime: "", status: "Available", notes: "" },
+    fields: [["playerName", "Player"], ["teamId", "Team", "team"], ["day", "Day"], ["date", "Date", "date"], ["startTime", "Start", "time"], ["endTime", "End", "time"], ["status", "Status", ["Available", "Maybe", "Unavailable"]], ["notes", "Notes", "textarea"]],
+    headers: ["Player", "Team", "Day/date", "Time", "Status", "Notes"],
+    cells: (item) => [item.playerName || playerNameById(loadStore(), item.playerId), teamName(item.teamId), availabilityDayLabel(item), availabilityTimeLabel(item), availabilityStatusBadge(item.status), multiline(item.notes || "")],
+    search: (item) => `${item.playerName} ${item.day} ${item.date} ${item.status} ${item.notes}`,
+    sort: ["playerName", "teamId", "day", "date", "status"],
+  },
+  confirmationTemplates: {
+    title: "Confirmation template",
+    empty: { id: "", title: "", subject: "", message: "" },
+    fields: [["title", "Template name"], ["subject", "Subject"], ["message", "Message", "textarea"]],
+    headers: ["Template", "Subject", "Message"],
+    cells: (item) => [item.title, item.subject, multiline(item.message || "")],
+    search: (item) => `${item.title} ${item.subject} ${item.message}`,
+    sort: ["title", "subject"],
   },
 };
 
@@ -386,7 +407,27 @@ function normalizeStore(store) {
     showInCalendar: Boolean(week.showInCalendar),
     items: (week.items || []).map((item) => ({ ...item, showInCalendar: Boolean(item.showInCalendar) })),
   }));
-  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, tryouts, scrims, partners, tournaments, results, events, trainingRoutines, trainingPresets, weeks };
+  const availability = stripDemoRows("availability", store.availability || []).map((item) => ({
+    ...item,
+    playerName: item.playerName || playerNameById({ players }, item.playerId),
+    teamId: ["main", "academy"].includes(item.teamId) ? item.teamId : (players.find((player) => player.id === item.playerId)?.teamId || "main"),
+    status: ["Available", "Maybe", "Unavailable"].includes(item.status) ? item.status : "Available",
+  }));
+  const confirmationTemplates = stripDemoRows("confirmationTemplates", store.confirmationTemplates || []).map((item) => ({
+    ...item,
+    title: item.title || "Untitled template",
+    subject: item.subject || item.title || "Confirmation",
+    message: item.message || "",
+  }));
+  const notifications = stripDemoRows("notifications", store.notifications || []).map((item) => ({
+    ...item,
+    targetType: item.targetType || (item.playerId ? "player" : "team"),
+    teamId: item.teamId || "",
+    playerId: item.playerId || "",
+    readBy: Array.isArray(item.readBy) ? item.readBy : [],
+    createdAt: item.createdAt || "",
+  }));
+  return { ...seedStore, ...store, users: [...builtInUsers, ...storedUsers], players, tryouts, scrims, partners, tournaments, results, events, trainingRoutines, trainingPresets, weeks, availability, confirmationTemplates, notifications };
 }
 
 function normalizeTrainingItems(items = []) {
@@ -534,7 +575,12 @@ function canManageEntity(user, key) {
   if (key === "results") return canManageResults(user);
   if (key === "tournaments") return canManageTournaments(user);
   if (key === "events") return canManageCalendarEvent(user);
+  if (["availability", "confirmationTemplates", "notifications"].includes(key)) return isStaff(user) || isTeamCaptain(user);
   return (isCoach(user) || isManager(user) || isTeamCaptain(user)) && ["scrims", "tryouts"].includes(key);
+}
+
+function canSendConfirmations(user) {
+  return isStaff(user) || isTeamCaptain(user);
 }
 
 function canCreateTrainingRoutine(user) {
@@ -899,6 +945,94 @@ function multiline(value = "") {
   return esc(value).replace(/\n/g, "<br>");
 }
 
+function availabilityDayLabel(item) {
+  return [item.day, item.date].filter(Boolean).join(" / ") || "-";
+}
+
+function availabilityTimeLabel(item) {
+  return [item.startTime, item.endTime].filter(Boolean).join(" - ") || "-";
+}
+
+function availabilityStatusBadge(status = "Available") {
+  const safeStatus = ["Available", "Maybe", "Unavailable"].includes(status) ? status : "Available";
+  return `<span class="status-badge status-${safeStatus.toLowerCase()}">${esc(safeStatus)}</span>`;
+}
+
+function visibleAvailabilityRows(store, user) {
+  if (isStaff(user) || isTeamCaptain(user)) return store.availability || [];
+  const player = matchingPlayerForUser(store, user);
+  return (store.availability || []).filter((item) => (
+    (player?.id && item.playerId === player.id) ||
+    (player?.teamId && item.teamId === player.teamId)
+  ));
+}
+
+function notificationTargets(store, entry) {
+  if (entry.targetType === "both") return store.players || [];
+  if (entry.targetType === "player") return store.players.filter((player) => player.id === entry.playerId);
+  return store.players.filter((player) => player.teamId === entry.teamId);
+}
+
+function targetLabel(store, entry) {
+  if (entry.targetType === "both") return "Both teams";
+  if (entry.targetType === "player") return playerNameById(store, entry.playerId);
+  return teamName(entry.teamId);
+}
+
+function canSeeNotification(store, user, notification) {
+  if (!user) return false;
+  if (isStaff(user) || isTeamCaptain(user)) return true;
+  const player = matchingPlayerForUser(store, user);
+  if (notification.targetType === "both") return true;
+  if (notification.targetType === "player") return Boolean(player?.id && notification.playerId === player.id);
+  return Boolean(player?.teamId && notification.teamId === player.teamId);
+}
+
+function visibleNotifications(store, user) {
+  return (store.notifications || [])
+    .filter((item) => canSeeNotification(store, user, item))
+    .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+}
+
+function unreadNotificationCount(store, user) {
+  if (!user) return 0;
+  return visibleNotifications(store, user).filter((item) => !(item.readBy || []).includes(user.id)).length;
+}
+
+function parseAvailabilityRows(text, store) {
+  const lines = String(text || "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (!lines.length) return [];
+  const split = (line) => line.includes("\t") ? line.split("\t") : line.split(",");
+  const first = split(lines[0]).map((cell) => cell.trim().toLowerCase());
+  const hasHeader = first.some((cell) => ["player", "name", "player name", "team", "day", "date", "start", "from", "end", "to", "status", "notes", "note"].includes(cell));
+  const headers = hasHeader ? first : ["player", "team", "day", "date", "start", "end", "status", "notes"];
+  const rows = hasHeader ? lines.slice(1) : lines;
+  const value = (cells, names, fallbackIndex) => {
+    const index = headers.findIndex((header) => names.includes(header));
+    return String(cells[index >= 0 ? index : fallbackIndex] || "").trim();
+  };
+  return rows.map((line) => {
+    const cells = split(line).map((cell) => cell.trim());
+    const playerName = value(cells, ["player", "name", "player name"], 0);
+    const matchedPlayer = store.players.find((player) => [player.rlName, player.name, player.discord].some((name) => String(name || "").toLowerCase() === playerName.toLowerCase()));
+    const teamText = value(cells, ["team"], 1).toLowerCase();
+    const statusText = value(cells, ["status"], 6);
+    const status = ["Available", "Maybe", "Unavailable"].find((item) => item.toLowerCase() === statusText.toLowerCase()) || "Available";
+    return {
+      id: uid(),
+      playerId: matchedPlayer?.id || "",
+      playerName: matchedPlayer?.rlName || matchedPlayer?.name || playerName,
+      teamId: matchedPlayer?.teamId || (teamText.includes("academy") ? "academy" : "main"),
+      day: value(cells, ["day"], 2),
+      date: value(cells, ["date"], 3),
+      startTime: value(cells, ["start", "from"], 4),
+      endTime: value(cells, ["end", "to"], 5),
+      status,
+      notes: value(cells, ["notes", "note"], 7),
+    };
+  }).filter((item) => item.playerName);
+}
+
 function allCalendarItems(store, viewer) {
   const events = store.events.map((item) => ({ ...item, source: "events", sourceId: item.id }));
   const scrims = store.scrims.map((item) => normalizeTimedItem({ id: `scrim-${item.id}`, sourceId: item.id, title: `Scrim vs ${item.opponent || "TBA"}`, dateTime: item.dateTime, startsAtUtc: item.startsAtUtc, durationMinutes: item.durationMinutes, type: "Scrim", teamId: item.teamId, notes: item.notes, opponent: item.opponent, lineupOpponent: item.lineupOpponent, ourLineup: item.ourLineup || [], opponentLineup: item.opponentLineup || [], source: "scrims" }));
@@ -922,6 +1056,7 @@ function render() {
     return;
   }
   if (currentPage === "admin" && !isAdmin(user)) currentPage = "dashboard";
+  const unreadCount = unreadNotificationCount(store, user);
 
   app.innerHTML = `
     <div class="app-shell">
@@ -929,7 +1064,9 @@ function render() {
         <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League Team Manager</span></div></div>
         <nav>
           ${navButton("dashboard", "Overview")}
+          ${navButton("confirmations", `Confirmations${unreadCount ? ` (${unreadCount})` : ""}`)}
           ${navButton("calendar", "Calendar")}
+          ${navButton("availability", "Availability")}
           ${navButton("scrims", "Scrims")}
           ${navButton("tournaments", "Tournaments")}
           ${navButton("results", "Results")}
@@ -973,6 +1110,8 @@ function pageTitle(page) {
   return {
     dashboard: "Overview",
     calendar: "Calendar",
+    availability: "Availability",
+    confirmations: "Confirmations",
     scrims: "Scrims",
     tournaments: "Tournaments",
     results: "Results",
@@ -988,6 +1127,8 @@ function pageTitle(page) {
 
 function renderPage(store, user) {
   if (currentPage === "dashboard") return dashboard(store, user);
+  if (currentPage === "confirmations") return confirmationsPage(store, user);
+  if (currentPage === "availability") return availabilityPage(store, user);
   if (currentPage === "calendar") return calendarPage(store, canManageCalendarEvent(user), canManageResults(user), user);
   if (currentPage === "results") return resultsPage(store, canManageResults(user));
   if (currentPage === "tryouts") return tryoutsPage(store, canManageEntity(user, "tryouts"), user);
@@ -1050,10 +1191,12 @@ function dashboard(store, user) {
   const upcomingCalendar = calendar.filter((item) => endDate(item) >= new Date());
   const nextEvent = upcomingCalendar[0];
   const visibleTryouts = (store.tryouts || []).filter((item) => broadOverview || !activePlayer || item.teamId === activePlayer.teamId).slice(0, 6);
+  const latestNotifications = visibleNotifications(store, user).slice(0, 4);
   return `
     <section class="page-grid">
       ${metric("Next Event", nextEvent?.title || "-", nextEvent ? fmtRange(nextEvent) : "no upcoming event")}
       <section class="panel"><h2>Team focus</h2>${activePlayer ? compact(activePlayer.rlName || activePlayer.name, `${teamName(activePlayer.teamId)} / ${activePlayer.position || "Player"}`) : `<p class="muted">General club overview.</p>`}</section>
+      <section class="panel"><h2>Confirmations</h2>${latestNotifications.map((item) => compact(item.subject || "Confirmation", item.eventLabel || item.targetLabel || "Notification")).join("") || `<p class="muted">No confirmations yet.</p>`}<button class="secondary-action" data-page="confirmations">Open confirmations</button></section>
       <section class="panel wide overview-split"><div><h2>Upcoming Schedule</h2>${eventList(upcomingCalendar.slice(0, 7))}</div><div><h2>Active Tryouts</h2>${tryoutSummaryList(visibleTryouts)}</div></section>
     </section>
   `;
@@ -1593,6 +1736,113 @@ function weekGrid(items, editable) {
   `).join("")}</div>`;
 }
 
+function availabilityPage(store, user) {
+  const editable = canManageEntity(user, "availability");
+  const rows = filteredRows(visibleAvailabilityRows(store, user), schemas.availability, "availability");
+  return `
+    <section class="crud-layout">
+      ${toolbar("availability", true, false, schemas.availability.sort)}
+      ${editable ? availabilityForm(store) : ""}
+      ${editable ? availabilityImportPanel() : ""}
+      <section class="panel wide">
+        <h2>Availability</h2>
+        ${table(schemas.availability.headers, rows.map((item) => [...schemas.availability.cells(item), rowActions(editable, "availability", item.id)]))}
+      </section>
+    </section>
+  `;
+}
+
+function availabilityForm(store, item = schemas.availability.empty) {
+  const selectedPlayer = store.players.find((player) => player.id === item.playerId);
+  const playerOptions = store.players.map((player) => `<option value="${player.id}" ${item.playerId === player.id ? "selected" : ""}>${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
+  return `
+    <section class="panel"><h2>Availability entry</h2>
+      <form class="entity-form" data-entity="availability" data-id="${item.id || ""}">
+        <div class="form-grid">
+          <label><span>Player</span><select name="playerId"><option value="">Manual name</option>${playerOptions}</select></label>
+          ${field("playerName", "Player name", "text", item.playerName || selectedPlayer?.rlName || selectedPlayer?.name || "")}
+          ${field("teamId", "Team", "team", item.teamId || selectedPlayer?.teamId || "main")}
+          ${field("day", "Day", weekDays, item.day || "Monday")}
+          ${field("date", "Date", "date", item.date || "")}
+          ${field("startTime", "Start", "time", item.startTime || "")}
+          ${field("endTime", "End", "time", item.endTime || "")}
+          ${field("status", "Status", ["Available", "Maybe", "Unavailable"], item.status || "Available")}
+          ${field("notes", "Notes", "textarea", item.notes || "")}
+        </div>
+        <button class="primary">Save availability</button>
+      </form>
+    </section>
+  `;
+}
+
+function availabilityImportPanel() {
+  return `
+    <section class="panel"><h2>Import from Excel</h2>
+      <form class="entity-form" data-entity="availability-import">
+        <label><span>Paste Excel rows</span><textarea name="rows" rows="6" placeholder="Player&#9;Team&#9;Day&#9;Date&#9;Start&#9;End&#9;Status&#9;Notes"></textarea></label>
+        <p class="muted">Paste rows copied from Excel. Header names can be Player, Team, Day, Date, Start, End, Status, Notes.</p>
+        <button class="primary">Import availability</button>
+      </form>
+    </section>
+  `;
+}
+
+function confirmationsPage(store, user) {
+  const canSend = canSendConfirmations(user);
+  const notifications = visibleNotifications(store, user);
+  return `
+    <section class="crud-layout">
+      ${canSend ? confirmationSendForm(store) : ""}
+      ${canSend ? entityForm("confirmationTemplates", schemas.confirmationTemplates) : ""}
+      <section class="panel wide">
+        <h2>Notifications</h2>
+        <div class="notification-list">${notifications.map((item) => notificationCard(item, user, canSend)).join("") || `<p class="muted">No confirmations yet.</p>`}</div>
+      </section>
+      ${canSend ? `<section class="panel wide"><h2>Saved templates</h2>${table(schemas.confirmationTemplates.headers, filteredRows(store.confirmationTemplates, schemas.confirmationTemplates, "confirmationTemplates").map((item) => [...schemas.confirmationTemplates.cells(item), rowActions(true, "confirmationTemplates", item.id)]))}</section>` : ""}
+    </section>
+  `;
+}
+
+function confirmationSendForm(store) {
+  const templateOptions = (store.confirmationTemplates || []).map((template) => `<option value="${template.id}">${esc(template.title)}</option>`).join("");
+  const playerOptions = (store.players || []).map((player) => `<option value="${player.id}">${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
+  const eventOptions = allCalendarItems(store).map((item) => `<option value="${resultSourceKey(item)}">${esc(item.title)} / ${fmt(item)}</option>`).join("");
+  return `
+    <section class="panel"><h2>Send confirmation</h2>
+      <form class="entity-form" data-entity="confirmation-send">
+        <div class="form-grid">
+          <label><span>Template</span><select name="templateId"><option value="">Custom message</option>${templateOptions}</select></label>
+          <label><span>Event</span><select name="eventKey"><option value="">No event</option>${eventOptions}</select></label>
+          <label><span>Target</span><select name="targetType"><option value="team">One team</option><option value="both">Both teams</option><option value="player">One player</option></select></label>
+          ${field("teamId", "Team", "team", "main")}
+          <label><span>Player</span><select name="playerId"><option value="">Select player</option>${playerOptions}</select></label>
+          ${field("subject", "Subject", "text", "")}
+          ${field("message", "Message", "textarea", "")}
+        </div>
+        <button class="primary">Notify players</button>
+      </form>
+    </section>
+  `;
+}
+
+function notificationCard(item, user, canSend) {
+  const unread = !(item.readBy || []).includes(user.id);
+  return `
+    <article class="notification-card ${unread ? "unread" : ""}">
+      <div class="routine-card-head">
+        <div><h3>${esc(item.subject || "Confirmation")}</h3><span>${esc(item.createdAt ? new Date(item.createdAt).toLocaleString("en-US") : "")} / ${esc(item.targetLabel || "Players")}</span></div>
+        <div class="row-actions">
+          ${unread ? `<button data-notification-read="${item.id}">Mark read</button>` : ""}
+          ${canSend ? `<button data-delete="notifications:${item.id}">Delete</button>` : ""}
+        </div>
+      </div>
+      ${item.eventLabel ? `<p class="muted">${esc(item.eventLabel)}</p>` : ""}
+      <p>${multiline(item.message || "")}</p>
+      ${item.recipients?.length ? `<p class="muted">Sent to: ${esc(item.recipients.join(", "))}</p>` : ""}
+    </article>
+  `;
+}
+
 function sortLabel(option) {
   return sortLabels[option] || option.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
 }
@@ -1968,7 +2218,9 @@ document.addEventListener("click", async (event) => {
 
   if (button.dataset.tournamentAdd) {
     if (!canManageTournaments(activeUser)) return;
-    const formPanel = document.querySelector(".crud-layout .panel");
+    const formPanel = key === "confirmationTemplates"
+      ? [...document.querySelectorAll(".crud-layout .panel")].find((panel) => panel.querySelector('[data-entity="confirmationTemplates"]'))
+      : document.querySelector(".crud-layout .panel");
     if (formPanel) formPanel.outerHTML = entityForm("tournaments", schemas.tournaments);
   }
 
@@ -2041,6 +2293,13 @@ document.addEventListener("click", async (event) => {
     render();
   }
 
+  if (button.dataset.notificationRead) {
+    const notification = store.notifications.find((item) => item.id === button.dataset.notificationRead);
+    if (!notification || !canSeeNotification(store, activeUser, notification)) return;
+    notification.readBy = Array.from(new Set([...(notification.readBy || []), activeUser.id]));
+    await persistStore(store);
+  }
+
   if (button.dataset.trainingPresetsToggle) {
     filters.training = { ...(filters.training || {}), showPresets: !(filters.training || {}).showPresets };
     render();
@@ -2051,7 +2310,7 @@ document.addEventListener("click", async (event) => {
     const item = store[key]?.find((entry) => entry.id === id);
     if (!canManageEntity(activeUser, key)) return;
     if (key === "events" && !canManageCalendarEvent(activeUser, item, store)) return;
-    if (["events", "scrims", "tournaments", "tryouts", "results", "players"].includes(key) && !(await showConfirm("Are you sure you want to delete this item?", { title: "Delete item", confirmText: "Delete", tone: "danger" }))) return;
+    if (["events", "scrims", "tournaments", "tryouts", "results", "players", "availability", "confirmationTemplates", "notifications"].includes(key) && !(await showConfirm("Are you sure you want to delete this item?", { title: "Delete item", confirmText: "Delete", tone: "danger" }))) return;
     store[key] = store[key].filter((item) => item.id !== id);
     await persistStore(store);
   }
@@ -2072,6 +2331,7 @@ document.addEventListener("click", async (event) => {
     if (key === "tryouts") formPanel.outerHTML = tryoutForm(item, canManagePlayerStats(activeUser));
     else if (key === "events") formPanel.outerHTML = calendarForm(item, store, activeUser);
     else if (key === "players") formPanel.outerHTML = playerForm(item, canManagePlayerStats(activeUser));
+    else if (key === "availability") formPanel.outerHTML = availabilityForm(store, item);
     else formPanel.outerHTML = entityForm(key, schemas[key], item);
   }
 
@@ -2228,10 +2488,58 @@ document.addEventListener("submit", async (event) => {
   if (key === "training-routines" && !canCreateTrainingRoutine(activeUser)) return;
   if (key === "training-presets" && !canManageTrainingPresets(activeUser)) return;
   if (key === "week-items" && !activeUser) return;
-  if (!["player-stats", "training-routines", "training-presets", "week-items"].includes(key) && !canManageEntity(activeUser, key)) return;
+  if (key === "availability-import" && !canManageEntity(activeUser, "availability")) return;
+  if (key === "confirmation-send" && !canSendConfirmations(activeUser)) return;
+  if (!["player-stats", "training-routines", "training-presets", "week-items", "availability-import", "confirmation-send"].includes(key) && !canManageEntity(activeUser, key)) return;
   const entry = Object.fromEntries(new FormData(form));
   const existingEntry = store[key]?.find((item) => item.id === form.dataset.id);
   if (key === "events" && existingEntry && !canManageCalendarEvent(activeUser, existingEntry, store)) return;
+
+  if (key === "availability-import") {
+    const rows = parseAvailabilityRows(entry.rows, store);
+    if (!rows.length) {
+      await showAlert("No availability rows were found.", { title: "Import availability", tone: "warning" });
+      return;
+    }
+    store.availability = [...(store.availability || []), ...rows];
+    await persistStore(store);
+    return;
+  }
+
+  if (key === "confirmation-send") {
+    const template = store.confirmationTemplates.find((item) => item.id === entry.templateId);
+    const eventItem = entry.eventKey ? findCalendarItem(store, entry.eventKey) : null;
+    const message = entry.message || template?.message || "";
+    const subject = entry.subject || template?.subject || template?.title || "Confirmation";
+    if (!message.trim() && !eventItem) {
+      await showAlert("Add a message, choose a template, or attach an event first.", { title: "Send confirmation", tone: "warning" });
+      return;
+    }
+    const targets = notificationTargets(store, entry);
+    if (!targets.length) {
+      await showAlert("No players match this confirmation target.", { title: "Send confirmation", tone: "warning" });
+      return;
+    }
+    const eventLabel = eventItem ? `${eventItem.title} / ${fmt(eventItem)}` : "";
+    store.notifications.push({
+      id: uid(),
+      subject,
+      message: [message, eventLabel ? `Event: ${eventLabel}` : ""].filter(Boolean).join("\n\n"),
+      eventKey: entry.eventKey || "",
+      eventLabel,
+      targetType: entry.targetType,
+      teamId: entry.targetType === "team" ? entry.teamId : "",
+      playerId: entry.targetType === "player" ? entry.playerId : "",
+      targetLabel: targetLabel(store, entry),
+      recipients: targets.map((player) => player.rlName || player.name).filter(Boolean),
+      createdBy: activeUser.id,
+      createdByName: activeUser.name || activeUser.username || "",
+      createdAt: new Date().toISOString(),
+      readBy: [],
+    });
+    await persistStore(store);
+    return;
+  }
 
   if (key === "player-stats") {
     const player = store.players.find((item) => item.id === entry.playerId);
@@ -2333,6 +2641,12 @@ document.addEventListener("submit", async (event) => {
     if (existing?.stats) entry.stats = existing.stats;
     if (!canManagePlayerStats(activeUser) && existing?.opinion && key === "tryouts") entry.opinion = existing.opinion;
     if (!canManagePlayerStats(activeUser) && existing?.notes && key === "players") entry.notes = existing.notes;
+  }
+
+  if (key === "availability") {
+    const player = store.players.find((item) => item.id === entry.playerId);
+    entry.playerName = player ? (player.rlName || player.name) : entry.playerName;
+    entry.teamId = player?.teamId || entry.teamId || "main";
   }
 
   if (key === "events") {
