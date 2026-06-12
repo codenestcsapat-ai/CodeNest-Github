@@ -687,6 +687,43 @@ tbody tr:hover {
   justify-content: start;
 }
 
+.full-span {
+  grid-column: 1 / -1;
+}
+
+.tournament-dialog {
+  width: min(1100px, 100%);
+}
+
+.tournament-match-editor {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tournament-match-head,
+.tournament-match-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.75fr) minmax(160px, 1.2fr) minmax(92px, 0.6fr) minmax(90px, 0.65fr) minmax(92px, 0.7fr) minmax(180px, 1.3fr);
+  gap: 8px;
+  min-width: 820px;
+  align-items: center;
+}
+
+.tournament-match-head {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tournament-match-row input,
+.tournament-match-row select {
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
 .player-card {
   align-content: start;
 }
@@ -1028,6 +1065,87 @@ code {
 .status-unavailable {
   color: #fb7185;
   background: rgba(251, 113, 133, 0.12);
+}
+
+.availability-panel {
+  overflow: hidden;
+}
+
+.availability-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.availability-panel-head h2 {
+  margin-bottom: 6px;
+}
+
+.availability-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(164, 179, 204, 0.14);
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.34);
+}
+
+.availability-table {
+  min-width: 900px;
+  table-layout: fixed;
+}
+
+.availability-table th,
+.availability-table td {
+  padding: 8px;
+  border-right: 1px solid rgba(164, 179, 204, 0.1);
+  text-align: center;
+}
+
+.availability-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #080d2a;
+}
+
+.availability-table .availability-day,
+.availability-table .availability-time {
+  width: 92px;
+  background: rgba(9, 14, 40, 0.86);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: none;
+}
+
+.availability-table .availability-day {
+  border-right-color: rgba(63, 150, 255, 0.2);
+}
+
+.availability-cell {
+  background: rgba(16, 22, 58, 0.38);
+}
+
+.availability-cell input {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  padding: 0;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.availability-cell input:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.availability-count {
+  width: 110px;
+  color: #d7c8ff;
+  font-weight: 900;
 }
 
 .notification-list {
