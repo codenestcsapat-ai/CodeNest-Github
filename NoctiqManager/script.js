@@ -28,14 +28,17 @@ let calendarMonth = new Date();
 let selectedCalendarItemKey = "";
 let resultDraft = null;
 let selectedReplayResultId = "";
+let availabilityWeekOffset = 0;
 
 const teams = [
   { id: "main", name: "Noctiq eSports", label: "Main Team" },
   { id: "academy", name: "Noctiq eSports Academy", label: "Academy" },
+  { id: "rls", name: "Noctiq Esports RLS", label: "Noctiq Esports RLS" },
 ];
 
 const eventColors = {
   Match: "#36d399",
+  "League match": "#78e6a8",
   Scrim: "#3f96ff",
   Training: "#6fb6ff",
   Tournament: "#f2f5ff",
@@ -418,7 +421,7 @@ function normalizeStore(store) {
   const availability = stripDemoRows("availability", store.availability || []).map((item) => ({
     ...item,
     playerName: item.playerName || playerNameById({ players }, item.playerId),
-    teamId: ["main", "academy"].includes(item.teamId) ? item.teamId : (players.find((player) => player.id === item.playerId)?.teamId || "main"),
+    teamId: validTeamId(item.teamId, players.find((player) => player.id === item.playerId)?.teamId || "main"),
     status: ["Available", "Maybe", "Unavailable"].includes(item.status) ? item.status : "Available",
   }));
   const confirmationTemplates = stripDemoRows("confirmationTemplates", store.confirmationTemplates || []).map((item) => ({
@@ -432,6 +435,8 @@ function normalizeStore(store) {
     targetType: item.targetType || (item.playerId ? "player" : "team"),
     teamId: item.teamId || "",
     playerId: item.playerId || "",
+    recipientIds: Array.isArray(item.recipientIds) ? item.recipientIds : [],
+    acceptedBy: Array.isArray(item.acceptedBy) ? item.acceptedBy : [],
     readBy: Array.isArray(item.readBy) ? item.readBy : [],
     createdAt: item.createdAt || "",
   }));
@@ -508,7 +513,6 @@ async function replayFilesFromForm(form) {
 }
 
 function normalizeEventType(type = "Other") {
-  if (type === "League match") return "Match";
   if (type === "Free Play") return "Training";
   return eventTypes.includes(type) ? type : "Other";
 }
@@ -869,14 +873,39 @@ function eventsOverlap(a, b) {
   const bStart = new Date(eventDateValue(b));
   const aDuration = Number(a.durationMinutes || 0);
   const bDuration = Number(b.durationMinutes || 0);
-  if (!aDuration || !bDuration) return aStart.getTime() === bStart.getTime();
-  return aStart < endDate(b) && bStart < endDate(a);
+  const timeOverlap = !aDuration || !bDuration ? aStart.getTime() === bStart.getTime() : aStart < endDate(b) && bStart < endDate(a);
+  if (!timeOverlap) return false;
+  if (a.playerId || b.playerId) {
+    return Boolean(a.playerId && b.playerId && a.playerId === b.playerId) || Boolean(a.playerId && rosterPlayerIds(b).has(a.playerId)) || Boolean(b.playerId && rosterPlayerIds(a).has(b.playerId));
+  }
+  const aRoster = rosterPlayerIds(a);
+  const bRoster = rosterPlayerIds(b);
+  if (aRoster.size && bRoster.size && ![...aRoster].some((playerId) => bRoster.has(playerId))) return false;
+  return true;
 }
 
-function conflictKeys(events) {
+function rosterPlayerIds(item) {
+  return new Set((item.ourLineup || []).map((player) => player.id).filter(Boolean));
+}
+
+function needsRoster(item) {
+  return ["Match", "Scrim", "Training", "Tournament", "Tryout"].includes(item.type) && !item.playerId && item.teamId !== "both" && !rosterPlayerIds(item).size;
+}
+
+function conflictKeys(events, user = null, store = loadStore()) {
   return new Set(events
-    .filter((item) => events.some((other) => resultSourceKey(other) !== resultSourceKey(item) && eventsOverlap(item, other)))
+    .filter((item) => events.some((other) => resultSourceKey(other) !== resultSourceKey(item) && eventsOverlapForViewer(item, other, user, store)))
     .map((item) => resultSourceKey(item)));
+}
+
+function eventsOverlapForViewer(a, b, user, store) {
+  const player = !isStaff(user) && !isTeamCaptain(user) ? matchingPlayerForUser(store, user) : null;
+  if (player) {
+    const aRoster = rosterPlayerIds(a);
+    const bRoster = rosterPlayerIds(b);
+    if ((aRoster.size && !aRoster.has(player.id)) || (bRoster.size && !bRoster.has(player.id))) return false;
+  }
+  return eventsOverlap(a, b);
 }
 
 function fmtRange(item) {
@@ -909,11 +938,27 @@ function eventDateValue(itemOrValue) {
   return itemOrValue?.startsAtUtc || localInputToUtc(itemOrValue?.dateTime) || itemOrValue?.dateTime || "";
 }
 
+function teamIds() {
+  return teams.map((team) => team.id);
+}
+
+function validTeamId(teamId, fallback = "main") {
+  return teamIds().includes(teamId) ? teamId : fallback;
+}
+
 function teamName(teamId) {
   if (teamId === "both") return "Both teams";
-  if (teamId === "main") return "Main Team";
-  if (teamId === "academy") return "Academy";
+  const team = teams.find((item) => item.id === teamId);
+  if (team) return team.label;
   return "Personal";
+}
+
+function teamOptions(selected = "main", includeBoth = false) {
+  return `${includeBoth ? `<option value="both" ${selected === "both" ? "selected" : ""}>Both teams</option>` : ""}${teams.map((team) => `<option value="${team.id}" ${selected === team.id ? "selected" : ""}>${esc(team.label)}</option>`).join("")}`;
+}
+
+function teamFilterOptions(selected = "all", includeBoth = false) {
+  return `<option value="all">All teams</option>${teams.map((team) => `<option value="${team.id}" ${selected === team.id ? "selected" : ""}>${esc(team.label)}</option>`).join("")}${includeBoth ? `<option value="both" ${selected === "both" ? "selected" : ""}>Both teams</option>` : ""}`;
 }
 
 function playerNameById(store, playerId) {
@@ -989,13 +1034,39 @@ function availabilityPlayerLabel(player) {
   return player?.rlName || player?.name || player?.discord || "Unnamed";
 }
 
-function availabilitySlotMatches(item, player, day, startTime) {
+function startOfAvailabilityWeek(offset = availabilityWeekOffset) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  const mondayOffset = (date.getDay() + 6) % 7;
+  date.setDate(date.getDate() - mondayOffset + (Number(offset || 0) * 7));
+  return date;
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function dateInputValue(date) {
+  const pad = (number) => String(number).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function availabilityWeekLabel(weekStart) {
+  const weekEnd = addDays(weekStart, 6);
+  const format = new Intl.DateTimeFormat("en-GB", { month: "short", day: "2-digit" });
+  return `${format.format(weekStart)} - ${format.format(weekEnd)}`;
+}
+
+function availabilitySlotMatches(item, player, day, startTime, date = "") {
   const itemPlayer = item.playerId
     ? item.playerId === player.id
     : String(item.playerName || "").toLowerCase() === availabilityPlayerLabel(player).toLowerCase();
   return Boolean(
     itemPlayer &&
     normalizeAvailabilityDay(item.day) === day &&
+    (!date || !item.date || item.date === date) &&
     normalizeAvailabilityTime(item.startTime) === startTime &&
     (item.status || "Available") === "Available"
   );
@@ -1008,23 +1079,24 @@ function canToggleAvailabilitySlot(user, player) {
   return Boolean(ownPlayerId && ownPlayerId === player.id);
 }
 
-function availabilityMatrix(store, user, teamId) {
+function availabilityMatrix(store, user, teamId, weekStart = startOfAvailabilityWeek()) {
   const players = (store.players || [])
     .filter((player) => player.teamId === teamId)
     .sort((a, b) => availabilityPlayerLabel(a).localeCompare(availabilityPlayerLabel(b)));
   const entries = visibleAvailabilityRows(store, user).filter((item) => item.teamId === teamId);
   if (!players.length) return `<p class="muted">No ${teamName(teamId).toLowerCase()} players found.</p>`;
 
-  const rows = weekDays.flatMap((day) => availabilitySlots.map((slot, slotIndex) => {
-    const availableCount = players.filter((player) => entries.some((item) => availabilitySlotMatches(item, player, day, slot))).length;
+  const rows = weekDays.flatMap((day, dayIndex) => availabilitySlots.map((slot, slotIndex) => {
+    const date = dateInputValue(addDays(weekStart, dayIndex));
+    const availableCount = players.filter((player) => entries.some((item) => availabilitySlotMatches(item, player, day, slot, date))).length;
     return `
       <tr>
-        ${slotIndex === 0 ? `<th class="availability-day" rowspan="${availabilitySlots.length}">${esc(day)}</th>` : ""}
+        ${slotIndex === 0 ? `<th class="availability-day" rowspan="${availabilitySlots.length}">${esc(day)}<small>${esc(date)}</small></th>` : ""}
         <th class="availability-time">${esc(slot)}</th>
         ${players.map((player) => {
-          const checked = entries.some((item) => availabilitySlotMatches(item, player, day, slot));
+          const checked = entries.some((item) => availabilitySlotMatches(item, player, day, slot, date));
           const disabled = canToggleAvailabilitySlot(user, player) ? "" : "disabled";
-          const label = `${availabilityPlayerLabel(player)} ${day} ${slot}`;
+          const label = `${availabilityPlayerLabel(player)} ${day} ${date} ${slot}`;
           return `<td class="availability-cell">
             <input
               type="checkbox"
@@ -1032,6 +1104,7 @@ function availabilityMatrix(store, user, teamId) {
               data-player-id="${escapeAttr(player.id)}"
               data-team-id="${escapeAttr(teamId)}"
               data-day="${escapeAttr(day)}"
+              data-date="${escapeAttr(date)}"
               data-start-time="${escapeAttr(slot)}"
               aria-label="${escapeAttr(label)}"
               ${checked ? "checked" : ""}
@@ -1086,6 +1159,7 @@ function canSeeNotification(store, user, notification) {
   if (!user) return false;
   if (isStaff(user) || isTeamCaptain(user)) return true;
   const player = matchingPlayerForUser(store, user);
+  if (player?.id && (notification.recipientIds || []).includes(player.id)) return true;
   if (notification.targetType === "both") return true;
   if (notification.targetType === "player") return Boolean(player?.id && notification.playerId === player.id);
   return Boolean(player?.teamId && notification.teamId === player.teamId);
@@ -1125,7 +1199,7 @@ function parseAvailabilityRows(text, store) {
       id: uid(),
       playerId: matchedPlayer?.id || "",
       playerName: matchedPlayer?.rlName || matchedPlayer?.name || playerName,
-      teamId: matchedPlayer?.teamId || (teamText.includes("academy") ? "academy" : "main"),
+      teamId: matchedPlayer?.teamId || (teams.find((team) => teamText.includes(team.id) || teamText.includes(team.label.toLowerCase()) || teamText.includes(team.name.toLowerCase()))?.id || "main"),
       day: value(cells, ["day"], 2),
       date: value(cells, ["date"], 3),
       startTime: value(cells, ["start", "from"], 4),
@@ -1342,14 +1416,14 @@ function crudPage(store, key, editable, user) {
 }
 
 function playerRecords(schema, rows, editable, showPrivateNotes) {
-  const mainRows = captainFirst(rows.filter((item) => item.teamId === "main"));
-  const academyRows = captainFirst(rows.filter((item) => item.teamId === "academy"));
   const selectedId = (filters.players || {}).detailId;
   const selectedPlayer = rows.find((player) => player.id === selectedId);
   return `
     ${selectedPlayer ? playerProfilePanel(selectedPlayer, editable, showPrivateNotes) : ""}
-    <section class="panel wide"><h2>Main Team members</h2><div class="player-card-grid">${mainRows.map((player) => playerDetailCard(player, editable, showPrivateNotes)).join("") || `<p class="muted">No main team players found.</p>`}</div></section>
-    <section class="panel wide"><h2>Academy members</h2><div class="player-card-grid">${academyRows.map((player) => playerDetailCard(player, editable, showPrivateNotes)).join("") || `<p class="muted">No academy players found.</p>`}</div></section>
+    ${teams.map((team) => {
+      const teamRows = captainFirst(rows.filter((item) => item.teamId === team.id));
+      return `<section class="panel wide"><h2>${esc(team.label)} members</h2><div class="player-card-grid">${teamRows.map((player) => playerDetailCard(player, editable, showPrivateNotes)).join("") || `<p class="muted">No ${esc(team.label.toLowerCase())} players found.</p>`}</div></section>`;
+    }).join("")}
   `;
 }
 
@@ -1459,8 +1533,8 @@ function tryoutsPage(store, editable, user) {
 function resultsPage(store, editable) {
   const rows = filteredResults(store);
   const view = (filters.results || {}).view || "matches";
-  const matchResults = rows.filter((item) => item.type === "Match" || item.type === "League match");
-  const tournamentResults = rows.filter((item) => item.type === "Tournament");
+  const matchResults = rows.filter((item) => !isAggregateResultRecord(store, item));
+  const tournamentResults = rows.filter((item) => isAggregateResultRecord(store, item));
   const draft = resultDraft;
   return `
     <section class="crud-layout">
@@ -1471,7 +1545,7 @@ function resultsPage(store, editable) {
         ${editable ? `<button class="primary" data-result-add="true">Add Result</button>` : ""}
       </div>
       ${editable && draft ? resultForm(store, draft) : ""}
-      ${view === "matches" ? resultGroup("Match Results", matchResults, editable) : resultGroup("Tournaments / Leagues", tournamentResults, editable)}
+      ${view === "matches" ? resultGroup("Match Results", matchResults, editable, store) : resultGroup("Tournaments / Leagues", tournamentResults, editable, store)}
       ${resultReplayDialog(store)}
     </section>
   `;
@@ -1485,35 +1559,29 @@ function filteredResults(store) {
     .sort((a, b) => (f.sort || "dateTime") === "dateTime" ? String(eventDateValue(b) || "").localeCompare(String(eventDateValue(a) || "")) : sortCompare(a, b, f.sort || "title"));
 }
 
-function resultGroup(title, rows, editable) {
-  const mainRows = rows.filter((item) => item.teamId === "main");
-  const academyRows = rows.filter((item) => item.teamId === "academy");
+function resultGroup(title, rows, editable, store) {
   return `
     <section class="panel wide">
       <h2>${title}</h2>
       <div class="result-columns">
-        <div>
-          <h3>Main Team</h3>
-          ${resultTable(mainRows, editable)}
-        </div>
-        <div>
-          <h3>Academy</h3>
-          ${resultTable(academyRows, editable)}
-        </div>
+        ${teams.map((team) => `<div>
+          <h3>${esc(team.label)}</h3>
+          ${resultTable(rows.filter((item) => item.teamId === team.id), editable, store)}
+        </div>`).join("")}
       </div>
     </section>
   `;
 }
 
-function resultTable(rows, editable) {
+function resultTable(rows, editable, store = loadStore()) {
   if (!rows.length) return `<p class="muted">No results yet.</p>`;
   return table(["Date", "Event", "Opponent", "Ave. MMR", "Score / result", "Notes", "Replays"], rows.map((item) => [
     fmt(item),
     item.title,
-    item.type === "Tournament" ? tournamentMatchSummary(item.tournamentMatches || []) : (item.opponent || "-"),
-    item.type === "Tournament" ? "-" : (item.averageMmr || "-"),
+    isAggregateResultRecord(store, item) ? tournamentMatchSummary(item.tournamentMatches || []) : (item.opponent || "-"),
+    isAggregateResultRecord(store, item) ? "-" : (item.averageMmr || "-"),
     item.score || "-",
-    item.type === "Tournament" && item.tournamentMatches?.length ? tournamentMatchesCompact(item.tournamentMatches, item.notes) : (item.notes || ""),
+    isAggregateResultRecord(store, item) && item.tournamentMatches?.length ? tournamentMatchesCompact(item.tournamentMatches, item.notes) : (item.notes || ""),
     `<button data-result-replays="${item.id}">Replays</button>`,
     rowActions(editable, "results", item.id),
   ]));
@@ -1525,6 +1593,21 @@ function tournamentMatchesCompact(matches = [], notes = "") {
     return [label || match.opponent || "Match", match.score, match.result].filter(Boolean).join(" / ");
   });
   return multiline([...rows, notes].filter(Boolean).join("\n"));
+}
+
+function isLeagueMatchSource(source) {
+  const text = `${source?.type || ""} ${source?.title || ""} ${source?.name || ""} ${source?.notes || ""}`.toLowerCase();
+  return source?.type === "League match" || (source?.source === "events" && /\bleag/.test(text));
+}
+
+function isAggregateResultSource(source) {
+  return source?.type === "Tournament" && !isLeagueMatchSource(source);
+}
+
+function isAggregateResultRecord(store, result) {
+  if (result?.type !== "Tournament") return false;
+  const source = result.resultSource ? findCalendarItem(store, result.resultSource) : null;
+  return isAggregateResultSource(source || result);
 }
 
 function completedResultSources(store) {
@@ -1592,13 +1675,7 @@ function collectLineupDraft(store) {
       return player ? { id: player.id, name: player.rlName || player.name, link: player.profileLink || "" } : null;
     })
     .filter(Boolean);
-  const opponentLineup = [0, 1, 2, 3]
-    .map((index) => ({
-      name: document.querySelector(`[name="opponentLineupName${index}"]`)?.value || "",
-      link: document.querySelector(`[name="opponentLineupLink${index}"]`)?.value || "",
-    }))
-    .filter((player) => player.name || player.link);
-  return { lineupOpponent: opponentInput?.value || "", ourLineup, opponentLineup };
+  return { lineupOpponent: opponentInput?.value || "", ourLineup };
 }
 
 function saveCalendarLineup(store, key) {
@@ -1607,7 +1684,6 @@ function saveCalendarLineup(store, key) {
   const draft = collectLineupDraft(store);
   source.lineupOpponent = draft.lineupOpponent;
   source.ourLineup = draft.ourLineup;
-  source.opponentLineup = draft.opponentLineup;
   return draft;
 }
 
@@ -1666,13 +1742,13 @@ function resultForm(store, item = { id: "", resultSource: "", type: "Match", tit
   const sources = completedResultSources(store).filter((source) => item.resultSource === resultSourceKey(source) || !resultForSource(store, resultSourceKey(source)));
   const selectedSource = item.resultSource ? findCalendarItem(store, item.resultSource) : null;
   const tournamentMatches = normalizeTournamentMatches(item.tournamentMatches || selectedSource?.tournamentMatches || []);
-  const isTournamentResult = item.type === "Tournament" || selectedSource?.type === "Tournament";
+  const isTournamentResult = item.type === "Tournament" && isAggregateResultSource(selectedSource || item);
   return `
     <section class="panel result-editor"><h2>${item.id ? "Edit result" : "Add result"}</h2>
       <form class="entity-form" data-entity="results" data-id="${item.id || ""}">
         <div class="form-grid">
           <label><span>Played calendar item</span><select name="resultSource" required><option value="">Select played calendar item</option>${sources.map((source) => `<option value="${resultSourceKey(source)}" ${item.resultSource === resultSourceKey(source) ? "selected" : ""}>${esc(source.title)} / ${source.type} / ${calendarTargetLabel(source, store)} / ${fmt(source)}</option>`).join("")}</select></label>
-          ${isTournamentResult ? `<div class="compact-row full-span"><strong>Tournament matches</strong><span>${esc(tournamentMatchSummary(tournamentMatches))}</span></div>` : field("opponent", "Opponent", "text", item.opponent)}
+          ${isTournamentResult ? `<div class="compact-row full-span"><strong>Tournament matches</strong><span>${esc(tournamentMatchSummary(tournamentMatches))}</span></div>` : field("opponent", selectedSource && isLeagueMatchSource(selectedSource) ? "Opponent / league opponent" : "Opponent", "text", item.opponent)}
           ${isTournamentResult ? "" : field("averageMmr", "Ave. MMR", "number", item.averageMmr)}
           ${field("score", "Score / result", "text", item.score)}
           ${isTournamentResult ? `<div class="full-span">${tournamentMatchesEditor(tournamentMatches, "resultMatch", Math.max(12, tournamentMatches.length + 2))}</div>` : ""}
@@ -1926,26 +2002,33 @@ function weekGrid(items, editable) {
 
 function availabilityPage(store, user) {
   const f = filters.availability || {};
+  const weekStart = startOfAvailabilityWeek();
   const visibleTeams = teams.filter((team) => !f.team || f.team === "all" || f.team === team.id);
   return `
     <section class="crud-layout">
       <div class="toolbar">
         <label><span>Filter by team</span><select data-filter="availability" data-filter-kind="team">
-          <option value="all">All teams</option>
-          <option value="main" ${f.team === "main" ? "selected" : ""}>Main Team</option>
-          <option value="academy" ${f.team === "academy" ? "selected" : ""}>Academy</option>
+          ${teamFilterOptions(f.team || "all")}
         </select></label>
+        <div>
+          <span class="muted">Week</span>
+          <div class="row-actions">
+            <button type="button" data-availability-week="-1">Prev</button>
+            <button type="button" data-availability-week="0">${esc(availabilityWeekLabel(weekStart))}</button>
+            <button type="button" data-availability-week="1">Next</button>
+          </div>
+        </div>
       </div>
       ${visibleTeams.map((team) => `
         <section class="panel wide availability-panel">
           <div class="availability-panel-head">
             <div>
               <h2>${esc(team.label)} Availability</h2>
-              <p class="muted">Players can tick their own slots for the weekly play window.</p>
+              <p class="muted">Players can tick their own slots for ${esc(availabilityWeekLabel(weekStart))}.</p>
             </div>
             <span class="timezone-pill">${esc(viewerTimeZone())}</span>
           </div>
-          ${availabilityMatrix(store, user, team.id)}
+          ${availabilityMatrix(store, user, team.id, weekStart)}
         </section>
       `).join("")}
     </section>
@@ -2005,8 +2088,9 @@ function confirmationsPage(store, user) {
 
 function confirmationSendForm(store) {
   const templateOptions = (store.confirmationTemplates || []).map((template) => `<option value="${template.id}">${esc(template.title)}</option>`).join("");
-  const playerOptions = (store.players || []).map((player) => `<option value="${player.id}">${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
-  const eventOptions = allCalendarItems(store).map((item) => `<option value="${resultSourceKey(item)}">${esc(item.title)} / ${fmt(item)}</option>`).join("");
+  const defaultTeam = teams[0]?.id || "main";
+  const playerOptions = confirmationPlayerOptions(store, defaultTeam);
+  const eventOptions = allCalendarItems(store).filter((item) => endDate(item) >= new Date()).map((item) => `<option value="${resultSourceKey(item)}">${esc(item.title)} / ${fmt(item)} / ${calendarTargetLabel(item, store)}</option>`).join("");
   return `
     <section class="panel"><h2>Send confirmation</h2>
       <form class="entity-form" data-entity="confirmation-send">
@@ -2014,8 +2098,8 @@ function confirmationSendForm(store) {
           <label><span>Template</span><select name="templateId"><option value="">Custom message</option>${templateOptions}</select></label>
           <label><span>Event</span><select name="eventKey"><option value="">No event</option>${eventOptions}</select></label>
           <label><span>Target</span><select name="targetType"><option value="team">One team</option><option value="both">Both teams</option><option value="player">One player</option></select></label>
-          ${field("teamId", "Team", "team", "main")}
-          <label><span>Player</span><select name="playerId"><option value="">Select player</option>${playerOptions}</select></label>
+          ${field("teamId", "Team", "team", defaultTeam)}
+          <label><span>Player</span><select name="playerId" data-confirmation-player-select><option value="">Select player</option>${playerOptions}</select></label>
           ${field("subject", "Subject", "text", "")}
           ${field("message", "Message", "textarea", "")}
         </div>
@@ -2025,21 +2109,52 @@ function confirmationSendForm(store) {
   `;
 }
 
+function confirmationPlayerOptions(store, teamId = "") {
+  return (store.players || [])
+    .filter((player) => !teamId || player.teamId === teamId)
+    .map((player) => `<option value="${player.id}">${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`)
+    .join("");
+}
+
 function notificationCard(item, user, canSend) {
   const unread = !(item.readBy || []).includes(user.id);
+  const store = loadStore();
+  const player = matchingPlayerForUser(store, user);
+  const acceptedId = player?.id || user.id;
+  const accepted = (item.acceptedBy || []).includes(acceptedId);
+  const canAccept = Boolean(player?.id && (item.recipientIds || []).includes(player.id));
+  const acceptance = notificationAcceptanceMarkup(store, item, canSend, user);
   return `
     <article class="notification-card ${unread ? "unread" : ""}">
       <div class="routine-card-head">
         <div><h3>${esc(item.subject || "Confirmation")}</h3><span>${esc(item.createdAt ? new Date(item.createdAt).toLocaleString("en-US") : "")} / ${esc(item.targetLabel || "Players")}</span></div>
         <div class="row-actions">
+          ${canAccept ? `<button class="primary" data-notification-accept="${item.id}" ${accepted ? "disabled" : ""}>${accepted ? "Accepted" : "Accept"}</button>` : ""}
           ${unread ? `<button data-notification-read="${item.id}">Mark read</button>` : ""}
           ${canSend ? `<button data-delete="notifications:${item.id}">Delete</button>` : ""}
         </div>
       </div>
       ${item.eventLabel ? `<p class="muted">${esc(item.eventLabel)}</p>` : ""}
       <p>${multiline(item.message || "")}</p>
-      ${item.recipients?.length ? `<p class="muted">Sent to: ${esc(item.recipients.join(", "))}</p>` : ""}
+      ${acceptance}
     </article>
+  `;
+}
+
+function notificationAcceptanceMarkup(store, item, canSend, user) {
+  const players = (item.recipientIds || [])
+    .map((playerId) => store.players.find((player) => player.id === playerId))
+    .filter(Boolean);
+  if (!players.length) return item.recipients?.length ? `<p class="muted">Sent to: ${esc(item.recipients.join(", "))}</p>` : "";
+  if (!canSend) return `<p class="muted">Status: ${(item.acceptedBy || []).some((playerId) => playerId === matchingPlayerForUser(store, user)?.id) ? "Accepted" : "Waiting for your confirmation"}</p>`;
+  return `
+    <div class="confirmation-status">
+      <strong>Accepted players</strong>
+      ${players.map((player) => {
+        const accepted = (item.acceptedBy || []).includes(player.id);
+        return `<span class="${accepted ? "accepted" : ""}">${esc(availabilityPlayerLabel(player))}: ${accepted ? "Accepted" : "Waiting"}</span>`;
+      }).join("")}
+    </div>
   `;
 }
 
@@ -2054,7 +2169,7 @@ function calendarPage(store, editable, canRecordResults, user) {
     .filter((item) => !f.query || `${item.title} ${item.notes} ${calendarTargetLabel(item, store)}`.toLowerCase().includes(f.query.toLowerCase()))
     .filter((item) => !f.team || f.team === "all" || item.teamId === f.team || (!item.playerId && item.teamId === "both"))
     .filter((item) => !f.type || f.type === "all" || item.type === f.type);
-  const conflicts = conflictKeys(events);
+  const conflicts = conflictKeys(events, user, store);
   const monthStart = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
   const monthLabel = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long" }).format(monthStart);
   return `
@@ -2103,13 +2218,15 @@ function monthGrid(events, conflicts, monthStart, editable, store, user) {
 }
 
 function calendarChip(item, conflict, editable, store = loadStore()) {
-  const time = fmtTime(item.dateTime);
+  const time = fmtTime(item);
   const duration = Number(item.durationMinutes || 0);
   const end = duration ? `-${fmtTime(endDate(item).toISOString())}` : "";
+  const rosterMissing = needsRoster(item);
   return `
-    <div class="calendar-chip ${conflict ? "conflict-chip" : ""}" style="border-left-color:${eventColors[item.type]}" data-calendar-open="${resultSourceKey(item)}">
+    <div class="calendar-chip ${conflict ? "conflict-chip" : ""} ${rosterMissing ? "needs-roster-chip" : ""}" style="border-left-color:${eventColors[item.type]}" data-calendar-open="${resultSourceKey(item)}">
       <div class="chip-main"><strong>${time}${end}</strong><span title="${escapeAttr(item.title)}">${esc(item.title)}</span></div>
       <small>${item.type} / ${calendarTargetLabel(item, store)}</small>
+      ${rosterMissing ? `<small class="roster-warning">Roster needed</small>` : ""}
       ${editable ? `<div class="chip-actions"><button data-edit="${item.source}:${item.sourceId}">Edit</button><button data-delete="${item.source}:${item.sourceId}">Delete</button></div>` : ""}
     </div>
   `;
@@ -2121,8 +2238,9 @@ function calendarEventDialog(store, canRecordResults, user) {
   if (!item) return "";
   const played = endDate(item) < new Date();
   const existingResult = resultForSource(store, resultSourceKey(item));
-  const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "academy" ? "Noctiq Academy" : (item.teamId === "both" ? "Noctiq" : "Noctiq"));
-  if (item.type === "Tournament") {
+  const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "both" ? "Noctiq" : teamName(item.teamId));
+  const rosterMissing = needsRoster(item);
+  if (isAggregateResultSource(item)) {
     const matches = normalizeTournamentMatches(item.tournamentMatches || []);
     return `
       <div class="modal-backdrop" data-calendar-close="true">
@@ -2151,7 +2269,6 @@ function calendarEventDialog(store, canRecordResults, user) {
   }
   const ownPlayers = store.players.filter((player) => (item.teamId === "both" || player.teamId === item.teamId || player.id === item.playerId) && !isCoachRole(player));
   const savedOurLineup = item.ourLineup || [];
-  const savedOpponentLineup = item.opponentLineup || [];
   const opponentName = item.lineupOpponent || item.opponent || "";
   return `
     <div class="modal-backdrop" data-calendar-close="true">
@@ -2167,25 +2284,17 @@ function calendarEventDialog(store, canRecordResults, user) {
         <div class="form-grid">
           <label><span>Opponent</span><input name="resultOpponentDraft" value="${escapeAttr(opponentName)}" data-opponent-input></label>
         </div>
-        <div class="lineup-grid">
+        <div class="lineup-grid lineup-grid-single">
           <section class="lineup-panel">
-            <h3>Our lineup</h3>
+            <h3>Roster</h3>
             ${[0, 1, 2, 3].map((index) => `
               <label><span>Player ${index + 1}</span><select name="ourLineup${index}">
                 ${ourLineupOptions(savedOurLineup[index], ownPlayers)}
               </select></label>
             `).join("")}
           </section>
-          <section class="lineup-panel">
-            <h3>Opponent lineup</h3>
-            ${[0, 1, 2, 3].map((index) => `
-              <div class="lineup-row">
-                <label><span>Player ${index + 1}</span><input name="opponentLineupName${index}" value="${escapeAttr(savedOpponentLineup[index]?.name || "")}"></label>
-                <label><span>Link</span><input name="opponentLineupLink${index}" type="url" value="${escapeAttr(savedOpponentLineup[index]?.link || "")}"></label>
-              </div>
-            `).join("")}
-          </section>
         </div>
+        ${rosterMissing ? `<p class="warning">Roster needed before conflict checks can be precise.</p>` : ""}
         ${!played ? `<p class="warning">Result can be recorded after this event has been played.</p>` : ""}
         <div class="row-actions modal-actions">
           ${canRecordResults ? `<button class="primary" data-calendar-save-lineup="${resultSourceKey(item)}">Save lineup</button>` : ""}
@@ -2206,7 +2315,6 @@ function adminRegisterForm() {
     <section class="panel wide">
       <h2>Register player</h2>
       <form id="admin-register-form" class="form-grid">
-        <label><span>Name</span><input name="name" autocomplete="name" required></label>
         <label><span>Username</span><input name="username" autocomplete="username" required></label>
         ${passwordInput("password", "new-password", "Temporary password")}
         <button class="primary">Create player account</button>
@@ -2220,7 +2328,6 @@ function adminPage(store, user) {
   if (!isAdmin(user)) return `<section class="panel"><h2>Admin</h2><p class="warning">Admin access is required for this page.</p></section>`;
   const createdUsers = store.users.filter((item) => !isBuiltInUser(item));
   const userRows = createdUsers.map((item) => [
-    esc(item.name),
     esc(item.username),
     permissionLabel(item),
     roleSelect(item),
@@ -2235,7 +2342,7 @@ function adminPage(store, user) {
       <div class="row-actions admin-actions">
         <button data-admin-clean-store="true">Clean database</button>
       </div>
-      ${createdUsers.length ? table(["Name", "Username", "Permission", "Role", "Access", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
+      ${createdUsers.length ? table(["Username", "Permission", "Role", "Access", "Created"], userRows) : `<p class="muted">No created accounts yet.</p>`}
     </section>
   `;
 }
@@ -2261,7 +2368,7 @@ function toolbar(key, hasTeam, hasType, sortOptions) {
   return `
     <div class="toolbar">
       <label><span>Search</span><input data-filter="${key}" data-filter-kind="query" value="${escapeAttr(f.query || "")}" placeholder="Search by name, note, rank..."></label>
-      ${hasTeam ? `<label><span>Filter by team</span><select data-filter="${key}" data-filter-kind="team"><option value="all">All teams</option><option value="main" ${f.team === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${f.team === "academy" ? "selected" : ""}>Academy</option>${key === "calendar" ? `<option value="both" ${f.team === "both" ? "selected" : ""}>Both teams</option>` : ""}</select></label>` : ""}
+      ${hasTeam ? `<label><span>Filter by team</span><select data-filter="${key}" data-filter-kind="team">${teamFilterOptions(f.team || "all", key === "calendar")}</select></label>` : ""}
       ${hasType ? `<label><span>Filter by type</span><select data-filter="${key}" data-filter-kind="type"><option value="all">All types</option>${Object.keys(eventColors).map((type) => `<option ${f.type === type ? "selected" : ""}>${type}</option>`).join("")}</select></label>` : ""}
       ${sortOptions.length ? `<label><span>Sort by</span><select data-filter="${key}" data-filter-kind="sort">${sortOptions.map((item) => `<option value="${item}" ${f.sort === item ? "selected" : ""}>${sortLabel(item)}</option>`).join("")}</select></label>` : ""}
     </div>
@@ -2322,7 +2429,8 @@ function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes:
   const staffCalendar = isAdmin(user) || isCoach(user);
   const ownPlayer = matchingPlayerForUser(store, user);
   const selectedTarget = item.playerId ? "player" : (item.teamId === "both" ? "both" : "team");
-  const playerOptions = (store.players || []).map((player) => `<option value="${player.id}" ${item.playerId === player.id ? "selected" : ""}>${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
+  const selectedTeam = validTeamId(item.teamId, teams[0]?.id || "main");
+  const playerOptions = (store.players || []).filter((player) => player.teamId === selectedTeam || item.playerId === player.id).map((player) => `<option value="${player.id}" ${item.playerId === player.id ? "selected" : ""}>${esc(player.rlName || player.name)} / ${teamName(player.teamId)}</option>`).join("");
   const ownTargetText = ownPlayer ? `${esc(ownPlayer.rlName || ownPlayer.name)} / ${teamName(ownPlayer.teamId)}` : "My personal calendar";
   return `
     <section class="panel"><h2>Calendar event</h2>
@@ -2338,8 +2446,8 @@ function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes:
               <option value="both" ${selectedTarget === "both" ? "selected" : ""}>Both teams</option>
               <option value="player" ${selectedTarget === "player" ? "selected" : ""}>One player</option>
             </select></label>
-            <label><span>Team</span><select name="teamId"><option value="main" ${item.teamId === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${item.teamId === "academy" ? "selected" : ""}>Academy</option></select></label>
-            <label><span>Player</span><select name="playerId"><option value="">Select player</option>${playerOptions}</select></label>
+            <label><span>Team</span><select name="teamId">${teamOptions(selectedTeam)}</select></label>
+            <label><span>Player</span><select name="playerId" data-calendar-player-select><option value="">Select player</option>${playerOptions}</select></label>
           ` : `
             <label><span>Calendar target</span><input value="${ownTargetText}" disabled></label>
             <input type="hidden" name="targetType" value="player">
@@ -2357,7 +2465,7 @@ function calendarForm(item = { id: "", title: "", dateTime: "", durationMinutes:
 
 function field(name, label, type = "text", value = "") {
   if (type === "team") {
-    return `<label><span>${label}</span><select name="${name}"><option value="main" ${value === "main" ? "selected" : ""}>Main Team</option><option value="academy" ${value === "academy" ? "selected" : ""}>Academy</option></select></label>`;
+    return `<label><span>${label}</span><select name="${name}">${teamOptions(value || "main")}</select></label>`;
   }
   if (Array.isArray(type)) {
     return `<label><span>${label}</span><select name="${name}">${type.map((option) => `<option value="${option}" ${value === option ? "selected" : ""}>${option}</option>`).join("")}</select></label>`;
@@ -2478,13 +2586,14 @@ document.addEventListener("click", async (event) => {
     const source = findCalendarItem(store, button.dataset.recordResult);
     if (!source) return;
     const existingResult = resultForSource(store, button.dataset.recordResult);
-    const tournamentMatches = source.type === "Tournament" ? saveTournamentMatches(store, button.dataset.recordResult) || [] : [];
-    const lineupDraft = source.type === "Tournament" ? { lineupOpponent: "" } : saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
+    const aggregateResult = isAggregateResultSource(source);
+    const tournamentMatches = aggregateResult ? saveTournamentMatches(store, button.dataset.recordResult) || [] : [];
+    const lineupDraft = aggregateResult ? { lineupOpponent: "" } : saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
     if (!(await persistStore(store))) return;
     resultDraft = existingResult ? { ...existingResult } : {
       id: "",
       resultSource: button.dataset.recordResult,
-      type: source.type === "Tournament" ? "Tournament" : "Match",
+      type: aggregateResult ? "Tournament" : "Match",
       title: source.title,
       dateTime: source.dateTime,
       startsAtUtc: source.startsAtUtc,
@@ -2518,6 +2627,12 @@ document.addEventListener("click", async (event) => {
     render();
   }
 
+  if (button.dataset.availabilityWeek) {
+    const shift = Number(button.dataset.availabilityWeek);
+    availabilityWeekOffset = shift === 0 ? 0 : availabilityWeekOffset + shift;
+    render();
+  }
+
   if (button.dataset.playerProfile) {
     filters.players = { ...(filters.players || {}), detailId: button.dataset.playerProfile };
     render();
@@ -2531,6 +2646,16 @@ document.addEventListener("click", async (event) => {
   if (button.dataset.notificationRead) {
     const notification = store.notifications.find((item) => item.id === button.dataset.notificationRead);
     if (!notification || !canSeeNotification(store, activeUser, notification)) return;
+    notification.readBy = Array.from(new Set([...(notification.readBy || []), activeUser.id]));
+    await persistStore(store);
+  }
+
+  if (button.dataset.notificationAccept) {
+    const notification = store.notifications.find((item) => item.id === button.dataset.notificationAccept);
+    if (!notification || !canSeeNotification(store, activeUser, notification)) return;
+    const player = matchingPlayerForUser(store, activeUser);
+    const acceptId = player?.id || activeUser.id;
+    notification.acceptedBy = Array.from(new Set([...(notification.acceptedBy || []), acceptId]));
     notification.readBy = Array.from(new Set([...(notification.readBy || []), activeUser.id]));
     await persistStore(store);
   }
@@ -2665,7 +2790,7 @@ document.addEventListener("submit", async (event) => {
       if (!creatorAuth) throw new Error("Secondary Firebase Auth is not available.");
       const credential = await authApi.createUserWithEmailAndPassword(creatorAuth, authEmailFromUsername(username), password);
       if (authApi.updateProfile) await authApi.updateProfile(credential.user, { displayName: username });
-      const profile = adminCreatedProfile(credential.user, entry.name, username, password);
+      const profile = adminCreatedProfile(credential.user, username, username, password);
       await saveUserProfile(profile);
       writableStore.users.push(profile);
       await saveStore(writableStore);
@@ -2750,7 +2875,9 @@ document.addEventListener("submit", async (event) => {
       await showAlert("Add a message, choose a template, or attach an event first.", { title: "Send confirmation", tone: "warning" });
       return;
     }
+    const senderPlayer = matchingPlayerForUser(store, activeUser);
     const targets = notificationTargets(store, entry);
+    if (senderPlayer && entry.targetType !== "player" && !targets.some((player) => player.id === senderPlayer.id)) targets.push(senderPlayer);
     if (!targets.length) {
       await showAlert("No players match this confirmation target.", { title: "Send confirmation", tone: "warning" });
       return;
@@ -2766,7 +2893,9 @@ document.addEventListener("submit", async (event) => {
       teamId: entry.targetType === "team" ? entry.teamId : "",
       playerId: entry.targetType === "player" ? entry.playerId : "",
       targetLabel: targetLabel(store, entry),
+      recipientIds: targets.map((player) => player.id).filter(Boolean),
       recipients: targets.map((player) => player.rlName || player.name).filter(Boolean),
+      acceptedBy: [],
       createdBy: activeUser.id,
       createdByName: activeUser.name || activeUser.username || "",
       createdAt: new Date().toISOString(),
@@ -2853,19 +2982,22 @@ document.addEventListener("submit", async (event) => {
   if (key === "results") {
     const source = completedResultSources(store).find((item) => resultSourceKey(item) === entry.resultSource);
     if (!source) return;
-    entry.type = source.type === "Tournament" ? "Tournament" : "League match";
-    entry.type = entry.type === "League match" ? "Match" : entry.type;
+    const aggregateResult = isAggregateResultSource(source);
+    entry.type = aggregateResult ? "Tournament" : "Match";
     entry.title = source.title;
     entry.dateTime = source.dateTime;
     entry.startsAtUtc = source.startsAtUtc || localInputToUtc(source.dateTime);
     entry.teamId = source.teamId;
     entry.source = source.source;
     entry.sourceId = source.sourceId;
-    entry.tournamentId = source.source === "tournaments" ? source.sourceId : "";
-    if (source.type === "Tournament") {
+    entry.tournamentId = aggregateResult && source.source === "tournaments" ? source.sourceId : "";
+    if (aggregateResult) {
       entry.tournamentMatches = normalizeTournamentMatches(collectTournamentMatches("resultMatch"));
       entry.opponent = tournamentMatchSummary(entry.tournamentMatches);
       entry.averageMmr = "";
+    } else {
+      entry.tournamentMatches = [];
+      entry.tournamentId = "";
     }
     entry.averageMmr = entry.averageMmr || "";
     const existingReplays = normalizeReplayLinks(existingEntry?.replayLinks || []).filter((link) => link.type === "file");
@@ -2908,7 +3040,7 @@ document.addEventListener("submit", async (event) => {
     } else {
       entry.targetType = "team";
       entry.playerId = "";
-      entry.teamId = ["main", "academy"].includes(entry.teamId) ? entry.teamId : "main";
+      entry.teamId = validTeamId(entry.teamId, "main");
     }
   }
 
@@ -2953,6 +3085,18 @@ document.addEventListener("change", async (event) => {
   const store = loadStore();
   const activeUser = getUser(store);
 
+  if (event.target.matches('form[data-entity="confirmation-send"] select[name="teamId"]')) {
+    const form = event.target.closest("form");
+    const select = form?.querySelector("[data-confirmation-player-select]");
+    if (select) select.innerHTML = `<option value="">Select player</option>${confirmationPlayerOptions(store, event.target.value)}`;
+  }
+
+  if (event.target.matches('form[data-entity="events"] select[name="teamId"]')) {
+    const form = event.target.closest("form");
+    const select = form?.querySelector("[data-calendar-player-select]");
+    if (select) select.innerHTML = `<option value="">Select player</option>${confirmationPlayerOptions(store, event.target.value)}`;
+  }
+
   if (event.target.matches("[data-filter]")) {
     const key = event.target.dataset.filter;
     const kind = event.target.dataset.filterKind;
@@ -2963,17 +3107,18 @@ document.addEventListener("change", async (event) => {
   if (event.target.matches('form[data-entity="results"] select[name="resultSource"]')) {
     const source = findCalendarItem(store, event.target.value);
     if (source) {
+      const aggregateResult = isAggregateResultSource(source);
       resultDraft = {
         ...(resultDraft || {}),
         id: event.target.closest("form")?.dataset.id || resultDraft?.id || "",
         resultSource: resultSourceKey(source),
-        type: source.type === "Tournament" ? "Tournament" : "Match",
+        type: aggregateResult ? "Tournament" : "Match",
         title: source.title,
         dateTime: source.dateTime,
         startsAtUtc: source.startsAtUtc,
         teamId: source.teamId,
         opponent: source.lineupOpponent || source.opponent || "",
-        tournamentMatches: source.type === "Tournament" ? normalizeTournamentMatches(source.tournamentMatches || []) : [],
+        tournamentMatches: aggregateResult ? normalizeTournamentMatches(source.tournamentMatches || []) : [],
       };
       render();
       return;
@@ -2989,9 +3134,10 @@ document.addEventListener("change", async (event) => {
       return;
     }
     const day = normalizeAvailabilityDay(event.target.dataset.day);
+    const date = event.target.dataset.date || "";
     const startTime = normalizeAvailabilityTime(event.target.dataset.startTime);
     const teamId = player.teamId || event.target.dataset.teamId || "main";
-    const matchesSlot = (item) => availabilitySlotMatches(item, player, day, startTime);
+    const matchesSlot = (item) => availabilitySlotMatches(item, player, day, startTime, date);
 
     if (event.target.checked) {
       if (!(writableStore.availability || []).some(matchesSlot)) {
@@ -3001,7 +3147,7 @@ document.addEventListener("change", async (event) => {
           playerName: availabilityPlayerLabel(player),
           teamId,
           day,
-          date: "",
+          date,
           startTime,
           endTime: availabilitySlotEnd(startTime),
           status: "Available",

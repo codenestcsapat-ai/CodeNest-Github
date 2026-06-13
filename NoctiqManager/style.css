@@ -976,6 +976,15 @@ code {
   font-weight: 900;
 }
 
+.calendar-chip.needs-roster-chip {
+  outline: 1px solid rgba(247, 201, 72, 0.48);
+}
+
+.roster-warning {
+  color: var(--warning);
+  font-weight: 900;
+}
+
 .chip-main {
   display: flex;
   gap: 6px;
@@ -1124,6 +1133,13 @@ code {
   border-right-color: rgba(63, 150, 255, 0.2);
 }
 
+.availability-table .availability-day small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
 .availability-cell {
   background: rgba(16, 22, 58, 0.38);
 }
@@ -1167,6 +1183,26 @@ code {
 
 .notification-card p {
   margin: 10px 0 0;
+}
+
+.confirmation-status {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(164, 179, 204, 0.14);
+  border-radius: 6px;
+  background: rgba(3, 7, 18, 0.34);
+}
+
+.confirmation-status span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.confirmation-status .accepted {
+  color: #67e8a5;
 }
 
 .modal-backdrop {
@@ -1288,6 +1324,10 @@ code {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 16px;
+}
+
+.lineup-grid-single {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .lineup-panel {
