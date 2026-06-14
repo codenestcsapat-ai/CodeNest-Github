@@ -273,7 +273,12 @@ async function setupFirebase() {
     firebaseAppApi = firebaseAppModule;
     firebaseConfigValue = firebaseConfig;
     firebaseApp = firebaseAppModule.initializeApp(firebaseConfig);
-    db = firebaseFirestoreModule.getFirestore(firebaseApp);
+    db = firebaseFirestoreModule.initializeFirestore
+      ? firebaseFirestoreModule.initializeFirestore(firebaseApp, {
+        experimentalAutoDetectLongPolling: true,
+        useFetchStreams: false,
+      })
+      : firebaseFirestoreModule.getFirestore(firebaseApp);
     auth = firebaseAuthModule.getAuth(firebaseApp);
     storeRef = firebaseFirestoreModule.doc(db, "noctiqManager", "main");
     usersRef = firebaseFirestoreModule.collection(db, "users");
