@@ -779,6 +779,19 @@ tbody tr:hover {
   color: var(--text);
 }
 
+.version-number {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(63, 150, 255, 0.34);
+  border-radius: 6px;
+  background: rgba(63, 150, 255, 0.12);
+  color: #d9e5f5;
+  font-size: 18px;
+  font-weight: 900;
+}
+
 .player-link-box {
   color: inherit;
   text-decoration: none;

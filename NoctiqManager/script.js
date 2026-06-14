@@ -89,6 +89,7 @@ const sortLabels = {
 };
 const resultTypes = ["Match", "Tournament"];
 const logoMarkup = `<img class="brand-logo" src="assets/noctiq-logo.png" alt="Noctiq logo">`;
+const projectVersion = "v.1.0.1";
 
 const adminUsers = [];
 const playerStatUsers = [];
@@ -1374,6 +1375,7 @@ function dashboard(store, user) {
       ${metric("Next Event", nextEvent?.title || "-", nextEvent ? fmtRange(nextEvent) : "no upcoming event")}
       <section class="panel"><h2>Team focus</h2>${activePlayer ? compact(activePlayer.rlName || activePlayer.name, `${teamName(activePlayer.teamId)} / ${activePlayer.position || "Player"}`) : `<p class="muted">General club overview.</p>`}</section>
       <section class="panel"><h2>Confirmations</h2>${latestNotifications.map((item) => compact(item.subject || "Confirmation", item.eventLabel || item.targetLabel || "Notification")).join("") || `<p class="muted">No confirmations yet.</p>`}<button class="secondary-action" data-page="confirmations">Open confirmations</button></section>
+      <section class="panel"><h2>Project version</h2><div class="version-number">${esc(projectVersion)}</div></section>
       <section class="panel wide overview-split"><div><h2>Upcoming Schedule</h2>${eventList(upcomingCalendar.slice(0, 7))}</div><div><h2>Active Tryouts</h2>${tryoutSummaryList(visibleTryouts)}</div></section>
     </section>
   `;
@@ -2240,6 +2242,8 @@ function calendarEventDialog(store, canRecordResults, user) {
   const existingResult = resultForSource(store, resultSourceKey(item));
   const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "both" ? "Noctiq" : teamName(item.teamId));
   const rosterMissing = needsRoster(item);
+  const ownPlayers = store.players.filter((player) => (item.teamId === "both" || player.teamId === item.teamId || player.id === item.playerId) && !isCoachRole(player));
+  const savedOurLineup = item.ourLineup || [];
   if (isAggregateResultSource(item)) {
     const matches = normalizeTournamentMatches(item.tournamentMatches || []);
     return `
@@ -2254,12 +2258,21 @@ function calendarEventDialog(store, canRecordResults, user) {
             <button class="icon-button" data-calendar-close="true" title="Close">X</button>
           </div>
           <section class="lineup-panel">
+            <h3>Roster</h3>
+            ${[0, 1, 2, 3].map((index) => `
+              <label><span>Player ${index + 1}</span><select name="ourLineup${index}">
+                ${ourLineupOptions(savedOurLineup[index], ownPlayers)}
+              </select></label>
+            `).join("")}
+          </section>
+          <section class="lineup-panel">
             <h3>Tournament matches</h3>
             ${tournamentMatchesEditor(matches)}
           </section>
+          ${rosterMissing ? `<p class="warning">Roster needed before conflict checks can be precise.</p>` : ""}
           ${!played ? `<p class="warning">Result can be recorded after this tournament has been played.</p>` : ""}
           <div class="row-actions modal-actions">
-            ${canRecordResults ? `<button class="primary" data-calendar-save-tournament="${resultSourceKey(item)}">Save matches</button>` : ""}
+            ${canRecordResults ? `<button class="primary" data-calendar-save-tournament="${resultSourceKey(item)}">Save roster and matches</button>` : ""}
             ${canRecordResults && played ? `<button class="primary" data-record-result="${resultSourceKey(item)}">${existingResult ? "Edit Result" : "Add Result"}</button>` : ""}
             <button data-calendar-close="true">Close</button>
           </div>
@@ -2267,8 +2280,6 @@ function calendarEventDialog(store, canRecordResults, user) {
       </div>
     `;
   }
-  const ownPlayers = store.players.filter((player) => (item.teamId === "both" || player.teamId === item.teamId || player.id === item.playerId) && !isCoachRole(player));
-  const savedOurLineup = item.ourLineup || [];
   const opponentName = item.lineupOpponent || item.opponent || "";
   return `
     <div class="modal-backdrop" data-calendar-close="true">
@@ -2578,6 +2589,7 @@ document.addEventListener("click", async (event) => {
   if (button.dataset.calendarSaveTournament) {
     if (!canManageEntity(activeUser, "results")) return;
     if (!saveTournamentMatches(store, button.dataset.calendarSaveTournament)) return;
+    if (!saveCalendarLineup(store, button.dataset.calendarSaveTournament)) return;
     await persistStore(store);
   }
 
@@ -2588,7 +2600,7 @@ document.addEventListener("click", async (event) => {
     const existingResult = resultForSource(store, button.dataset.recordResult);
     const aggregateResult = isAggregateResultSource(source);
     const tournamentMatches = aggregateResult ? saveTournamentMatches(store, button.dataset.recordResult) || [] : [];
-    const lineupDraft = aggregateResult ? { lineupOpponent: "" } : saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
+    const lineupDraft = saveCalendarLineup(store, button.dataset.recordResult) || { lineupOpponent: "" };
     if (!(await persistStore(store))) return;
     resultDraft = existingResult ? { ...existingResult } : {
       id: "",
