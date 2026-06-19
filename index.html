@@ -2,1307 +2,636 @@
 <html lang="en" id="html-root">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="google4b9d11cc3ca1b57c">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="google4b9d11cc3ca1b57c">
+    <meta name="description" content="CodeNest is a two-person digital studio building editable web systems, municipal portals, booking flows, admin interfaces and managed websites.">
+    <meta name="author" content="CodeNest">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://codenest.hu/">
 
-  <meta name="description"
-        content="CodeNest - Professional web development agency. Custom websites, web applications & UI/UX design. React, Next.js, Node.js. Hungary-based, international experience.">
-  <meta name="author" content="CodeNest Agency">
-  <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codenest.hu/">
+    <meta property="og:title" content="CodeNest - Editable Web Systems">
+    <meta property="og:description" content="We build websites, admin systems, booking flows and custom web tools that can be updated and operated over time.">
+    <meta property="og:image" content="https://codenest.hu/logo_szoveggel.png">
+    <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="canonical" href="https://codenest.hu/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260619-case-soft">
+    <link rel="stylesheet" href="cookie-consent.css">
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://codenest.hu/">
-  <meta property="og:title" content="CodeNest - Professional Web Development & Design Agency">
-  <meta property="og:description"
-        content="Custom websites and web applications built with modern technologies. Measurable business impact guaranteed.">
-  <meta property="og:image" content="https://codenest.hu/og-image.jpg">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png">
+    <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon-192x192.png">
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="cookie-consent.css">
-
-  <!-- Favicons -->
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
-  <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png">
-  <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png">
-  <link rel="apple-touch-icon" href="/favicon-192x192.png">
-
-  <title>CodeNest – Professional Web Development & Design Agency</title>
+    <title>CodeNest - Editable Web Systems</title>
 </head>
 
-
 <body>
-   <!-- Screen Reader Announcements -->
+    <a class="skip-link" href="#main-content" data-en="Skip to content" data-hu="Ugrás a tartalomra">Skip to content</a>
     <div id="sr-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-    <!-- HEADER / NAVIGATION -->
     <header class="header" id="header" role="banner">
         <div class="container">
             <nav class="nav" role="navigation" aria-label="Main navigation">
-                <!-- Logo -->
-                <a href="#home" class="logo" title="CodeNest - Web Development Agency">
+                <a href="#home" class="logo" aria-label="CodeNest home">
                     <picture>
-                        <source type="image/webp" srcset="public_optimized/logo_png-64.webp 64w,
-                                    public_optimized/logo_png-112.webp 112w" sizes="64px">
-                        <img src="logo_png.png" alt="CodeNest Logo - Web Development Agency" width="64" height="64"
-                            title="CodeNest Agency" loading="lazy" decoding="async">
+                        <source type="image/webp" srcset="public_optimized/logo_png-64.webp 64w, public_optimized/logo_png-112.webp 112w" sizes="64px">
+                        <img src="logo_png.png" alt="CodeNest logo" width="64" height="64" loading="eager" decoding="async">
                     </picture>
-                    <span class="brand">
-                        Code<i style="color: gray; font-style: normal;">Nest</i>
-                    </span>
+                    <span class="brand">Code<i style="color: gray; font-style: normal;">Nest</i></span>
                 </a>
 
-                <!-- Desktop Navigation -->
                 <ul class="nav-menu" id="navMenu">
-                    <!-- <li><a href="#home" class="nav-link" data-en="Home" data-hu="Főoldal">Home</a></li> -->
-                    <li><a href="#services" class="nav-link" data-en="Services" data-hu="Szolgáltatások">Services</a>
-                    </li>
-                    <li><a href="#portfolio" class="nav-link" data-en="Portfolio" data-hu="Referenciák">Portfolio</a>
-                    </li>
-                    <li><a href="#team" class="nav-link" data-en="Team" data-hu="Csapat">Team</a></li>
-                    <li><a href="#tools" class="nav-link" data-en="Tools" data-hu="Eszközök">Tools</a>
-
-                    </li>
+                    <li><a href="#work" class="nav-link" data-en="Work" data-hu="Munkák">Work</a></li>
+                    <li><a href="#services" class="nav-link" data-en="Services" data-hu="Szolgáltatások">Services</a></li>
+                    <li><a href="#case-study" class="nav-link" data-en="Case Studies" data-hu="Esettanulmányok">Case Studies</a></li>
+                    <li><a href="#studio" class="nav-link" data-en="Studio" data-hu="Stúdió">Studio</a></li>
+                    <li><a href="#lab" class="nav-link" data-en="Lab" data-hu="Lab">Lab</a></li>
                     <li><a href="#contact" class="nav-link" data-en="Contact" data-hu="Kapcsolat">Contact</a></li>
-                    <!-- Mobile language switch (visible only inside mobile overlay) -->
-                    <li class="mobile-language-switch" role="presentation">
-                        <div class="language-switch" aria-label="Language switcher (mobile)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="12" cy="12" r="10" />
-                                <path
-                                    d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                            </svg>
-                            <a href="#" class="lang-btn active" data-en="EN" data-hu="EN" role="button"
-                                aria-pressed="true">Switch to English</a>
-                            <span class="lang-divider">/</span>
-                            <a href="#" class="lang-btn" data-en="HU" data-hu="HU" role="button"
-                                aria-pressed="false">Magyarra váltás</a>
-                        </div>
-                    </li>
+                    <li class="mobile-language-switch" role="presentation"></li>
                 </ul>
 
-                <!-- CTA & Language -->
                 <div class="nav-actions">
-                    <div class="language-switch">
-                        <a href="#" class="lang-btn active" data-en="EN" data-hu="EN">EN</a>
+                    <div class="language-switch" aria-label="Language switcher">
+                        <a href="#" class="lang-btn active" data-lang="en" aria-pressed="true">EN</a>
                         <span class="lang-divider">/</span>
-                        <a href="#" class="lang-btn" data-en="HU" data-hu="HU">HU</a>
+                        <a href="#" class="lang-btn" data-lang="hu" aria-pressed="false">HU</a>
                     </div>
-                    <a href="#contact" class="btn btn-primary btn-small" data-en="Get a Quote"
-                        data-hu="Ajánlatkérés">Get a Quote</a>
-                    <!-- Opinion button - optional -->
-                    <!-- <a href="https://prettyform.addxt.com/a/form/vf/1FAIpQLScN8k99Dkoq9jxEbzf25JBZ7nUDUoN4GFCLn1FDo4m2aUSvZA"
-                        class="btn btn-outline btn-small" target="_blank" rel="noopener noreferrer" aria-label="Opinion"
-                        data-en="Opinion" data-hu="Vélemény">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;">
-                            <path d="M16 8l6 6M22 8v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </a> -->
-
+                    <a href="#contact" class="btn btn-primary btn-small" data-en="Start a conversation" data-hu="Beszéljünk">Start a conversation</a>
                 </div>
 
-                <!-- Mobile Menu Toggle -->
-                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false"
-                    aria-controls="navMenu" type="button">
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu" type="button">
                     <span class="bar" aria-hidden="true"></span>
                     <span class="bar" aria-hidden="true"></span>
                     <span class="bar" aria-hidden="true"></span>
                 </button>
-
             </nav>
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
     <main id="main-content" role="main">
-
-        <!-- HERO SECTION -->
         <section class="hero" id="home">
-            <!-- Geometric Pattern Background -->
             <div class="geometric-pattern"></div>
-
             <div class="container">
                 <div class="hero-grid">
-                    <!-- Left Content -->
                     <div class="hero-content fade-in">
-                        <!-- <div class="hero-badge">
-                            <span data-en="CodeNest Agency" data-hu="CodeNest Agency">CodeNest Agency</span>
-                        </div> -->
-
-                        <h1 class="hero-title" data-en="Imagine · Build · Launch" data-hu="Imagine · Build · Launch">
-                            Imagine · Build · Launch
-                        </h1>
-
-                        <p class="hero-subtitle" data-en="Professional websites built for measurable business impact."
-                            data-hu="Professzionális weboldalak. Mérhető üzleti eredményekkel.">
-                            Professional websites built for measurable business impact.
-                        </p>
-
-                        <!-- CTA Buttons -->
+                        <div class="hero-badge" data-en="Two-person digital studio" data-hu="Kétfős digitális stúdió">Two-person digital studio</div>
+                        <h1 class="hero-title" data-en="We don't just build websites. We build editable web systems." data-hu="Nem csak weboldalt készítünk. Szerkeszthető webes rendszereket építünk.">We don't just build websites. We build editable web systems.</h1>
+                        <p class="hero-subtitle" data-en="CodeNest is a two-person digital studio building websites, admin interfaces, booking flows and custom web tools that can be operated, updated and improved over time." data-hu="Kétfős digitális stúdióként olyan weboldalakat, adminfelületeket, foglalási folyamatokat és egyedi webes eszközöket készítünk, amelyeket később is lehet használni, frissíteni és fejleszteni.">CodeNest is a two-person digital studio building websites, admin interfaces, booking flows and custom web tools that can be operated, updated and improved over time.</p>
                         <div class="hero-buttons">
-                            <a href="#contact" class="btn btn-primary" data-en="Request a Quote" data-hu="Ajánlatkérés">
-                                <span data-en="Request a Quote" data-hu="Ajánlatkérés">Request a Quote</span>
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                    <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                            <a href="#contact" class="btn btn-primary">
+                                <span data-en="Let's talk about your system" data-hu="Beszéljünk a rendszeredről">Let's talk about your system</span>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </a>
-                            <a href="#portfolio" class="btn btn-outline" data-en="Portfolio" data-hu="Referenciák">
-                                <span data-en="Portfolio" data-hu="Referenciák">Portfolio</span>
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                    <path
-                                        d="M10 3C6 3 2.73 5.11 1 8.5C2.73 11.89 6 14 10 14C14 14 17.27 11.89 19 8.5C17.27 5.11 14 3 10 3Z"
-                                        stroke="currentColor" stroke-width="2" />
-                                    <circle cx="10" cy="8.5" r="2.5" stroke="currentColor" stroke-width="2" />
-                                </svg>
-                            </a>
-                            <a href="https://prettyform.addxt.com/a/form/vf/1FAIpQLScN8k99Dkoq9jxEbzf25JBZ7nUDUoN4GFCLn1FDo4m2aUSvZA "
-                                class="btn btn-outline" target="_blank" rel="noopener noreferrer"
-                                aria-label="Help us improve - opens external form" data-en="Help us improve"
-                                data-hu="Segíts fejlődni">
-                                <span data-en="Help us improve" data-hu="Segíts fejlődni">Help us improve</span>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                    style="margin-left:8px; vertical-align:middle;" aria-hidden="true">
-                                    <path d="M16 8l6 6M22 8v6h-6" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                            <a href="#services" class="btn btn-outline">
+                                <span data-en="See what we build" data-hu="Megnézem, mit építünk">See what we build</span>
                             </a>
                         </div>
-
-                        <!-- Stats -->
-                        <div class="hero-stats">
-                            <div class="stat-item">
-                                <div class="stat-number">15+</div>
-                                <div class="stat-label" data-en="Projects" data-hu="Projekt">Projects</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number">100%</div>
-                                <div class="stat-label" data-en="Satisfaction" data-hu="Elégedettség">Satisfaction</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number">2+</div>
-                                <div class="stat-label" data-en="Years Exp." data-hu="Év tapasztalat">Years Exp.</div>
-                            </div>
-                        </div>
+                        <ul class="hero-proof-list" aria-label="What CodeNest works on">
+                            <li data-en="Municipal and institutional portals" data-hu="Települési és intézményi portálok">Municipal and institutional portals</li>
+                            <li data-en="Business websites with editable content" data-hu="Üzleti oldalak szerkeszthető tartalommal">Business websites with editable content</li>
+                            <li data-en="Booking, forms, admin and operation" data-hu="Foglalás, űrlapok, admin és üzemeltetés">Booking, forms, admin and operation</li>
+                        </ul>
                     </div>
-
-                    <!-- Right Visual -->
-                    <div class="hero-visual fade-in">
-                        <div class="hero-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/i_b_l-400.webp 400w,
-                                            public_optimized/i_b_l-600.webp 600w,
-                                            public_optimized/i_b_l-800.webp 800w"
-                                    sizes="(max-width: 768px) 100vw, 600px">
-                                <img src="i_b_l.jpg"
-                                    alt="Professional web development mockup - CodeNest portfolio showcase"
-                                    title="CodeNest Web Development Mockup" width="1200" height="900"
-                                    fetchpriority="high" loading="eager" decoding="async">
-                            </picture>
-                            <div class="hero-image-glow hero-image-glow-1"></div>
-                            <div class="hero-image-glow hero-image-glow-2"></div>
+                    <div class="hero-visual fade-in" aria-hidden="true">
+                        <div class="system-dashboard">
+                            <div class="dashboard-topbar">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <strong>CodeNest OS</strong>
+                            </div>
+                            <div class="dashboard-grid">
+                                <div class="dashboard-sidebar">
+                                    <span class="active">Content</span>
+                                    <span>Booking</span>
+                                    <span>Forms</span>
+                                    <span>Reviews</span>
+                                    <span>Backup</span>
+                                </div>
+                                <div class="dashboard-main">
+                                    <div class="dashboard-header-row">
+                                        <div>
+                                            <small data-en="Municipal portal" data-hu="Települési portál">Municipal portal</small>
+                                            <div class="dashboard-title">Gárdony Platform</div>
+                                        </div>
+                                        <span class="status-pill" data-en="Editable" data-hu="Szerkeszthető">Editable</span>
+                                    </div>
+                                    <div class="module-grid">
+                                        <div class="module-card">
+                                            <span>News</span>
+                                            <strong>24</strong>
+                                            <em data-en="admin-managed" data-hu="adminból kezelve">admin-managed</em>
+                                        </div>
+                                        <div class="module-card">
+                                            <span>Documents</span>
+                                            <strong>118</strong>
+                                            <em data-en="structured library" data-hu="strukturált tár">structured library</em>
+                                        </div>
+                                        <div class="module-card">
+                                            <span>Forms</span>
+                                            <strong>6</strong>
+                                            <em data-en="tested paths" data-hu="tesztelt útvonalak">tested paths</em>
+                                        </div>
+                                    </div>
+                                    <div class="flow-card">
+                                        <div class="flow-step active">Website</div>
+                                        <div class="flow-line"></div>
+                                        <div class="flow-step">Admin</div>
+                                        <div class="flow-line"></div>
+                                        <div class="flow-step">Handover</div>
+                                        <div class="flow-line"></div>
+                                        <div class="flow-step">Operation</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dashboard-foot">
+                                <span data-en="hosting" data-hu="hosting">hosting</span>
+                                <span data-en="backup" data-hu="mentés">backup</span>
+                                <span data-en="roles" data-hu="jogosultságok">roles</span>
+                                <span data-en="support" data-hu="support">support</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- FAQ SECTION
-        <section class="section faq-section" id="faq">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="FAQ" data-hu="GYIK">FAQ</h2>
-                    <p class="section-subtitle" data-en="Frequently asked questions about our services"
-                        data-hu="Gyakran ismételt kérdések szolgáltatásainkról">Frequently asked questions about our
-                        services</p>
-                </div>
-
-                <div class="faq-grid">
-                    <article class="faq-card">
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-btn"
-                            data-en="How long does a typical project take?"
-                            data-hu="Mennyi ideig tart egy tipikus projekt?">How long does a typical project take?</button>
-                        <div class="faq-answer" id="faq1" role="region" aria-labelledby="faq1-btn"
-                            data-en="Project timelines vary depending on scope. A simple brochure website can take 2-4 weeks, while larger web applications may require 2-4 months or more. We'll provide a timeline after discovery."
-                            data-hu="A projekt időtartama a terjedelemtől függ. Egy egyszerű bemutatkozó oldal 2-4 hét, míg egy komplex webalkalmazás 2-4 hónap vagy tovább is eltarthat. A részletes ütemtervet felmérés után adjuk meg.">Project timelines vary depending on scope.</div>
-                    </article>
-
-                    <article class="faq-card">
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq2" id="faq2-btn"
-                            data-en="Do you provide maintenance after launch?"
-                            data-hu="Biztosítotok karbantartást a megjelenés után?">Do you provide maintenance after launch?</button>
-                        <div class="faq-answer" id="faq2" role="region" aria-labelledby="faq2-btn"
-                            data-en="Yes — we offer maintenance and support packages for updates, security patches, and optimizations. Contact us for a tailored plan."
-                            data-hu="Igen — kínálunk karbantartási és támogatási csomagokat frissítésekre, biztonsági javításokra és optimalizációra. Vegye fel velünk a kapcsolatot egy személyre szabott ajánlatért.">Yes — we offer maintenance and support packages.</div>
-                    </article>
-
-                    <article class="faq-card">
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq3" id="faq3-btn"
-                            data-en="Can you work with existing brands and design systems?"
-                            data-hu="Tudtok dolgozni meglévő márkákkal és design rendszerekkel?">Can you work with existing brands and design systems?</button>
-                        <div class="faq-answer" id="faq3" role="region" aria-labelledby="faq3-btn"
-                            data-en="Absolutely — we integrate with your brand guidelines and design systems, or create one if needed to ensure consistency."
-                            data-hu="Természetesen — integráljuk a meglévő márka irányelveket és design rendszereket, vagy szükség esetén készítünk újat az egységes megjelenés érdekében.">Absolutely — we integrate with your brand guidelines.</div>
-                    </article>
-
-                    <article class="faq-card">
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq4" id="faq4-btn"
-                            data-en="Do you optimize images and performance?"
-                            data-hu="Optimalizáljátok a képeket és a teljesítményt?">Do you optimize images and performance?</button>
-                        <div class="faq-answer" id="faq4" role="region" aria-labelledby="faq4-btn"
-                            data-en="Yes — we recommend responsive images, WebP/AVIF formats, lazy-loading, and performance tuning to improve Core Web Vitals."
-                            data-hu="Igen — javasoljuk a reszponzív képeket, WebP/AVIF formátumokat, lazy-loadingot és teljesítmény-optimalizálást a Core Web Vitals javításához.">Yes — we recommend responsive images and lazy-loading.</div>
-                    </article>
-                </div>
-            </div>
-        </section> -->
-
-        <!-- PROCESS SECTION -->
-        <section class="section process-section">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="The Process" data-hu="A Folyamat">The Process</h2>
-                    <p class="section-subtitle" data-en="From concept to launch in three simple steps"
-                        data-hu="Három egyszerű lépésben a gondolattól a kész termékig">From concept to launch in three
-                        simple steps</p>
-                </div>
-
-                <div class="process-grid">
-                    <!-- Step 1: Imagine -->
-                    <div class="process-card fade-in">
-                        <div class="process-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
-                                    stroke-linejoin="round" />
-                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="process-number">01</div>
-                        <h3 class="process-title" data-en="Imagine" data-hu="Tervezés">Imagine</h3>
-                        <p class="process-description" data-en="Requirement analysis, UX planning, tech decisions"
-                            data-hu="Igényfelmérés, UX tervezés, technológiai döntések">
-                            Requirement analysis, UX planning, tech decisions
-                        </p>
-                        <div class="process-connector"></div>
-                    </div>
-
-                    <!-- Step 2: Build -->
-                    <div class="process-card fade-in">
-                        <div class="process-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M16 18L22 12L16 6" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M8 6L2 12L8 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="process-number">02</div>
-                        <h3 class="process-title" data-en="Build" data-hu="Kivetelezés">Build</h3>
-                        <p class="process-description" data-en="React, Next.js, Node.js – fast optimized code"
-                            data-hu="React, Next.js, Node.js – gyors és optimalizált kód">
-                            React, Next.js, Node.js – fast, optimized code
-                        </p>
-                        <div class="process-connector"></div>
-                    </div>
-
-                    <!-- Step 3: Launch -->
-                    <div class="process-card fade-in">
-                        <div class="process-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
-                                    stroke-linejoin="round" />
-                                <path d="M12 22V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M2 17L12 22L22 17V7L12 2L2 7V17Z" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="process-number">03</div>
-                        <h3 class="process-title" data-en="Launch" data-hu="Futtatás">Launch</h3>
-                        <p class="process-description" data-en="SEO setup, analytics, support"
-                            data-hu="SEO beállítások, analitika, support">
-                            SEO setup, analytics, support
-                        </p>
-                    </div>
-                </div>
+        <section class="section problem-section" id="problem">
+            <div class="container narrow">
+                <p class="section-kicker" data-en="Why a normal website is often not enough" data-hu="Miért kevés sokszor egy sima weboldal?">Why a normal website is often not enough</p>
+                <h2 class="section-title" data-en="A site should help the organization work." data-hu="A weboldalnak segítenie kell a működést.">A site should help the organization work.</h2>
+                <p class="lead-text" data-en="A website is not enough if nobody can update it, booking happens somewhere else, forms are unclear, reviews are not requested, and no one is responsible for hosting, backups or updates." data-hu="Egy weboldal önmagában kevés, ha nehéz szerkeszteni, külön rendszerben van a foglalás, nincs rendes kapcsolatfelvételi útvonal, nem kértek értékelést, és senki sem figyel a hostingra, mentésekre vagy frissítésekre.">A website is not enough if nobody can update it, booking happens somewhere else, forms are unclear, reviews are not requested, and no one is responsible for hosting, backups or updates.</p>
+                <p class="lead-text strong" data-en="We think about these parts together." data-hu="Mi ezeket egy rendszerként kezeljük.">We think about these parts together.</p>
             </div>
         </section>
 
-        <!-- SERVICES SECTION -->
         <section class="section services-section" id="services">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Services" data-hu="Szolgáltatások">Services</h2>
-                    <p class="section-subtitle" data-en="Complete digital solutions in one place"
-                        data-hu="Teljeskörű digitális megoldások egy helyen">Complete digital solutions in one place</p>
+                    <p class="section-kicker" data-en="What we build" data-hu="Mit építünk?">What we build</p>
+                    <h2 class="section-title" data-en="Concrete systems, not vague digital packages." data-hu="Konkrét rendszerek, nem homályos digitális csomagok.">Concrete systems, not vague digital packages.</h2>
+                    <p class="section-subtitle" data-en="Every service is scoped around what needs to be editable, connected, handed over and operated after launch." data-hu="Minden szolgáltatást abból rakunk össze, hogy mit kell szerkeszteni, összekötni, átadni és üzemeltetni az élesítés után.">Every service is scoped around what needs to be editable, connected, handed over and operated after launch.</p>
                 </div>
 
-                <div class="services-grid">
-                    <!-- Service 1 -->
-                    <div class="service-card fade-in">
-                        <div class="service-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-                                <path d="M2 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path
-                                    d="M12 2C14.5 4.5 16 8 16 12C16 16 14.5 19.5 12 22C9.5 19.5 8 16 8 12C8 8 9.5 4.5 12 2Z"
-                                    stroke="currentColor" stroke-width="2" />
-                            </svg>
-                        </div>
-                        <h3 class="service-title" data-en="Web development" data-hu="Weboldal fejlesztés">Web
-                            development</h3>
-                        <p class="service-description"
-                            data-en="Modern, responsive websites. From landing pages to corporate sites."
-                            data-hu="Modern, reszponzív weboldalak alap szinttől a vállalati honlapokig.">
-                            Modern, responsive websites. From landing pages to corporate sites.
-                        </p>
-                    </div>
+                <div class="services-grid service-system-grid">
+                    <article class="service-card fade-in">
+                        <h3 class="service-title" data-en="Municipal & Institutional Portals" data-hu="Települési és intézményi portálok">Municipal & Institutional Portals</h3>
+                        <p class="service-description" data-en="Modern, editable portals for municipalities and institutions with news, announcements, documents, events, institutions, forms and admin access." data-hu="Nem csak egy új honlapot adunk, hanem egy szerkeszthető felületet, ahol a hírek, dokumentumok, események és intézményi információk hosszú távon is kezelhetők.">Modern, editable portals for municipalities and institutions with news, announcements, documents, events, institutions, forms and admin access.</p>
+                        <ul class="deliverable-list">
+                            <li data-en="Public website" data-hu="Nyilvános weboldal">Public website</li>
+                            <li data-en="Directus or CMS admin" data-hu="Directus vagy CMS admin">Directus or CMS admin</li>
+                            <li data-en="News, documents, events, institutions" data-hu="Hírek, dokumentumok, események, intézmények">News, documents, events, institutions</li>
+                            <li data-en="Editor roles, training, hosting and backup" data-hu="Szerkesztői szerepek, betanítás, hosting és mentés">Editor roles, training, hosting and backup</li>
+                        </ul>
+                    </article>
 
-                    <!-- Service 2 -->
-                    <div class="service-card fade-in">
-                        <div class="service-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor"
-                                    stroke-width="2" />
-                                <path d="M8 21H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M12 17V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <h3 class="service-title" data-en="Web Applications" data-hu="Webalkalmazások">Web Applications
-                        </h3>
-                        <p class="service-description"
-                            data-en="Custom web applications built with React and Node.js stack, scalable architecture."
-                            data-hu="Egyedi webalkalmazások React és Node.js stack alapokon, skálázható architektúrával.">
-                            Custom web applications built with React and Node.js stack, scalable architecture.
-                        </p>
-                    </div>
+                    <article class="service-card fade-in">
+                        <h3 class="service-title" data-en="Business Website Systems" data-hu="Üzleti webes rendszerek">Business Website Systems</h3>
+                        <p class="service-description" data-en="Business websites that explain the offer, build trust, bring enquiries and can be updated from an admin when needed." data-hu="Egy jó üzleti oldal nem csak bemutat. Segít megérteni az ajánlatot, bizalmat épít, érdeklődőt hoz, és ha kell, adminból is frissíthető.">Business websites that explain the offer, build trust, bring enquiries and can be updated from an admin when needed.</p>
+                        <ul class="deliverable-list">
+                            <li data-en="Responsive website and CMS/admin if needed" data-hu="Reszponzív weboldal és CMS/admin, ha kell">Responsive website and CMS/admin if needed</li>
+                            <li data-en="Services, references, FAQ and quote form" data-hu="Szolgáltatások, referenciák, GYIK és ajánlatkérő űrlap">Services, references, FAQ and quote form</li>
+                            <li data-en="SEO/AEO content structure and analytics" data-hu="SEO/AEO tartalmi szerkezet és analitika">SEO/AEO content structure and analytics</li>
+                            <li data-en="Optional booking, review flow and operation" data-hu="Opcionális foglalás, review-folyamat és üzemeltetés">Optional booking, review flow and operation</li>
+                        </ul>
+                    </article>
 
-                    <!-- E-commerce service card removed -->
+                    <article class="service-card fade-in">
+                        <h3 class="service-title" data-en="Booking, Reviews & Local Presence" data-hu="Foglalás, review és Google-jelenlét">Booking, Reviews & Local Presence</h3>
+                        <p class="service-description" data-en="We help make your local online presence clearer, more complete and easier to act on." data-hu="Abban segítünk, hogy a helyi online jelenléted átláthatóbb, teljesebb és könnyebben használható legyen.">We help make your local online presence clearer, more complete and easier to act on.</p>
+                        <ul class="deliverable-list">
+                            <li data-en="Google Business Profile audit" data-hu="Google Cégprofil átnézés">Google Business Profile audit</li>
+                            <li data-en="Booking tool selection and integration" data-hu="Foglalási eszköz kiválasztása és bekötése">Booking tool selection and integration</li>
+                            <li data-en="Review link, QR code and request templates" data-hu="Review link, QR-kód és értékeléskérő sablonok">Review link, QR code and request templates</li>
+                            <li data-en="Local landing page and Maps integration" data-hu="Helyi landing oldal és Google Maps integráció">Local landing page and Maps integration</li>
+                        </ul>
+                    </article>
 
-                    <!-- Service 4 -->
-                    <div class="service-card fade-in">
-                        <div class="service-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
-                                    stroke-linejoin="round" />
-                                <path d="M12 22V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <h3 class="service-title" data-en="UI/UX Design" data-hu="UI/UX Design">UI/UX Design</h3>
-                        <p class="service-description"
-                            data-en="User-centered design, Figma prototypes and design systems."
-                            data-hu="Felhasználóközpontú design, prototípusok és design rendszerek a Figma használatával.">
-                            User-centered design, Figma prototypes and design systems.
-                        </p>
-                    </div>
-
-                    <!-- Service 5 -->
-                    <div class="service-card fade-in">
-                        <div class="service-icon">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                <path
-                                    d="M14.7 6.3C15.1 5.9 15.1 5.3 14.7 4.9C14.3 4.5 13.7 4.5 13.3 4.9L9.3 8.9C8.9 9.3 8.9 9.9 9.3 10.3L13.3 14.3C13.7 14.7 14.3 14.7 14.7 14.3C15.1 13.9 15.1 13.3 14.7 12.9L11.8 10L14.7 7.1V6.3Z"
-                                    fill="currentColor" />
-                                <path d="M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <h3 class="service-title" data-en="Maintenance & Support" data-hu="Karbantartás & Támogatás">
-                            Maintenance & Support</h3>
-                        <p class="service-description"
-                            data-en="Ongoing technical support, updates and optimization for maximum performance."
-                            data-hu="Folyamatos technikai támogatás, frissítések és optimalizálás a maximális teljesítmény érdekében.">
-                            Ongoing technical support, updates and optimization for maximum performance.
-                        </p>
-                    </div>
+                    <article class="service-card fade-in">
+                        <h3 class="service-title" data-en="Custom Web Tools" data-hu="Egyedi webes eszközök">Custom Web Tools</h3>
+                        <p class="service-description" data-en="Tools for workflows that are currently handled manually in spreadsheets, emails or disconnected forms." data-hu="Ha valamit most táblázatban, e-mailben vagy kézzel kezeltek, lehet, hogy érdemes rá egy egyszerű webes eszközt építeni.">Tools for workflows that are currently handled manually in spreadsheets, emails or disconnected forms.</p>
+                        <ul class="deliverable-list">
+                            <li data-en="Calculators, quizzes and application forms" data-hu="Kalkulátorok, kvízek és jelentkezési űrlapok">Calculators, quizzes and application forms</li>
+                            <li data-en="Mini CRM, dashboards and internal admin" data-hu="Mini CRM, dashboardok és belső admin">Mini CRM, dashboards and internal admin</li>
+                            <li data-en="Exports, email notifications and statuses" data-hu="Export, e-mail értesítések és státuszkezelés">Exports, email notifications and statuses</li>
+                        </ul>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- PORTFOLIO SECTION -->
-        <section class="section portfolio-section" id="portfolio">
+        <section class="section portfolio-section" id="work">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Portfolio" data-hu="Referenciák">Portfolio</h2>
-                    <p class="section-subtitle" data-en="Successful projects that brought real results to our clients"
-                        data-hu="Sikeres projektjeink, amelyek valódi eredményeket hoztak ügyfeleinknek">
-                        Successful projects that brought real results to our clients
-                    </p>
+                    <p class="section-kicker" data-en="Selected work" data-hu="Válogatott munkák">Selected work</p>
+                    <h2 class="section-title" data-en="Projects that show the range." data-hu="Projektek, amelyek mutatják az irányt.">Projects that show the range.</h2>
+                    <p class="section-subtitle" data-en="A focused selection of client work, platforms and concepts. No inflated numbers, no fake case metrics." data-hu="Válogatott ügyfélmunkák, platformok és koncepciók. Nincsenek kitalált számok vagy hamis eredmények.">A focused selection of client work, platforms and concepts. No inflated numbers, no fake case metrics.</p>
                 </div>
 
-                <!-- Featured Project removed (E-commerce) -->
-
-                <!-- Project Grid -->
                 <div class="portfolio-grid">
-                    <a href="/WiseBoys" class="portfolio-card portfolio-card-link portfolio-card-highlight fade-in" aria-label="Open WiseBoys project page">
-                        <div class="portfolio-image">
-                            <img src="wiseboys-logo.png" alt="WiseBoys logo for social media and AI case study"
-                                title="WiseBoys featured project" width="800" height="600" loading="lazy"
-                                decoding="async">
-                            <div class="portfolio-overlay">
-                                <span class="portfolio-cta" data-en="Open project" data-hu="Projekt megnyitása">Open project</span>
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="i_b_l.jpg" alt="Gárdony Platform municipal portal preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Education & AI" data-hu="Oktatás és AI">Education & AI</div>
-                            <h3 class="portfolio-title" data-en="WiseBoys" data-hu="WiseBoys">WiseBoys</h3>
-                            <p class="portfolio-description"
-                                data-en="A bilingual one-page experience about social media and AI with interactive learning blocks, quiz content, and embedded video storytelling."
-                                data-hu="Kétszintű egyoldalas élmény a social media és az AI témájában, interaktív blokkokkal, kvízzel és videóval.">
-                                A bilingual one-page experience about social media and AI with interactive learning blocks, quiz content, and embedded video storytelling.
-                            </p>
+                            <div class="portfolio-category" data-en="Municipal Platform / Directus Admin" data-hu="Települési platform / Directus admin">Municipal Platform / Directus Admin</div>
+                            <h3 class="portfolio-title">Gárdony Platform</h3>
+                            <p class="portfolio-description" data-en="Editable information platform for news, documents, events, institutions and contact details." data-hu="Szerkeszthető információs platform hírekhez, dokumentumokhoz, eseményekhez, intézményekhez és elérhetőségekhez.">Editable information platform for news, documents, events, institutions and contact details.</p>
                         </div>
-                    </a>
+                    </article>
 
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/PocketGarden-400.webp 400w,
-                                            public_optimized/PocketGarden-800.webp 800w,
-                                            public_optimized/PocketGarden-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="PocketGarden.jpg" alt="PocketGarden - Gardening Assistant Web Application"
-                                    title="Gardening Assistant App Portfolio" width="800" height="600" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="savoria_landing.PNG" alt="BossClub business website preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Gardening" data-hu="Kertészkedés">Gardening</div>
-                            <h3 class="portfolio-title" data-en="Assistant App" data-hu="Segédalkalmazás">Assistant App
-                                </h4>
+                            <div class="portfolio-category" data-en="Business Website / Client Project" data-hu="Üzleti weboldal / ügyfélprojekt">Business Website / Client Project</div>
+                            <h3 class="portfolio-title">BossClub</h3>
+                            <p class="portfolio-description" data-en="A clearer business web presence shaped around offer, trust and enquiry flow." data-hu="Átláthatóbb üzleti webes jelenlét ajánlatra, bizalomra és érdeklődői útvonalra építve.">A clearer business web presence shaped around offer, trust and enquiry flow.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/ref_Ildiko-400.webp 400w,
-                                            public_optimized/ref_Ildiko-800.webp 800w,
-                                            public_optimized/ref_Ildiko-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="ref_Ildiko.jpg"
-                                    alt="Personal Branding Website - Professional web presence portfolio"
-                                    title="Personal Branding Web Portfolio" width="800" height="600" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="ref_Ildiko.jpg" alt="Ildiko Fonad international service website preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Personal branding" data-hu="Egészségügy">Personal
-                                branding</div>
-                            <h3 class="portfolio-title" data-en="Webpresence" data-hu="Webes jelenlét">Webpresence</h3>
+                            <div class="portfolio-category" data-en="International Service Website" data-hu="Nemzetközi szolgáltatói weboldal">International Service Website</div>
+                            <h3 class="portfolio-title">Ildiko Fonad</h3>
+                            <p class="portfolio-description" data-en="International-facing service website with simple structure and direct enquiry paths." data-hu="Nemzetközi közönségnek szóló szolgáltatói oldal egyszerű szerkezettel és közvetlen kapcsolatfelvétellel.">International-facing service website with simple structure and direct enquiry paths.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/SkillBridge-400.webp 400w,
-                                            public_optimized/SkillBridge-800.webp 800w,
-                                            public_optimized/SkillBridge-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="SkillBridge.jpg"
-                                    alt="SkillBridge - Online Education Platform for skills learning"
-                                    title="Skills Learning Platform Portfolio" width="800" height="600" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="rehabify landing.PNG" alt="GooGee B2B consulting website preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Education" data-hu="Oktatás">Education</div>
-                            <h3 class="portfolio-title" data-en="Skills Platform" data-hu="Skillsplatform">Skills
-                                Platform</h4>
+                            <div class="portfolio-category" data-en="B2B Consulting Website" data-hu="B2B tanácsadói weboldal">B2B Consulting Website</div>
+                            <h3 class="portfolio-title">GooGee</h3>
+                            <p class="portfolio-description" data-en="Consulting website structure focused on explaining services without making the page heavy." data-hu="Tanácsadói weboldal-struktúra, amely érthetően mutatja be a szolgáltatásokat túlterhelés nélkül.">Consulting website structure focused on explaining services without making the page heavy.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/savoria_etterem-400.webp 400w,
-                                            public_optimized/savoria_etterem-800.webp 800w,
-                                            public_optimized/savoria_etterem-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="savoria_etterem.PNG"
-                                    alt="Savoria Restaurant - Online Ordering and Reservation Web App"
-                                    title="Restaurant Management Platform Portfolio" width="800" height="600"
-                                    loading="lazy" decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="SkillBridge.jpg" alt="SkillBridge education platform concept preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Hospitality" data-hu="Vendéglátás">Hospitality
-                            </div>
-                            <h3 class="portfolio-title" data-en="Restaurant App" data-hu="Restaurant App">Restaurant App
-                                </h4>
+                            <div class="portfolio-category" data-en="Education Platform Concept" data-hu="Oktatási platform koncepció">Education Platform Concept</div>
+                            <h3 class="portfolio-title">SkillBridge</h3>
+                            <p class="portfolio-description" data-en="Education platform concept exploring learning flows, content structure and user progress." data-hu="Oktatási platformkoncepció tanulási folyamatokkal, tartalmi szerkezettel és felhasználói haladással.">Education platform concept exploring learning flows, content structure and user progress.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/GreenGoo-400.webp 400w,
-                                            public_optimized/GreenGoo-800.webp 800w,
-                                            public_optimized/GreenGoo-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="GreenGoo.jpg"
-                                    alt="GreenGoo Community - Event Planning and Community Management Platform"
-                                    title="Event Planning Platform Portfolio" width="800" height="600" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
+                    <article class="portfolio-card fade-in">
+                        <div class="portfolio-image"><img src="GreenGoo.jpg" alt="GreenGoo sustainability campaign microsite preview" loading="lazy"></div>
                         <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Community" data-hu="Közösség">Community</div>
-                            <h3 class="portfolio-title" data-en="Event-planner" data-hu="Eseményszervezés">Event-planner
-                                </h4>
+                            <div class="portfolio-category" data-en="Sustainability Campaign Microsite" data-hu="Fenntarthatósági kampány microsite">Sustainability Campaign Microsite</div>
+                            <h3 class="portfolio-title">GreenGoo</h3>
+                            <p class="portfolio-description" data-en="Small campaign site built around a focused message, lightweight navigation and visual clarity." data-hu="Kis kampányoldal fókuszált üzenettel, könnyű navigációval és tiszta vizuális rendszerrel.">Small campaign site built around a focused message, lightweight navigation and visual clarity.</p>
                         </div>
-                    </div>
-
-                    <div class="portfolio-card fade-in">
-                        <div class="portfolio-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/rehabify%20landing-400.webp 400w,
-                                            public_optimized/rehabify%20landing-800.webp 800w,
-                                            public_optimized/rehabify%20landing-1200.webp 1200w"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 450px, 400px">
-                                <img src="rehabify landing.PNG"
-                                    alt="Rehabify - Fitness and Health Tracking Web Application"
-                                    title="Fitness Tracker Platform Portfolio" width="800" height="600" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="portfolio-overlay">
-                            </div>
-                        </div>
-                        <div class="portfolio-info">
-                            <div class="portfolio-category" data-en="Sport & Health" data-hu="Sport & egészség">Sport &
-                                Health</div>
-                            <h3 class="portfolio-title" data-en="Fitness Tracker" data-hu="Fitness Tracker">Fitness
-                                Tracker</h4>
-                        </div>
-                    </div>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- FEATURED PROJECT SECTION -->
-        <section class="section featured-case-section" id="featured-project">
+        <section class="section featured-case-section" id="case-study">
+            <div class="container">
+                <article class="featured-case-card fade-in">
+                    <div>
+                        <p class="featured-case-eyebrow" data-en="Featured case study" data-hu="Kiemelt esettanulmány">Featured case study</p>
+                        <h2 class="section-title" data-en="Gárdony Platform: an editable municipal information system." data-hu="Gárdony Platform: szerkeszthető települési információs rendszer.">Gárdony Platform: an editable municipal information system.</h2>
+                        <p class="section-subtitle" data-en="A modern municipal platform where residents can find news, documents, events, institutions and contact information, while the municipality can manage content through an admin interface." data-hu="Modern települési platform, ahol a lakosok megtalálják a híreket, dokumentumokat, eseményeket, intézményeket és elérhetőségeket, az önkormányzat pedig adminfelületen kezelheti a tartalmakat.">A modern municipal platform where residents can find news, documents, events, institutions and contact information, while the municipality can manage content through an admin interface.</p>
+                        <ul class="case-points">
+                            <li data-en="Structured content instead of hard-coded pages" data-hu="Strukturált tartalom hardcode-olt oldalak helyett">Structured content instead of hard-coded pages</li>
+                            <li data-en="Prepared with WCAG principles in mind" data-hu="WCAG-elveket szem előtt tartó szerkezet">Prepared with WCAG principles in mind</li>
+                            <li data-en="Admin workflow for news, documents and institutions" data-hu="Adminfolyamat hírekhez, dokumentumokhoz és intézményekhez">Admin workflow for news, documents and institutions</li>
+                            <li data-en="Hosting, backup and operation can be planned from the start" data-hu="A hosting, mentés és üzemeltetés már az elején tervezhető">Hosting, backup and operation can be planned from the start</li>
+                        </ul>
+                    </div>
+                    <div class="featured-case-panel" aria-label="Gárdony Platform modules">
+                        <h3>Gárdony Platform</h3>
+                        <ul class="feature-stack">
+                            <li>News</li>
+                            <li>Documents</li>
+                            <li>Events</li>
+                            <li>Institutions</li>
+                            <li>Directus admin</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section process-section" id="process">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Featured Case Study" data-hu="Kiemelt esettanulmány">Featured Case Study</h2>
-                    <p class="section-subtitle"
-                        data-en="WiseBoys gets its own spotlight because it carries a sharper visual identity and a more campaign-like educational experience than a standard portfolio item."
-                        data-hu="A WiseBoys külön kiemelést kap, mert erősebb vizuális karakterrel és kampányszerűbb élménnyel rendelkezik, mint egy átlagos portfólióelem.">
-                        WiseBoys gets its own spotlight because it carries a sharper visual identity and a more campaign-like educational experience than a standard portfolio item.
-                    </p>
+                    <p class="section-kicker" data-en="How we work" data-hu="Hogyan dolgozunk?">How we work</p>
+                    <h2 class="section-title" data-en="Clear scope first. Build second." data-hu="Először tiszta scope. Utána építés.">Clear scope first. Build second.</h2>
+                    <p class="section-subtitle" data-en="Every project starts with understanding the goal and defining what will actually be built, handed over and supported." data-hu="Minden projekt azzal indul, hogy megértjük a célt, és pontosítjuk, mit fogunk ténylegesen felépíteni, átadni és támogatni.">Every project starts with understanding the goal and defining what will actually be built, handed over and supported.</p>
                 </div>
-                <div class="featured-case-card fade-in">
-                    <div class="featured-case-content">
-                        <span class="featured-case-eyebrow" data-en="Standout Project" data-hu="Kiemelt projekt">Standout Project</span>
-                        <h2 class="section-title" data-en="WiseBoys: a focused microsite with its own voice"
-                            data-hu="WiseBoys: önálló microsite, saját karakterrel">
-                            WiseBoys: a focused microsite with its own voice
-                        </h2>
-                        <p class="section-subtitle"
-                            data-en="We kept WiseBoys as a standalone experience and connected it to CodeNest as a featured case study. That gives the project room for a stronger identity while keeping the main landing page clean and conversion-focused."
-                            data-hu="A WiseBoys önálló élményként marad, de kiemelt esettanulmányként kapcsolódik a CodeNesthez. Így a projekt saját identitást kap, miközben a landing oldal letisztult marad.">
-                            We kept WiseBoys as a standalone experience and connected it to CodeNest as a featured case study. That gives the project room for a stronger identity while keeping the main landing page clean and conversion-focused.
-                        </p>
-
-                        <div class="featured-case-points">
-                            <div class="featured-case-point">
-                                <strong data-en="Bilingual experience" data-hu="Kétnyelvű élmény">Bilingual experience</strong>
-                                <span data-en="English and Hungarian content on a single polished page."
-                                    data-hu="Angol és magyar tartalom egyetlen átgondolt oldalon.">English and Hungarian content on a single polished page.</span>
-                            </div>
-                            <div class="featured-case-point">
-                                <strong data-en="Interactive education" data-hu="Interaktív oktatás">Interactive education</strong>
-                                <span data-en="Quiz, structured content blocks, and media-rich learning moments."
-                                    data-hu="Kvízzel, strukturált blokkokkal és gazdag médiatartalommal.">Quiz, structured content blocks, and media-rich learning moments.</span>
-                            </div>
-                            <div class="featured-case-point">
-                                <strong data-en="Standalone campaign page" data-hu="Önálló kampányoldal">Standalone campaign page</strong>
-                                <span data-en="A strong project identity that still fits naturally inside the CodeNest ecosystem."
-                                    data-hu="Erős projektidentitás, amely természetesen illeszkedik a CodeNest világához.">A strong project identity that still fits naturally inside the CodeNest ecosystem.</span>
-                            </div>
-                        </div>
-
-                        <div class="featured-case-actions">
-                            <a href="/WiseBoys" class="btn btn-primary" data-en="Explore WiseBoys" data-hu="WiseBoys megtekintése">Explore WiseBoys</a>
-                            <a href="#portfolio" class="btn btn-outline" data-en="See More Projects" data-hu="További projektek">See More Projects</a>
-                        </div>
-                    </div>
-
-                    <div class="featured-case-visual" aria-hidden="true">
-                        <div class="featured-case-panel">
-                            <div class="featured-case-logo-shell">
-                                <img class="featured-case-logo" src="wiseboys-logo.png" alt="" width="420" height="420" loading="lazy" decoding="async">
-                            </div>
-                            <div class="featured-case-badge" data-en="Social Media + AI" data-hu="Social Media + AI">Social Media + AI</div>
-                            <h3 data-en="Microsite structure built for engagement"
-                                data-hu="Elköteleződésre tervezett microsite struktúra">
-                                Microsite structure built for engagement
-                            </h3>
-                            <ul class="featured-case-metrics">
-                                <li><span>01</span><p data-en="Clear hero and topic framing from the first screen."
-                                        data-hu="Világos hero és témafókusz már az első képernyőn.">Clear hero and topic framing from the first screen.</p></li>
-                                <li><span>02</span><p data-en="Interactive sections that keep visitors moving through the story."
-                                        data-hu="Interaktív szekciók, amelyek végigviszik a látogatót a történeten.">Interactive sections that keep visitors moving through the story.</p></li>
-                                <li><span>03</span><p data-en="A dedicated destination page that feels more valuable than a buried portfolio item."
-                                        data-hu="Egy dedikált oldal, amely többet ér, mint egy elrejtett portfólióelem.">A dedicated destination page that feels more valuable than a buried portfolio item.</p></li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="process-grid process-grid-five">
+                    <article class="process-card fade-in">
+                        <div class="process-number">01</div>
+                        <div class="process-chip" data-en="Understand" data-hu="Megértés">Understand</div>
+                        <h3 class="process-title" data-en="Discovery" data-hu="Feltárás">Discovery</h3>
+                        <p class="process-description" data-en="We understand the goal, users, content, constraints and what needs to keep working later." data-hu="Megértjük a célt, a felhasználókat, a tartalmat, a korlátokat és azt, minek kell később is működnie.">We understand the goal, users, content, constraints and what needs to keep working later.</p>
+                    </article>
+                    <article class="process-card fade-in">
+                        <div class="process-number">02</div>
+                        <div class="process-chip" data-en="Map" data-hu="Térkép">Map</div>
+                        <h3 class="process-title" data-en="System plan" data-hu="Rendszerterv">System plan</h3>
+                        <p class="process-description" data-en="We define pages, admin needs, integrations, forms, content types and deliverables." data-hu="Meghatározzuk az oldalakat, adminigényeket, integrációkat, űrlapokat, tartalomtípusokat és átadandókat.">We define pages, admin needs, integrations, forms, content types and deliverables.</p>
+                    </article>
+                    <article class="process-card fade-in">
+                        <div class="process-number">03</div>
+                        <div class="process-chip" data-en="Build" data-hu="Építés">Build</div>
+                        <h3 class="process-title" data-en="Design & development" data-hu="Design és fejlesztés">Design & development</h3>
+                        <p class="process-description" data-en="We design the interface and build the public site, admin logic and connected flows." data-hu="Megtervezzük a felületet, majd felépítjük a nyilvános oldalt, az adminlogikát és a kapcsolódó folyamatokat.">We design the interface and build the public site, admin logic and connected flows.</p>
+                    </article>
+                    <article class="process-card fade-in">
+                        <div class="process-number">04</div>
+                        <div class="process-chip" data-en="Transfer" data-hu="Átadás">Transfer</div>
+                        <h3 class="process-title" data-en="Handover & training" data-hu="Átadás és betanítás">Handover & training</h3>
+                        <p class="process-description" data-en="We test forms, explain access, record a short walkthrough if useful, and show how editing works." data-hu="Teszteljük az űrlapokat, átnézzük a hozzáféréseket, szükség esetén rövid walkthrough-t adunk, és megmutatjuk a szerkesztést.">We test forms, explain access, record a short walkthrough if useful, and show how editing works.</p>
+                    </article>
+                    <article class="process-card fade-in">
+                        <div class="process-number">05</div>
+                        <div class="process-chip" data-en="Keep running" data-hu="Futtatás">Keep running</div>
+                        <h3 class="process-title" data-en="Managed operation" data-hu="Üzemeltetés">Managed operation</h3>
+                        <p class="process-description" data-en="If needed, we stay responsible for hosting, updates, backups, smaller fixes and technical checkups." data-hu="Ha kéred, velünk marad a hosting, frissítések, mentések, kisebb javítások és technikai ellenőrzések kezelése.">If needed, we stay responsible for hosting, updates, backups, smaller fixes and technical checkups.</p>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- TEAM SECTION -->
-        <section class="section team-section" id="team">
+        <section class="section split-section" id="admin-tech">
+            <div class="container split-grid">
+                <div>
+                    <p class="section-kicker" data-en="Admin & technology" data-hu="Admin és technológia">Admin & technology</p>
+                    <h2 class="section-title" data-en="Editable when it needs to be editable." data-hu="Szerkeszthető, amikor annak kell lennie.">Editable when it needs to be editable.</h2>
+                    <p class="lead-text" data-en="If WordPress is the best fit, we'll say so. But when a project needs structured content, custom admin logic or long-term scalability, we prefer modern headless/admin-based systems." data-hu="Nem az a cél, hogy mindenáron ugyanazt a technológiát erőltessük. Ha egy projekthez WordPress a jó megoldás, azt mondjuk. Ha viszont strukturált tartalom, egyedi adminlogika vagy hosszú távú bővíthetőség kell, akkor modern CMS/admin alapú rendszerben gondolkodunk.">If WordPress is the best fit, we'll say so. But when a project needs structured content, custom admin logic or long-term scalability, we prefer modern headless/admin-based systems.</p>
+                </div>
+                <ul class="feature-list panel-list">
+                    <li>Directus / CMS</li>
+                    <li data-en="Structured, database-backed content" data-hu="Strukturált, adatbázis alapú tartalom">Structured, database-backed content</li>
+                    <li data-en="Roles and permissions" data-hu="Szerepkörök és jogosultságok">Roles and permissions</li>
+                    <li data-en="Modern frontend and API-based extensibility" data-hu="Modern frontend és API-alapú bővíthetőség">Modern frontend and API-based extensibility</li>
+                    <li data-en="Hosting, backup and monitoring" data-hu="Hosting, mentés és monitoring">Hosting, backup and monitoring</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section handover-section" id="handover">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Our Team" data-hu="Csapatunk">Our Team</h2>
-                    <p class="section-subtitle"
-                        data-en="Experienced professionals who are passionate about creating the best digital solutions. Behind every project are skilled Builders, designers and project managers."
-                        data-hu="Tapasztalt szakemberek, akik szenvedélyesen dolgoznak azon, hogy a legjobb digitális megoldásokat hozzuk létre.">
-                        Experienced professionals who are passionate about creating the best digital solutions. Behind
-                        every project are skilled Builders, designers and project managers.
-                    </p>
+                    <p class="section-kicker" data-en="Handover" data-hu="Átadás">Handover</p>
+                    <h2 class="section-title" data-en="What you get at handover" data-hu="Mit kapsz átadáskor?">What you get at handover</h2>
+                    <p class="section-subtitle" data-en="We do not just publish the site and disappear. Handover includes the practical things you need to use and maintain the system." data-hu="Az átadás nem csak annyi, hogy elküldünk egy linket. Megmutatjuk, hogyan működik a rendszer, mit tudsz szerkeszteni, hol vannak a hozzáférések, hogyan működik a hosting és milyen support kérhető később.">We do not just publish the site and disappear. Handover includes the practical things you need to use and maintain the system.</p>
                 </div>
+                <ul class="check-grid">
+                    <li data-en="Live website or system" data-hu="Élő weboldal vagy rendszer">Live website or system</li>
+                    <li data-en="Admin access and editor roles if included" data-hu="Adminhozzáférés és szerkesztői szerepek, ha van">Admin access and editor roles if included</li>
+                    <li data-en="Short handover guide or walkthrough" data-hu="Rövid átadási útmutató vagy walkthrough">Short handover guide or walkthrough</li>
+                    <li data-en="Login and access overview" data-hu="Hozzáférések áttekintése">Login and access overview</li>
+                    <li data-en="Form and contact testing" data-hu="Űrlapok és kapcsolatfelvétel tesztelése">Form and contact testing</li>
+                    <li data-en="Basic SEO setup" data-hu="Alap SEO-beállítások">Basic SEO setup</li>
+                    <li data-en="Hosting and backup information" data-hu="Hosting- és mentési információk">Hosting and backup information</li>
+                    <li data-en="Support options and next-step recommendations" data-hu="Support lehetőségek és következő lépések">Support options and next-step recommendations</li>
+                </ul>
+            </div>
+        </section>
 
-                <!-- Teljes csapatkép -->
-                <div class="team-photo-container fade-in">
-                    <picture>
-                        <source type="image/webp" srcset="public_optimized/team-400.webp 400w,
-                                    public_optimized/team-800.webp 800w,
-                                    public_optimized/team-1200.webp 1200w"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 600px, 800px">
-                        <img src="team.jpg" alt="CodeNest Agency Team - Web developers, designers, and project managers"
-                            class="team-photo" title="CodeNest Development Team" width="1200" height="800"
-                            loading="lazy" decoding="async">
-                    </picture>
+        <section class="section operation-section" id="operation">
+            <div class="container narrow">
+                <p class="section-kicker" data-en="Managed operation" data-hu="Üzemeltetés">Managed operation</p>
+                <h2 class="section-title" data-en="A web system has to keep running after launch." data-hu="Egy webes rendszernek élesítés után is futnia kell.">A web system has to keep running after launch.</h2>
+                <p class="lead-text" data-en="A web system is not truly finished when it goes live. It needs to run, be updated, be backed up, and it helps to have someone you can contact when something breaks or needs a small change." data-hu="Egy webes rendszer nem akkor készül el igazán, amikor élesítjük. Folyamatosan futnia kell, frissülni kell, menteni kell, és jó, ha van valaki, akihez probléma esetén fordulni lehet.">A web system is not truly finished when it goes live. It needs to run, be updated, be backed up, and it helps to have someone you can contact when something breaks or needs a small change.</p>
+                <ul class="inline-list">
+                    <li>hosting</li>
+                    <li>CMS runtime</li>
+                    <li>database</li>
+                    <li>backup</li>
+                    <li>uptime monitoring</li>
+                    <li>security updates</li>
+                    <li>smaller fixes</li>
+                    <li>support time</li>
+                    <li>technical checkups</li>
+                </ul>
+            </div>
+        </section>
 
-                    <div class="team-social">
-
-                        <!-- LinkedIn -->
-                        <a href="https://www.linkedin.com/company/codenest-hu/" class="social-link" target="_blank"
-                            rel="noopener" aria-label="CodeNest LinkedIn Profile">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                                <circle cx="4" cy="4" r="2" />
-                            </svg>
-                        </a>
-
-                        <!-- Instagram -->
-                        <a href="https://www.instagram.com/team_codenest?igsh=a3lkOWhmNGdzd3Fz" class="social-link"
-                            target="_blank" rel="noopener" aria-label="CodeNest Instagram Profile">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2">
-                                </rect>
-                                <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"></circle>
-                                <circle cx="17" cy="7" r="1.5" fill="currentColor"></circle>
-                            </svg>
-                        </a>
-
-                        <!-- Facebook -->
-                        <a href="https://www.facebook.com/share/17UPaEDB6e/" class="social-link" target="_blank"
-                            rel="noopener" aria-label="CodeNest Facebook Profile">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M13 3c-2.8 0-5 2.2-5 5v3H6v4h2v6h4v-6h3l1-4h-4V8c0-.6.5-1 1-1h3V3h-3Z" />
-                            </svg>
-                        </a>
-
-                    </div>
+        <section class="section pricing-fit-section" id="fit">
+            <div class="container split-grid">
+                <div>
+                    <p class="section-kicker" data-en="Scope and fit" data-hu="Scope és illeszkedés">Scope and fit</p>
+                    <h2 class="section-title" data-en="Every project is priced by scope." data-hu="Minden projektet scope alapján árazunk.">Every project is priced by scope.</h2>
+                    <p class="lead-text" data-en="We do not want to sell a package blindly. First we look at what you actually need: a simple website, editable admin, booking flow, local presence cleanup or a custom web tool." data-hu="Nem szeretnénk látatlanban csomagot eladni. Először megnézzük, mire van tényleg szükség: egyszerű weboldalra, szerkeszthető adminra, foglalási folyamatra, Google-jelenlét rendezésre vagy egyedi webes eszközre.">We do not want to sell a package blindly. First we look at what you actually need: a simple website, editable admin, booking flow, local presence cleanup or a custom web tool.</p>
+                    <ul class="feature-list">
+                        <li data-en="Content volume" data-hu="Tartalmi mennyiség">Content volume</li>
+                        <li data-en="Admin/CMS needs" data-hu="Admin/CMS igény">Admin/CMS needs</li>
+                        <li data-en="Integrations and custom workflows" data-hu="Integrációk és egyedi folyamatok">Integrations and custom workflows</li>
+                        <li data-en="Hosting and operation needs" data-hu="Hosting és üzemeltetési igény">Hosting and operation needs</li>
+                    </ul>
                 </div>
+                <div class="fit-panel">
+                    <h3 data-en="Is CodeNest the right fit?" data-hu="Neked való a CodeNest?">Is CodeNest the right fit?</h3>
+                    <p data-en="We might not be the right fit if you only want the cheapest possible site, need something thrown together overnight, expect guaranteed rankings, or want unlimited changes without scope." data-hu="Nem mi vagyunk a legjobb választás, ha csak a lehető legolcsóbb, gyorsan összedobott weboldalt keresed, garantált Google-helyezést vársz, vagy scope nélküli korlátlan módosítást szeretnél.">We might not be the right fit if you only want the cheapest possible site, need something thrown together overnight, expect guaranteed rankings, or want unlimited changes without scope.</p>
+                    <p data-en="We are a good fit if you want a website or system that can be maintained, edited, handed over clearly and kept working after launch." data-hu="Akkor tudunk igazán jó munkát végezni, ha fontos, hogy a rendszer később is használható, szerkeszthető és üzemeltethető legyen.">We are a good fit if you want a website or system that can be maintained, edited, handed over clearly and kept working after launch.</p>
+                </div>
+            </div>
+        </section>
 
-
-                <div class="team-grid">
-                    <!-- Team Member 1 -->
-                    <div class="team-card fade-in">
-                        <div class="team-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/SA_profil-400.webp 400w,
-                                            public_optimized/SA_profil-800.webp 800w"
-                                    sizes="(max-width: 768px) 300px, 350px">
-                                <img src="SA_profil.jpg" alt="Ábel Sturcz - Backend Developer at CodeNest"
-                                    title="Ábel Sturcz Backend Developer" width="400" height="400" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="team-social">
-                                <a href="https://www.linkedin.com/in/%C3%A1bel-sturcz-895698272/" class="social-link"
-                                    title="Ábel Sturcz LinkedIn Profile" target="_blank" rel="noopener noreferrer">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                                        <circle cx="4" cy="4" r="2" />
-                                    </svg>
-                                </a>
-
-                            </div>
-                        </div>
-                        <h3 class="team-name">Ábel Sturcz</h3>
-                        <p class="team-role" data-en="Backend Builder" data-hu="Backend">Backend Builder</p>
-                    </div>
-
-                    <!-- Team Member 2 -->
-                    <div class="team-card fade-in">
-                        <div class="team-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/DK-400.webp 400w,
-                                            public_optimized/DK-800.webp 800w" sizes="(max-width: 768px) 300px, 350px">
-                                <img src="DK.jpg" alt="Dániel Kiss - Frontend Developer at CodeNest"
-                                    title="Dániel Kiss Frontend Developer" width="400" height="400" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="team-social">
-                                <a href="https://www.linkedin.com/in/d%C3%A1niel-kiss-553b81385/" class="social-link"
-                                    title="Dániel Kiss LinkedIn Profile" target="_blank" rel="noopener noreferrer">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
-                                            fill="currentColor" />
-                                        <circle cx="4" cy="4" r="2" fill="currentColor" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="team-name">Dániel Kiss</h3>
-                        <p class="team-role" data-en="Frontend Builder" data-hu="Frontend">Frontend Builder</p>
-                    </div>
-
-                    <!-- Team Member 3 -->
-                    <div class="team-card fade-in">
-                        <div class="team-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/DF-400.webp 400w,
-                                            public_optimized/DF-800.webp 800w" sizes="(max-width: 768px) 300px, 350px">
-                                <img src="DF.jpg" alt="Dávid Fekete - UI/UX Designer at CodeNest"
-                                    title="Dávid Fekete UI/UX Designer" width="400" height="400" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="team-social">
-                                <a href="https://www.linkedin.com/in/d%C3%A1vid-fekete-3468b1367/" class="social-link"
-                                    title="Dávid Fekete LinkedIn Profile" target="_blank" rel="noopener noreferrer">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
-                                            fill="currentColor" />
-                                        <circle cx="4" cy="4" r="2" fill="currentColor" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                        <h3 class="team-name">Dávid Fekete</h3>
-                        <p class="team-role" data-en="UI/UX Designer" data-hu="UI/UX Tervező">UI/UX Designer</p>
-                    </div>
-
-                    <!-- Team Member 4 -->
-                    <div class="team-card fade-in">
-                        <div class="team-image">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/GB_profil-400.webp 400w,
-                                            public_optimized/GB_profil-800.webp 800w"
-                                    sizes="(max-width: 768px) 300px, 350px">
-                                <img src="GB_profil.jpg" alt="Bors Gugi - Project Manager at CodeNest"
-                                    title="Bors Gugi Project Manager" width="400" height="400" loading="lazy"
-                                    decoding="async">
-                            </picture>
-                            <div class="team-social">
-                                <a href="https://www.linkedin.com/in/bors-gugi/" class="social-link"
-                                    title="Bors Gugi LinkedIn Profile" target="_blank" rel="noopener noreferrer">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
-                                            fill="currentColor" />
-                                        <circle cx="4" cy="4" r="2" fill="currentColor" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
+        <section class="section team-section" id="studio">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <p class="section-kicker" data-en="Studio" data-hu="Stúdió">Studio</p>
+                    <h2 class="section-title" data-en="Two people. Direct work. More responsibility." data-hu="Ketten vagyunk. Ez nálunk előny.">Two people. Direct work. More responsibility.</h2>
+                    <p class="section-subtitle" data-en="CodeNest is run by Bors and Dávid. We are not a big agency, and that is the point: you talk to the people who understand, plan and build your system." data-hu="A CodeNest mögött két ember van: Bors és Dávid. Nem nagy ügynökségként működünk, hanem fókuszált stúdióként. Ez azt jelenti, hogy nem account managereken keresztül beszélsz velünk, hanem azokkal, akik tényleg megértik, megtervezik és felépítik a rendszeredet.">CodeNest is run by Bors and Dávid. We are not a big agency, and that is the point: you talk to the people who understand, plan and build your system.</p>
+                </div>
+                <div class="team-grid studio-team-grid">
+                    <article class="team-card fade-in">
+                        <div class="team-image"><img src="GB_profil.jpg" alt="Bors Gugi, co-founder of CodeNest" loading="lazy"></div>
                         <h3 class="team-name">Bors Gugi</h3>
-                        <p class="team-role" data-en="Project Manager" data-hu="Projektvezető">Project Manager</p>
-                    </div>
+                        <p class="team-role" data-en="Co-founder · AI & Web Developer · Project Lead" data-hu="Társalapító · AI & webfejlesztő · projektvezető">Co-founder · AI & Web Developer · Project Lead</p>
+                    </article>
+                    <article class="team-card fade-in">
+                        <div class="team-image"><img src="DF.jpg" alt="Dávid Fekete, co-founder of CodeNest" loading="lazy"></div>
+                        <h3 class="team-name">Dávid Fekete</h3>
+                        <p class="team-role" data-en="Co-founder · UI/UX Designer · Frontend Developer" data-hu="Társalapító · UI/UX designer · frontend fejlesztő">Co-founder · UI/UX Designer · Frontend Developer</p>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- TOOLS SECTION -->
-        <section class="section tools-section" id="tools">
+        <section class="section tools-section" id="lab">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Tools & Resources" data-hu="Eszközök és Erőforrások">Tools &
-                        Resources</h2>
-                    <p class="section-subtitle" data-en="Free utilities to empower your digital projects"
-                        data-hu="Ingyenes segédeszközök projektjeid támogatásához">
-                        Free utilities to empower your digital projects
-                    </p>
+                    <p class="section-kicker" data-en="Lab" data-hu="Lab">Lab</p>
+                    <h2 class="section-title" data-en="Interactive experiments live here." data-hu="Itt élnek az interaktív kísérletek.">Interactive experiments live here.</h2>
+                    <p class="section-subtitle" data-en="Not every project starts as a client website. Some start as experiments where we test interaction, storytelling, AI concepts and playful web experiences." data-hu="Nem minden projekt ügyféloldalként indul. Van, ami kísérletként születik - itt teszteljük az interakciókat, storytellinget, AI-koncepciókat és játékos webes élményeket.">Not every project starts as a client website. Some start as experiments where we test interaction, storytelling, AI concepts and playful web experiences.</p>
                 </div>
-
                 <div class="tools-grid">
-                    <!-- QR Code Generator Tool -->
-                    <div class="tool-card fade-in">
-                        <div class="tool-header">
-                            <div class="tool-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <rect x="3" y="3" width="7" height="7" />
-                                    <rect x="14" y="3" width="7" height="7" />
-                                    <rect x="14" y="14" width="7" height="7" />
-                                    <rect x="3" y="14" width="4" height="4" />
-                                    <path d="M11 11h2M11 15h2M15 11v2" />
-                                </svg>
-                            </div>
-                            <h3 class="tool-title" data-en="QR Code Generator" data-hu="QR Kód Generátor">QR Code
-                                Generator</h3>
-                        </div>
-                        <p class="tool-description"
-                            data-en="Create professional QR codes for URLs, text, email, phone, SMS, WiFi, vCard, and GPS locations with instant preview and custom design presets."
-                            data-hu="Készíts professzionális QR kódokat URL-ekhez, szövegekhez, emailekhez, telefonszámokhoz, SMS-hez, WiFi-hez, vCard-hoz és GPS-helyekhez azonnali előnézettel és egyéni design készletekkel.">
-                            Create professional QR codes for URLs, text, email, phone, SMS, WiFi, vCard, and GPS
-                            locations with instant preview and custom design presets.
-                        </p>
-                        <div class="tool-features">
-                            <span class="feature-tag">8 QR Types</span>
-                            <span class="feature-tag">Design Presets</span>
-                            <span class="feature-tag">Color Customization</span>
-                        </div>
-                        <a href="qr-generator" class="btn btn-primary" data-en="Try Now" data-hu="Próbáld ki most">
-                            <span data-en="Try Now" data-hu="Próbáld ki most">Try Now</span>
-                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
-                    </div>
-
-                    <!-- WiseBoys Game -->
-                    <div class="tool-card fade-in">
-                        <div class="tool-header">
-                            <div class="tool-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M6 11h12a4 4 0 0 1 3.87 5l-.45 1.8A3 3 0 0 1 18.5 20h-13a3 3 0 0 1-2.92-2.2L2.13 16A4 4 0 0 1 6 11Z" />
-                                    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-                                    <path d="M8 15h.01M11 15h.01M16 15h.01" />
-                                </svg>
-                            </div>
-                            <h3 class="tool-title" data-en="WiseBoys Game" data-hu="WiseBoys játék">WiseBoys Game</h3>
-                        </div>
-                        <p class="tool-description"
-                            data-en="Jump into DigiWise, a WiseBoys arcade game inspired by classic space shooters, with fast levels, upgrades, music, and retro action."
-                            data-hu="Próbáld ki a DigiWise-t, a WiseBoys klasszikus űrlövöldéket idéző arcade játékát gyors pályákkal, fejlesztésekkel, zenével és retró akcióval.">
-                            Jump into DigiWise, a WiseBoys arcade game inspired by classic space shooters, with fast levels, upgrades, music, and retro action.
-                        </p>
-                        <div class="tool-features">
-                            <span class="feature-tag">Arcade Game</span>
-                            <span class="feature-tag">Upgrades</span>
-                            <span class="feature-tag">Retro Action</span>
-                        </div>
-                        <a href="/wiseboys-game" class="btn btn-primary" data-en="Play Now" data-hu="Játék indítása">
-                            <span data-en="Play Now" data-hu="Játék indítása">Play Now</span>
-                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
-                    </div>
+                    <a class="tool-card" href="/WiseBoys" aria-label="Open WiseBoys Microsite">
+                        <h3>WiseBoys Microsite</h3>
+                        <p data-en="A campaign-style microsite with a stronger playful identity." data-hu="Kampányszerű microsite játékosabb vizuális karakterrel.">A campaign-style microsite with a stronger playful identity.</p>
+                    </a>
+                    <a class="tool-card" href="/wiseboys-game" aria-label="Open WiseBoys Game">
+                        <h3>WiseBoys Game / DigiWise</h3>
+                        <p data-en="A small interactive game experiment around digital awareness." data-hu="Kis interaktív játék digitális tudatosság témában.">A small interactive game experiment around digital awareness.</p>
+                    </a>
+                    <a class="tool-card" href="/qr-generator.html" aria-label="Open QR Generator">
+                        <h3>QR Generator</h3>
+                        <p data-en="A practical utility for creating QR codes with simple controls." data-hu="Gyakorlati eszköz QR-kódok készítéséhez egyszerű beállításokkal.">A practical utility for creating QR codes with simple controls.</p>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- WHY CHOOSE US SECTION -->
-        <section class="section why-section">
+        <section class="section faq-section" id="faq" data-accordion="true">
             <div class="container">
                 <div class="section-header fade-in">
-                    <h2 class="section-title" data-en="Why Choose Us?" data-hu="Miért válassz minket?">Why Choose Us?
-                    </h2>
-                    <p class="section-subtitle" data-en="What makes us stand out in the market"
-                        data-hu="Ami különlegessé tesz minket a piacon">
-                        What makes us stand out in the market
-                    </p>
+                    <p class="section-kicker" data-en="FAQ" data-hu="GYIK">FAQ</p>
+                    <h2 class="section-title" data-en="Short answers to practical questions." data-hu="Rövid válaszok gyakorlati kérdésekre.">Short answers to practical questions.</h2>
                 </div>
-
-                <div class="why-grid">
-                    <!-- Benefit 1 -->
-                    <div class="why-card fade-in">
-                        <div class="why-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <h3 class="why-title" data-en="Fast Launch" data-hu="Gyors Munkavézés">Fast Launch</h3>
-                        <p class="why-description"
-                            data-en="Efficient agile workflow that guarantees project Launch on time."
-                            data-hu="Hatékony munkafolyamat, amely garantálja a projekt határidőre történő leadását.">
-                            Efficient agile workflow that guarantees project Launch on time.
-                        </p>
-                    </div>
-
-                    <!-- Benefit 2 -->
-                    <div class="why-card fade-in">
-                        <div class="why-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <h3 class="why-title" data-en="Measurable Impact" data-hu="Mérhető Eredmények">Measurable Impact
-                        </h3>
-                        <p class="why-description"
-                            data-en="Every project is built for measurable business results: growth, conversion, revenue."
-                            data-hu="Minden projektünk mérhető üzleti eredményekre épül: növekedés, konverzió, bevétel.">
-                            Every project is built for measurable business results: growth, conversion, revenue.
-                        </p>
-                    </div>
-
-                    <!-- Benefit 3 -->
-                    <div class="why-card fade-in">
-                        <div class="why-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
-                                    stroke-linejoin="round" />
-                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <h3 class="why-title" data-en="Modern Tech Stack" data-hu="Modern Technológia">Modern Tech Stack
-                        </h3>
-                        <p class="why-description"
-                            data-en="Latest and most reliable technologies: React, Next.js, Node.js, TypeScript."
-                            data-hu="A legfrissebb és legmegbízhatóbb technológiák: React, Next.js, Node.js, TypeScript.">
-                            Latest and most reliable technologies: React, Next.js, Node.js, TypeScript.
-                        </p>
-                    </div>
-
-                    <!-- Benefit 4 -->
-                    <div class="why-card fade-in">
-                        <div class="why-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-                                <path d="M2 12h20" stroke="currentColor" stroke-width="2" />
-                                <path
-                                    d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"
-                                    stroke="currentColor" stroke-width="2" />
-                            </svg>
-                        </div>
-                        <h3 class="why-title" data-en="International Cooperation" data-hu="Többnyelvű Támogatottság">
-                            International Cooperation</h3>
-                        <p class="why-description"
-                            data-en="Hungarian and English support, experience in international projects."
-                            data-hu="Magyar és angol nyelvű támogatás, tapasztalat nemzetközi projektekben.">
-                            Hungarian and English support, experience in international projects.
-                        </p>
-                    </div>
+                <div class="faq-grid">
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-btn" data-en="What is the difference between a website and a web system?" data-hu="Mi a különbség egy weboldal és egy webes rendszer között?">What is the difference between a website and a web system?</button><div class="faq-answer" id="faq1" role="region" aria-labelledby="faq1-btn" data-en="A website mainly presents information. A web system also has editable content, forms, booking, admin logic, integrations or operation behind it." data-hu="Egy weboldal főleg információt mutat. Egy webes rendszer mögött szerkeszthető tartalom, űrlap, foglalás, adminlogika, integráció vagy üzemeltetés is van.">A website mainly presents information. A web system also has editable content, forms, booking, admin logic, integrations or operation behind it.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq2" id="faq2-btn" data-en="When is an admin interface worth it?" data-hu="Mikor éri meg adminfelületet kérni?">When is an admin interface worth it?</button><div class="faq-answer" id="faq2" role="region" aria-labelledby="faq2-btn" data-en="It is worth it when news, services, documents, events, references or other content will change after launch." data-hu="Akkor éri meg, ha hírek, szolgáltatások, dokumentumok, események, referenciák vagy más tartalmak később is változni fognak.">It is worth it when news, services, documents, events, references or other content will change after launch.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq3" id="faq3-btn" data-en="Can we edit the content later?" data-hu="Tudom később én szerkeszteni a tartalmat?">Can we edit the content later?</button><div class="faq-answer" id="faq3" role="region" aria-labelledby="faq3-btn" data-en="Yes, if the project includes a CMS or admin. We define what should be editable during planning and show you how to use it at handover." data-hu="Igen, ha a projekt tartalmaz CMS-t vagy admint. Már tervezéskor meghatározzuk, mit kell tudnod szerkeszteni, és átadáskor megmutatjuk a használatát.">Yes, if the project includes a CMS or admin. We define what should be editable during planning and show you how to use it at handover.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq4" id="faq4-btn" data-en="What does managed operation include?" data-hu="Mit tartalmaz az üzemeltetés?">What does managed operation include?</button><div class="faq-answer" id="faq4" role="region" aria-labelledby="faq4-btn" data-en="Depending on the project, it can include hosting, CMS runtime, database, backups, uptime monitoring, updates, smaller fixes and support time." data-hu="Projekttől függően hostingot, CMS-futtatást, adatbázist, mentést, uptime monitoringot, frissítéseket, kisebb javításokat és support időt tartalmazhat.">Depending on the project, it can include hosting, CMS runtime, database, backups, uptime monitoring, updates, smaller fixes and support time.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq5" id="faq5-btn" data-en="Do you integrate booking tools or build custom ones?" data-hu="Kész foglalási rendszert integráltok vagy egyedit fejlesztetek?">Do you integrate booking tools or build custom ones?</button><div class="faq-answer" id="faq5" role="region" aria-labelledby="faq5-btn" data-en="Usually we start with the simplest reliable option. If an existing booking tool fits, we integrate it. If the workflow is specific, we can plan a custom flow." data-hu="Általában a legegyszerűbb megbízható megoldással kezdünk. Ha egy kész foglalási eszköz jó, bekötjük. Ha a folyamat egyedi, tervezhetünk saját megoldást.">Usually we start with the simplest reliable option. If an existing booking tool fits, we integrate it. If the workflow is specific, we can plan a custom flow.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq6" id="faq6-btn" data-en="Can you guarantee first place on Google Maps?" data-hu="Garantálható a Google Maps első hely?">Can you guarantee first place on Google Maps?</button><div class="faq-answer" id="faq6" role="region" aria-labelledby="faq6-btn" data-en="No. We do not promise guaranteed rankings. We can help make your local presence clearer, more complete and easier for people to act on." data-hu="Nem. Nem ígérünk garantált helyezést. Abban segítünk, hogy a helyi jelenléted átláthatóbb, teljesebb és könnyebben használható legyen.">No. We do not promise guaranteed rankings. We can help make your local presence clearer, more complete and easier for people to act on.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq7" id="faq7-btn" data-en="What happens after launch?" data-hu="Mi történik átadás után?">What happens after launch?</button><div class="faq-answer" id="faq7" role="region" aria-labelledby="faq7-btn" data-en="You receive the handover items, access overview and support options. If you choose managed operation, we keep handling the technical background." data-hu="Megkapod az átadási elemeket, hozzáférési áttekintést és support lehetőségeket. Ha üzemeltetést is kérsz, a technikai háttér kezelése nálunk marad.">You receive the handover items, access overview and support options. If you choose managed operation, we keep handling the technical background.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq8" id="faq8-btn" data-en="Who owns the domain and content?" data-hu="Kié a domain és a tartalom?">Who owns the domain and content?</button><div class="faq-answer" id="faq8" role="region" aria-labelledby="faq8-btn" data-en="The domain and content should belong to you. We help keep access clear so the system is not locked away from the organization using it." data-hu="A domainnek és a tartalomnak nálad kell lennie. Segítünk úgy rendezni a hozzáféréseket, hogy a rendszer ne legyen elzárva attól a szervezettől, amely használja.">The domain and content should belong to you. We help keep access clear so the system is not locked away from the organization using it.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq9" id="faq9-btn" data-en="Do you provide backups?" data-hu="Van backup?">Do you provide backups?</button><div class="faq-answer" id="faq9" role="region" aria-labelledby="faq9-btn" data-en="Backup needs are planned with hosting and operation. For managed systems, backup information is part of the handover and operation plan." data-hu="A mentést a hostinggal és üzemeltetéssel együtt tervezzük. Menedzselt rendszereknél a backup információ az átadás és az üzemeltetési terv része.">Backup needs are planned with hosting and operation. For managed systems, backup information is part of the handover and operation plan.</div></article>
+                    <article class="faq-card"><button class="faq-question" aria-expanded="false" aria-controls="faq10" id="faq10-btn" data-en="Do you build municipal portals?" data-hu="Készítetek önkormányzati / települési portált?">Do you build municipal portals?</button><div class="faq-answer" id="faq10" role="region" aria-labelledby="faq10-btn" data-en="Yes. We can plan editable municipal or institutional portals with news, documents, events, institutions, forms, roles and managed operation." data-hu="Igen. Tervezünk szerkeszthető települési és intézményi portálokat hírekkel, dokumentumokkal, eseményekkel, intézményekkel, űrlapokkal, szerepkörökkel és üzemeltetéssel.">Yes. We can plan editable municipal or institutional portals with news, documents, events, institutions, forms, roles and managed operation.</div></article>
                 </div>
-
-                <!-- Stats Banner 
-                <div class="stats-banner fade-in">
-                    <div class="stat-item">
-                        <div class="stat-number">15+</div>
-                        <div class="stat-label" data-en="Completed Projects" data-hu="Befejezett projekt">Completed
-                            Projects</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">50+</div>
-                        <div class="stat-label" data-en="Happy Clients" data-hu="Elégedett ügyfél">Happy Clients</div>
-                    </div> 
-                    <div class="stat-item">
-                        <div class="stat-number">98%</div>
-                        <div class="stat-label" data-en="Satisfaction Rate" data-hu="Elégedettségi arány">Satisfaction
-                            Rate</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label" data-en="Support" data-hu="Support">Support</div>
-                    </div>
-                </div> -->
             </div>
         </section>
 
-        <!-- CTA SECTION -->
         <section class="section cta-section" id="contact">
-            <div class="geometric-pattern"></div>
             <div class="container">
-                <div class="cta-wrapper fade-in">
-                    <div class="cta-content">
-                        <h2 class="cta-title" data-en="Ready to start your project?"
-                            data-hu="Készen állsz elkezdeni a projekted?">
-                            Ready to start your project?
-                        </h2>
-                        <p class="cta-subtitle"
-                            data-en="Get in touch with us and let's discuss how we can help grow your business digitally."
-                            data-hu="Vedd fel velünk a kapcsolatot és segítünk vállalkozásod digitális növekedésében.">
-                            Get in touch with us and let's discuss how we can help you grow your business digitally.
-                        </p>
-
-                        <!-- Contact Info -->
+                <div class="cta-content">
+                    <div class="cta-text fade-in">
+                        <p class="section-kicker" data-en="Contact" data-hu="Kapcsolat">Contact</p>
+                        <h2 class="cta-title" data-en="Tell us what needs to work." data-hu="Mondd el, minek kell működnie.">Tell us what needs to work.</h2>
+                        <p class="cta-subtitle" data-en="You do not need a perfect brief. A few sentences about the organization, the problem and the needed workflow are enough to start a useful conversation." data-hu="Nem kell tökéletes brief. Elég néhány mondat a szervezetről, a problémáról és a szükséges folyamatról, hogy el tudjunk indulni egy hasznos beszélgetéssel.">You do not need a perfect brief. A few sentences about the organization, the problem and the needed workflow are enough to start a useful conversation.</p>
                         <div class="contact-info">
                             <div class="contact-item">
-                                <div class="contact-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor"
-                                            stroke-width="2" />
-                                        <path d="M2 7l8.16 5.45a2 2 0 002.18.06L22 7" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" />
-                                    </svg>
-                                </div>
+                                <div class="contact-icon" aria-hidden="true">@</div>
                                 <div>
                                     <div class="contact-label" data-en="Email" data-hu="Email">Email</div>
                                     <div class="contact-value">info.codenest.hu@gmail.com</div>
                                 </div>
                             </div>
-                            <!-- <div class="contact-item">
-                                <div class="contact-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <div class="contact-label" data-en="Phone" data-hu="Telefon">Phone</div>
-                                    <div class="contact-value">+36 20 123 4567</div>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
-
-                    <!-- Contact Form -->
                     <div class="cta-form">
                         <form class="contact-form" aria-label="Contact form" novalidate>
                             <div class="form-group">
                                 <label for="name" data-en="Name" data-hu="Név">Name</label>
-                                <input type="text" id="name" name="name" placeholder="Full name"
-                                    data-en-placeholder="Full name" data-hu-placeholder="Teljes név" required
-                                    aria-required="true" autocomplete="name">
+                                <input type="text" id="name" name="name" placeholder="Full name" data-en-placeholder="Full name" data-hu-placeholder="Teljes név" required aria-required="true" autocomplete="name">
                             </div>
                             <div class="form-group">
                                 <label for="email" data-en="Email" data-hu="Email">Email</label>
-                                <input type="email" id="email" name="email" placeholder="email@example.com"
-                                    data-en-placeholder="email@example.com" data-hu-placeholder="email@example.com"
-                                    required aria-required="true" autocomplete="email">
+                                <input type="email" id="email" name="email" placeholder="email@example.com" data-en-placeholder="email@example.com" data-hu-placeholder="email@example.com" required aria-required="true" autocomplete="email">
                             </div>
                             <div class="form-group">
-                                <label for="project" data-en="Project type" data-hu="Projekt típusa">Project
-                                    type</label>
-                                <select id="project" name="project" required aria-required="true" autocomplete="off">
-                                    <option value="" data-en="Select a service" data-hu="Válassz szolgáltatást">Select a
-                                        service</option>
-                                    <option value="website" data-en="Website Development" data-hu="Weboldal fejlesztés">
-                                        Website Development</option>
-                                    <option value="webapp" data-en="Web Application" data-hu="Webalkalmazás">Web
-                                        Application</option>
-                                    <option value="design" data-en="UI/UX Design" data-hu="UI/UX Design">UI/UX Design
-                                    </option>
-                                    <option value="maintenance" data-en="Maintenance" data-hu="Karbantartás">Maintenance
-                                    </option>
+                                <label for="project" data-en="Project type" data-hu="Projekt típusa">Project type</label>
+                                <select id="project" name="project" required aria-required="true">
+                                    <option value="" data-en="Select a project type" data-hu="Válassz projekttípust">Select a project type</option>
+                                    <option value="municipal" data-en="Municipal / institutional portal" data-hu="Települési / intézményi portál">Municipal / institutional portal</option>
+                                    <option value="business" data-en="Business website system" data-hu="Üzleti webes rendszer">Business website system</option>
+                                    <option value="booking" data-en="Booking & client flow" data-hu="Foglalás és ügyfélfolyamat">Booking & client flow</option>
+                                    <option value="local" data-en="Local presence / Google Maps" data-hu="Google-jelenlét / helyi online jelenlét">Local presence / Google Maps</option>
+                                    <option value="custom-tool" data-en="Custom web tool" data-hu="Egyedi webes eszköz">Custom web tool</option>
+                                    <option value="not-sure" data-en="Not sure yet" data-hu="Még nem tudom">Not sure yet</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="budget" data-en="Estimated budget" data-hu="Tervezett keret">Estimated budget</label>
+                                <select id="budget" name="budget">
+                                    <option value="" data-en="Not sure yet" data-hu="Még nem tudom">Not sure yet</option>
+                                    <option value="small" data-en="€1k-2k" data-hu="300-700 ezer Ft">€1k-2k</option>
+                                    <option value="medium" data-en="€2k-4k" data-hu="700 ezer-1,5 millió Ft">€2k-4k</option>
+                                    <option value="large" data-en="€4k-8k" data-hu="1,5-3 millió Ft">€4k-8k</option>
+                                    <option value="enterprise" data-en="€8k+" data-hu="3 millió Ft felett">€8k+</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="message" data-en="Message" data-hu="Üzenet">Message</label>
-                                <textarea id="message" name="message" rows="4"
-                                    placeholder="Tell us about your project..."
-                                    data-en-placeholder="Tell us about your project..."
-                                    data-hu-placeholder="Mesélj a projektedről..."></textarea>
+                                <textarea id="message" name="message" rows="5" placeholder="Tell us about your project..." data-en-placeholder="Tell us about your project..." data-hu-placeholder="Mesélj a projektről..."></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-full" data-en="Request a Quote"
-                                data-hu="Ajánlatot kérek">
-                                <span data-en="Request a Quote" data-hu="Ajánlatot kérek">Request a Quote</span>
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                    <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <span data-en="Send message" data-hu="Üzenet küldése">Send message</span>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             </button>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- FOOTER -->
     <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
-                <!-- Column 1: Logo & Description -->
                 <div class="footer-column footer-brand">
-                    <a href="#home" class="footer-logo" title="CodeNest - Web Development Agency">
-                        <picture>
-                            <source type="image/webp" srcset="public_optimized/logo_footer-modified-96.webp 96w,
-                                        public_optimized/logo_footer-modified-168.webp 168w" sizes="96px">
-                            <img src="logo_footer-modified.png"
-                                alt="CodeNest Logo - Professional Web Development and Design" width="96" height="96"
-                                title="CodeNest Agency Footer Logo" loading="lazy" decoding="async">
-                        </picture>
-                        <span class="brand">
-                            <i style="color: rgb(255, 255, 255); font-style: normal;">Code</i><i
-                                style="color: rgb(255, 255, 255); font-style: normal;">Nest</i>
-                        </span>
+                    <a href="#home" class="footer-logo" aria-label="CodeNest home">
+                        <img src="logo_footer-modified.png" alt="CodeNest logo" width="96" height="96" loading="lazy" decoding="async">
+                        <span class="brand"><i style="color: rgb(255, 255, 255); font-style: normal;">CodeNest</i></span>
                     </a>
-
-                    <!-- <p class="footer-description"
-                        data-en="Professional websites and digital solutions — built for measurable business impact."
-                        data-hu="Professzionális weboldalak és digitális megoldások — mérhető üzleti eredményekkel.">
-                        Professional websites and digital solutions — built for measurable business impact.
-                    </p> -->
-                    <!-- Social Links -->
+                    <p class="footer-description" data-en="A two-person digital studio building editable web systems." data-hu="Kétfős digitális stúdió szerkeszthető webes rendszerekhez.">A two-person digital studio building editable web systems.</p>
                     <div class="footer-social">
-                        <a href="https://www.facebook.com/share/17UPaEDB6e/" class="social-icon" aria-label="Facebook"
-                            target="_blank" rel="noopener noreferrer">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                            </svg>
-                        </a>
-                        <!-- <a href="#" class="social-icon" aria-label="Twitter">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                            </svg>
-                        </a> -->
-                        <a href="https://www.linkedin.com/company/codenest-hu/" class="social-icon"
-                            aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                                <circle cx="4" cy="4" r="2" />
-                            </svg>
-                        </a>
-                        <a href="https://www.instagram.com/team_codenest?igsh=a3lkOWhmNGdzd3Fz" class="social-icon"
-                            aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="2" y="2" width="20" height="20" rx="5" />
-                                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
-                                <path d="M17.5 6.5h.01" />
-                            </svg>
-                        </a>
-                        <!-- <a href="#" class="social-icon" aria-label="GitHub">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
-                            </svg>
-                        </a> -->
+                        <a href="https://www.facebook.com/share/17UPaEDB6e/" class="social-icon" aria-label="Facebook" target="_blank" rel="noopener noreferrer">f</a>
+                        <a href="https://www.linkedin.com/company/codenest-hu/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">in</a>
+                        <a href="https://www.instagram.com/team_codenest?igsh=a3lkOWhmNGdzd3Fz" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">ig</a>
                     </div>
-                    <div class="footer-lang">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <path
-                                d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                        </svg>
-                        <a href="#" class="lang-btn active" data-en="EN" data-hu="EN">Switch to English</a>
-                        <span class="lang-divider">/</span>
-                        <a href="#" class="lang-btn" data-en="HU" data-hu="HU">Magyarra váltás</a>
-                    </div>
+                    <div class="footer-lang"></div>
                 </div>
-
-                <!-- Column 2: Services -->
                 <div class="footer-column">
                     <h3 class="footer-heading" data-en="Services" data-hu="Szolgáltatások">Services</h3>
                     <ul class="footer-links">
-                        <li><a href="#services" data-en="Website Buildment" data-hu="Weboldal fejlesztés">Website
-                                Buildment</a></li>
-                        <li><a href="#services" data-en="Web Applications" data-hu="Webalkalmazások">Web
-                                Applications</a></li>
-                        <!-- E-commerce footer link removed -->
-                        <li><a href="#services" data-en="UI/UX Design" data-hu="UI/UX Design">UI/UX Design</a></li>
+                        <li><a href="#services" data-en="Municipal portals" data-hu="Települési portálok">Municipal portals</a></li>
+                        <li><a href="#services" data-en="Business website systems" data-hu="Üzleti webes rendszerek">Business website systems</a></li>
+                        <li><a href="#services" data-en="Booking and local presence" data-hu="Foglalás és helyi jelenlét">Booking and local presence</a></li>
+                        <li><a href="#services" data-en="Custom web tools" data-hu="Egyedi webes eszközök">Custom web tools</a></li>
                     </ul>
                 </div>
-
-                <!-- Column 3: Company -->
                 <div class="footer-column">
-                    <h3 class="footer-heading" data-en="Company" data-hu="Cég">Company</h3>
+                    <h3 class="footer-heading" data-en="Studio" data-hu="Stúdió">Studio</h3>
                     <ul class="footer-links">
-                        <li><a href="#team" data-en="About Us" data-hu="Rólunk">About Us</a></li>
-                        <li><a href="#portfolio" data-en="Portfolio" data-hu="Referenciák">Portfolio</a></li>
-                        <li><a href="#team" data-en="Team" data-hu="Csapat">Team</a></li>
+                        <li><a href="#work" data-en="Work" data-hu="Munkák">Work</a></li>
+                        <li><a href="#case-study" data-en="Case Studies" data-hu="Esettanulmányok">Case Studies</a></li>
+                        <li><a href="#studio" data-en="About CodeNest" data-hu="A CodeNestről">About CodeNest</a></li>
+                        <li><a href="#lab" data-en="Lab" data-hu="Lab">Lab</a></li>
                         <li><a href="#contact" data-en="Contact" data-hu="Kapcsolat">Contact</a></li>
                     </ul>
                 </div>
-
-                <!-- Column 4: Legal -->
                 <div class="footer-column">
                     <h3 class="footer-heading" data-en="Legal" data-hu="Jogi">Legal</h3>
                     <ul class="footer-links">
-                        <li><a href="legal-hu.html" data-en="Imprint / Impresszum" data-hu="Impresszum">Imprint /
-                                Impresszum</a>
-                        </li>
-                        <li><a href="legal-hu.html" data-en="Privacy Policy" data-hu="Adatvédelem">Privacy Policy</a>
-                        </li>
+                        <li><a href="legal-hu.html" data-en="Imprint / Impresszum" data-hu="Impresszum">Imprint / Impresszum</a></li>
+                        <li><a href="legal-hu.html" data-en="Privacy Policy" data-hu="Adatvédelem">Privacy Policy</a></li>
                         <li><a href="legal-hu.html" data-en="GDPR" data-hu="GDPR">GDPR</a></li>
-                        <!-- <li><a href="legal-hu.html" data-en="Terms of Service" data-hu="Általános Szerződési Feltételek">Terms of
-                                Service</a></li> -->
                     </ul>
                 </div>
-
             </div>
-
-            <!-- Footer Bottom -->
             <div class="footer-bottom">
-                <p class="footer-copyright" data-en="© 2026 CodeNest. All rights reserved."
-                    data-hu="© 2026 CodeNest. Minden jog fenntartva.">
-                    © 2026 CodeNest. All rights reserved.
-                </p>
-
+                <p class="footer-copyright" data-en="© 2026 CodeNest. All rights reserved." data-hu="© 2026 CodeNest. Minden jog fenntartva.">© 2026 CodeNest. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- COOKIE CONSENT BANNER & MODAL -->
-    <!-- This section is automatically populated by cookie-consent.js -->
-
-    <!-- Schema.org Structured Data - Organization -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "CodeNest Agency",
+        "name": "CodeNest",
         "url": "https://codenest.hu/",
-        "logo": {
-            "@type": "ImageObject",
-            "url": "https://codenest.hu/logo_png.png",
-            "width": 400,
-            "height": 400
-        },
-        "description": "Professional web development and design agency. Custom websites, web applications, UI/UX design.",
-        "founder": {
-            "@type": "Person",
-            "name": "CodeNest Team"
-        },
-        "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "HU"
-        },
+        "logo": "https://codenest.hu/logo_png.png",
+        "description": "Two-person digital studio building editable web systems, municipal portals, booking flows, admin interfaces and managed websites.",
+        "founder": [
+            { "@type": "Person", "name": "Bors Gugi" },
+            { "@type": "Person", "name": "Dávid Fekete" }
+        ],
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "Customer Service",
@@ -1316,135 +645,59 @@
     }
     </script>
 
-    <!-- Schema.org Structured Data - Services -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "CodeNest Agency",
-        "image": "https://codenest.hu/logo_png.png",
-        "description": "Professional web development agency specializing in custom websites, web applications, and UI/UX design",
+        "@type": "WebSite",
+        "name": "CodeNest",
         "url": "https://codenest.hu/",
-        "telephone": "N/A",
-        "email": "info.codenest.hu@gmail.com",
-        "areaServed": ["HU", "EU", "US"],
-        "priceRange": "Custom",
-        "knowsAbout": ["Web Development", "Web Applications", "UI/UX Design", "React", "Next.js", "Node.js", "TypeScript"],
-        "hasOfferingDescription": [
-            {
-                "@type": "Service",
-                "name": "Web Development",
-                "description": "Modern, responsive websites from landing pages to corporate sites"
-            },
-            {
-                "@type": "Service",
-                "name": "Web Applications",
-                "description": "Custom web applications with React, Next.js, and Node.js stack"
-            },
-            {
-                "@type": "Service",
-                "name": "UI/UX Design",
-                "description": "User-centered design with Figma prototypes and design systems"
-            },
-            {
-                "@type": "Service",
-                "name": "Maintenance & Support",
-                "description": "Ongoing technical support, updates and optimization"
-            }
+        "description": "Editable web systems by CodeNest."
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "CodeNest services",
+        "itemListElement": [
+            { "@type": "Service", "position": 1, "name": "Municipal & Institutional Portals", "provider": { "@type": "Organization", "name": "CodeNest" } },
+            { "@type": "Service", "position": 2, "name": "Business Website Systems", "provider": { "@type": "Organization", "name": "CodeNest" } },
+            { "@type": "Service", "position": 3, "name": "Booking, Reviews & Local Presence", "provider": { "@type": "Organization", "name": "CodeNest" } },
+            { "@type": "Service", "position": 4, "name": "Custom Web Tools", "provider": { "@type": "Organization", "name": "CodeNest" } }
         ]
     }
     </script>
 
-    <!-- Schema.org Structured Data - Website Breadcrumbs -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://codenest.hu/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Services",
-                "item": "https://codenest.hu/#services"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Portfolio",
-                "item": "https://codenest.hu/#portfolio"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
-                "name": "Team",
-                "item": "https://codenest.hu/#team"
-            }
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://codenest.hu/" },
+            { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://codenest.hu/#services" },
+            { "@type": "ListItem", "position": 3, "name": "Work", "item": "https://codenest.hu/#work" },
+            { "@type": "ListItem", "position": 4, "name": "Contact", "item": "https://codenest.hu/#contact" }
         ]
     }
     </script>
 
-    <!-- Schema.org Structured Data - FAQPage for AEO -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "What services does CodeNest offer?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "CodeNest specializes in web development, custom web applications, UI/UX design, and ongoing maintenance & support. We work with React, Next.js, Node.js, and TypeScript for modern solutions."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How long does a web development project take?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Project timelines vary based on complexity and requirements. Our efficient agile workflow ensures timely delivery. Contact us for a custom quote."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "What technologies do you use?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "We use the latest and most reliable technologies: React, Next.js, Node.js, TypeScript, and modern web standards for scalable, performant applications."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Do you provide ongoing support?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, we offer comprehensive maintenance and support services including technical updates, optimization, and performance monitoring."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Are you available for international projects?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, CodeNest has experience with international projects and provides both Hungarian and English language support."
-                }
-            }
+            { "@type": "Question", "name": "What is the difference between a website and a web system?", "acceptedAnswer": { "@type": "Answer", "text": "A website mainly presents information. A web system also has editable content, forms, booking, admin logic, integrations or operation behind it." } },
+            { "@type": "Question", "name": "When is an admin interface worth it?", "acceptedAnswer": { "@type": "Answer", "text": "It is worth it when news, services, documents, events, references or other content will change after launch." } },
+            { "@type": "Question", "name": "Can we edit the content later?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, if the project includes a CMS or admin. CodeNest defines what should be editable during planning and shows the client how to use it at handover." } },
+            { "@type": "Question", "name": "Can CodeNest guarantee first place on Google Maps?", "acceptedAnswer": { "@type": "Answer", "text": "No. CodeNest does not promise guaranteed rankings. The studio helps make local presence clearer, more complete and easier for people to act on." } }
         ]
     }
     </script>
 
-    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=20260619-faq-height" defer></script>
     <script src="cookie-consent.js" defer></script>
-
-
 </body>
 
 </html>

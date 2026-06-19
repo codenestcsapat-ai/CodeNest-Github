@@ -6,39 +6,55 @@
     <!-- Homepage -->
     <url>
         <loc>https://codenest.hu/</loc>
-        <lastmod>2025-12-05</lastmod>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     
+    <!-- Work Section -->
+    <url>
+        <loc>https://codenest.hu/#work</loc>
+        <lastmod>2026-06-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
     <!-- Services Section -->
     <url>
         <loc>https://codenest.hu/#services</loc>
-        <lastmod>2025-12-05</lastmod>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
-    
-    <!-- Portfolio Section -->
+
+    <!-- Case Study Section -->
     <url>
-        <loc>https://codenest.hu/#portfolio</loc>
-        <lastmod>2025-12-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Team Section -->
-    <url>
-        <loc>https://codenest.hu/#team</loc>
-        <lastmod>2025-12-05</lastmod>
+        <loc>https://codenest.hu/#case-study</loc>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
-    
+
+    <!-- Studio Section -->
+    <url>
+        <loc>https://codenest.hu/#studio</loc>
+        <lastmod>2026-06-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Lab Section -->
+    <url>
+        <loc>https://codenest.hu/#lab</loc>
+        <lastmod>2026-06-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
     <!-- Contact Section -->
     <url>
         <loc>https://codenest.hu/#contact</loc>
-        <lastmod>2025-12-05</lastmod>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
