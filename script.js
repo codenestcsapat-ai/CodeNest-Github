@@ -3,8 +3,34 @@
 
     const LANGUAGES = {
         en: {
-            pageTitle: "CodeNest - Editable Web Systems",
-            pageDescription: "CodeNest is a two-person digital studio building editable web systems, municipal portals, booking flows, admin interfaces and managed websites.",
+            pageTitle: "CodeNest - Reliable Web Systems",
+            pageDescription: "CodeNest is a two-person digital studio designing and building reliable web systems, interfaces and automations.",
+            pages: {
+                services: {
+                    pageTitle: "CodeNest - Services",
+                    pageDescription: "Explore CodeNest services: municipal portals, business website systems, booking, reviews, local presence and custom web tools."
+                },
+                "business-websites": {
+                    pageTitle: "CodeNest - Business Website Systems",
+                    pageDescription: "Business Website Systems by CodeNest: custom websites that build trust, explain your offer and generate qualified leads."
+                },
+                "municipal-portals": {
+                    pageTitle: "CodeNest - Municipal & Institutional Portals",
+                    pageDescription: "Municipal and Institutional Portals by CodeNest: editable, secure and easy-to-manage public websites for municipalities and institutions."
+                },
+                "booking-local": {
+                    pageTitle: "CodeNest - Booking, Reviews & Local Presence",
+                    pageDescription: "Booking, reviews and local presence systems by CodeNest: make it easier for customers to discover you, book you and leave great reviews."
+                },
+                "case-studies": {
+                    pageTitle: "CodeNest - Case Studies",
+                    pageDescription: "CodeNest case studies: real systems designed and built for municipalities, businesses and teams."
+                },
+                "custom-tools": {
+                    pageTitle: "CodeNest - Custom Web Tools",
+                    pageDescription: "Custom Web Tools by CodeNest: simple, secure tools that replace spreadsheet and email workflows."
+                }
+            },
             languageChanged: "Language changed: English",
             sending: "Sending... Please wait.",
             success: "Sent successfully. Thank you.",
@@ -14,11 +40,37 @@
             emailInvalid: "Please enter a valid email address",
             projectRequired: "Project type is required",
             submitError: "An error occurred while sending. Please try again.",
-            switchLabel: "Magyarra váltás"
+            switchLabel: "Switch to Hungarian"
         },
         hu: {
-            pageTitle: "CodeNest - Szerkeszthető webes rendszerek",
-            pageDescription: "A CodeNest kétfős digitális stúdió szerkeszthető webes rendszerekhez, települési portálokhoz, foglalási folyamatokhoz, adminfelületekhez és üzemeltetéshez.",
+            pageTitle: "CodeNest - Megbízható webes rendszerek",
+            pageDescription: "A CodeNest kétfős digitális stúdió, amely megbízható webes rendszereket, felületeket és automatizációkat tervez és épít.",
+            pages: {
+                services: {
+                    pageTitle: "CodeNest - Szolgáltatások",
+                    pageDescription: "CodeNest szolgáltatások: önkormányzati portálok, üzleti weboldal rendszerek, foglalás, értékelések, helyi jelenlét és egyedi webes eszközök."
+                },
+                "business-websites": {
+                    pageTitle: "CodeNest - Business Website Systems",
+                    pageDescription: "A CodeNest Business Website Systems egyedi weboldalakat épít, amelyek bizalmat építenek, érthetően mutatják be az ajánlatod és minőségi érdeklődőket hoznak."
+                },
+                "municipal-portals": {
+                    pageTitle: "CodeNest - Önkormányzati és intézményi portálok",
+                    pageDescription: "A CodeNest szerkeszthető, biztonságos és könnyen kezelhető önkormányzati és intézményi portálokat épít."
+                },
+                "booking-local": {
+                    pageTitle: "CodeNest - Foglalás, értékelések és helyi jelenlét",
+                    pageDescription: "A CodeNest foglalási, értékelési és helyi jelenlét rendszereket épít, hogy könnyebb legyen megtalálni, lefoglalni és értékelni a szolgáltatásod."
+                },
+                "case-studies": {
+                    pageTitle: "CodeNest - Esettanulmányok",
+                    pageDescription: "CodeNest esettanulmányok: valódi rendszerek önkormányzatoknak, vállalkozásoknak és csapatoknak."
+                },
+                "custom-tools": {
+                    pageTitle: "CodeNest - Egyedi webes eszközök",
+                    pageDescription: "A CodeNest egyszerű, biztonságos egyedi webes eszközöket épít táblázatos és emailes folyamatok kiváltására."
+                }
+            },
             languageChanged: "Nyelv megváltoztatva: Magyar",
             sending: "Küldés folyamatban... Kérjük várj.",
             success: "Sikeresen elküldve. Köszönjük.",
@@ -28,14 +80,15 @@
             emailInvalid: "Kérjük, érvényes email címet adj meg",
             projectRequired: "A projekttípus kiválasztása kötelező",
             submitError: "Hiba történt a küldés során. Próbáld újra.",
-            switchLabel: "Switch to English"
+            switchLabel: "Váltás angolra"
         }
     };
 
-    let currentLang = "en";
     const EMAILJS_PUBLIC_KEY = "l6VpSyq4uewrDcg_u";
     const EMAILJS_SERVICE_ID = "service_mkhy8en";
     const EMAILJS_TEMPLATE_ID = "template_hdly37v";
+
+    let currentLang = "en";
 
     function getSavedLanguage() {
         const hashLang = window.location.hash.replace("#", "");
@@ -53,8 +106,9 @@
     }
 
     function updateMetadata() {
-        const labels = LANGUAGES[currentLang];
-        document.documentElement.lang = currentLang === "hu" ? "hu" : "en";
+        const pageKey = document.body.getAttribute("data-page");
+        const labels = LANGUAGES[currentLang].pages?.[pageKey] || LANGUAGES[currentLang];
+        document.documentElement.lang = currentLang;
         document.title = labels.pageTitle;
 
         const description = document.querySelector('meta[name="description"]');
@@ -89,7 +143,7 @@
         });
 
         const opposite = currentLang === "en" ? "hu" : "en";
-        const switchMarkup = `<a href="#" class="lang-btn lang-switch-footer" data-lang="${opposite}" aria-label="Switch language">${LANGUAGES[currentLang].switchLabel}</a>`;
+        const switchMarkup = `<a href="#" class="lang-btn lang-switch-footer" data-lang="${opposite}" aria-label="${LANGUAGES[currentLang].switchLabel}">${LANGUAGES[currentLang].switchLabel}</a>`;
 
         const footerLang = document.querySelector(".footer-lang");
         if (footerLang) footerLang.innerHTML = switchMarkup;
@@ -159,17 +213,25 @@
         const navLinks = document.querySelectorAll(".nav-link");
         if (!sections.length || !navLinks.length) return;
 
+        const hashNavLinks = Array.from(navLinks).filter((link) => {
+            const href = link.getAttribute("href") || "";
+            return href.startsWith("#");
+        });
+
+        if (!hashNavLinks.length) return;
+
         function updateActiveLink() {
             let currentSection = "";
+
             sections.forEach((section) => {
                 const top = section.offsetTop;
                 const height = section.offsetHeight;
-                if (window.scrollY + 120 >= top && window.scrollY + 120 < top + height) {
+                if (window.scrollY + 130 >= top && window.scrollY + 130 < top + height) {
                     currentSection = section.id;
                 }
             });
 
-            navLinks.forEach((link) => {
+            hashNavLinks.forEach((link) => {
                 link.classList.toggle("active", link.getAttribute("href") === `#${currentSection}`);
             });
         }
@@ -199,9 +261,13 @@
         if (!faqContainer) return;
 
         faqContainer.querySelectorAll(".faq-question").forEach((button) => {
+            const card = button.closest(".faq-card");
+            const answer = card.querySelector(".faq-answer");
+            if (card.classList.contains("open")) {
+                answer.style.maxHeight = getFAQAnswerHeight(answer);
+            }
+
             button.addEventListener("click", () => {
-                const card = button.closest(".faq-card");
-                const answer = card.querySelector(".faq-answer");
                 const isOpen = button.getAttribute("aria-expanded") === "true";
 
                 if (faqContainer.dataset.accordion === "true") {
@@ -216,12 +282,6 @@
                 button.setAttribute("aria-expanded", String(!isOpen));
                 card.classList.toggle("open", !isOpen);
                 answer.style.maxHeight = isOpen ? null : getFAQAnswerHeight(answer);
-
-                if (!isOpen) {
-                    requestAnimationFrame(() => {
-                        answer.style.maxHeight = getFAQAnswerHeight(answer);
-                    });
-                }
             });
         });
 
@@ -229,7 +289,7 @@
     }
 
     function getFAQAnswerHeight(answer) {
-        return `${answer.scrollHeight + 32}px`;
+        return `${answer.scrollHeight + 20}px`;
     }
 
     function updateOpenFAQHeights() {
@@ -305,6 +365,7 @@
         if (window.emailjs && typeof window.emailjs.init === "function") {
             window.emailjs.init(EMAILJS_PUBLIC_KEY);
         }
+
         bindLanguageButtons();
         setLanguage(currentLang, false);
         initMobileMenu();
