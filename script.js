@@ -3,9 +3,17 @@
 
     const LANGUAGES = {
         en: {
-            pageTitle: "CodeNest - Reliable Web Systems",
-            pageDescription: "CodeNest is a two-person digital studio designing and building reliable web systems, interfaces and automations.",
+            pageTitle: "CodeNest - Editable Web Systems",
+            pageDescription: "CodeNest builds editable web systems: websites, admin interfaces, booking flows and custom tools that are fast, secure and easy to manage.",
             pages: {
+                home: {
+                    pageTitle: "CodeNest - Editable Web Systems",
+                    pageDescription: "CodeNest builds editable web systems: websites, admin interfaces, booking flows and custom tools that are fast, secure and easy to manage."
+                },
+                studio: {
+                    pageTitle: "CodeNest - Studio",
+                    pageDescription: "Meet CodeNest Studio: the two-person team behind reliable web systems, interfaces and automations."
+                },
                 services: {
                     pageTitle: "CodeNest - Services",
                     pageDescription: "Explore CodeNest services: municipal portals, business website systems, booking, reviews, local presence and custom web tools."
@@ -25,6 +33,14 @@
                 "case-studies": {
                     pageTitle: "CodeNest - Case Studies",
                     pageDescription: "CodeNest case studies: real systems designed and built for municipalities, businesses and teams."
+                },
+                "gardony-case": {
+                    pageTitle: "CodeNest - Gárdony Platform Case Study",
+                    pageDescription: "Gárdony Platform case study by CodeNest: a modern municipal portal with news, documents, events, institutions and an easy-to-manage Directus CMS."
+                },
+                "bossclub-case": {
+                    pageTitle: "CodeNest - BossClub Case Study",
+                    pageDescription: "BossClub case study by CodeNest: a premium membership and community platform for entrepreneurs and business leaders."
                 },
                 "custom-tools": {
                     pageTitle: "CodeNest - Custom Web Tools",
@@ -46,6 +62,14 @@
             pageTitle: "CodeNest - Megbízható webes rendszerek",
             pageDescription: "A CodeNest kétfős digitális stúdió, amely megbízható webes rendszereket, felületeket és automatizációkat tervez és épít.",
             pages: {
+                home: {
+                    pageTitle: "CodeNest - Szerkeszthető webes rendszerek",
+                    pageDescription: "A CodeNest szerkeszthető webes rendszereket épít: weboldalakat, admin felületeket, foglalási folyamatokat és egyedi eszközöket."
+                },
+                studio: {
+                    pageTitle: "CodeNest - Stúdió",
+                    pageDescription: "Ismerd meg a CodeNest Stúdiót: a kétfős csapatot a megbízható webes rendszerek, felületek és automatizációk mögött."
+                },
                 services: {
                     pageTitle: "CodeNest - Szolgáltatások",
                     pageDescription: "CodeNest szolgáltatások: önkormányzati portálok, üzleti weboldal rendszerek, foglalás, értékelések, helyi jelenlét és egyedi webes eszközök."
@@ -65,6 +89,14 @@
                 "case-studies": {
                     pageTitle: "CodeNest - Esettanulmányok",
                     pageDescription: "CodeNest esettanulmányok: valódi rendszerek önkormányzatoknak, vállalkozásoknak és csapatoknak."
+                },
+                "gardony-case": {
+                    pageTitle: "CodeNest - Gárdony Platform esettanulmány",
+                    pageDescription: "Gárdony Platform esettanulmány a CodeNesttől: modern önkormányzati portál hírekkel, dokumentumokkal, eseményekkel és Directus CMS-sel."
+                },
+                "bossclub-case": {
+                    pageTitle: "CodeNest - BossClub esettanulmány",
+                    pageDescription: "BossClub esettanulmány a CodeNesttől: prémium tagsági és közösségi platform vállalkozóknak és üzleti vezetőknek."
                 },
                 "custom-tools": {
                     pageTitle: "CodeNest - Egyedi webes eszközök",
