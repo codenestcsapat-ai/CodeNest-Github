@@ -266,6 +266,14 @@ ul {
   margin-top: 2rem;
 }
 
+.compact-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.process-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
 .card {
   position: relative;
   display: flex;
@@ -296,6 +304,48 @@ ul {
 .card p:last-child,
 .card ul:last-child {
   margin-bottom: 0;
+}
+
+.compact-card {
+  background: var(--color-bg-soft);
+}
+
+.compact-card p {
+  color: var(--color-text);
+}
+
+.process-card {
+  gap: 0.15rem;
+}
+
+.step-number {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.75rem;
+  padding: 0.28rem 0.55rem;
+  border: 1px solid var(--color-green-line);
+  border-radius: 999px;
+  background: var(--color-green-soft);
+  color: var(--color-accent-dark);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.section-note {
+  max-width: 780px;
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-green-line);
+  border-radius: var(--radius-card);
+  background: var(--color-green-soft);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.section-note:empty,
+.section-note[hidden] {
+  display: none;
 }
 
 .chips,
@@ -406,6 +456,17 @@ ul {
   display: grid;
   gap: 1.25rem;
   margin-top: 2rem;
+}
+
+#scope [data-render="scope-details"] {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 2rem;
+}
+
+#scope [data-render="scope-details"] h3 {
+  margin: 0;
+  font-size: 1.15rem;
 }
 
 #contact [data-render="contact-details"] > p {

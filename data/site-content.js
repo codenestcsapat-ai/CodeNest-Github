@@ -1,11 +1,11 @@
 export const siteContent = {
   navigation: {
     items: [
-      { label: "Mit építünk", href: "#services" },
-      { label: "Munkák", href: "#projects" },
-      { label: "Folyamat", href: "#process" },
-      { label: "Rólunk", href: "#team" },
-      { label: "Kapcsolat", href: "#contact" },
+      { label: "Mit építünk", href: "#mit-epitunk" },
+      { label: "Munkák", href: "#munkak" },
+      { label: "Folyamat", href: "#folyamat" },
+      { label: "Rólunk", href: "#bors-david" },
+      { label: "Kapcsolat", href: "#kapcsolat" },
     ],
     languages: ["HU", "EN", "DE"],
   },
@@ -16,6 +16,8 @@ export const siteContent = {
       "Szerkeszthető weboldalakat, adminfelületeket és egyedi digitális megoldásokat építünk önkormányzatoknak, intézményeknek és kisvállalkozásoknak.",
     primaryCta: "Beszéljünk a projektről",
     secondaryCta: "Megnézem, mit építünk",
+    primaryCtaHref: "#kapcsolat",
+    secondaryCtaHref: "#mit-epitunk",
   },
 
   problem: {
@@ -28,6 +30,8 @@ export const siteContent = {
       "A weboldal kapcsolódjon a valódi munkafolyamatokhoz.",
       "Az indulás után is legyen karbantartás, mentés és támogatás.",
     ],
+    solution:
+      "Mi olyan webes rendszereket építünk, amelyek nemcsak jól néznek ki, hanem átadás után is használhatók, szerkeszthetők és hosszú távon üzemeltethetők maradnak.",
   },
 
   process: {
@@ -36,20 +40,24 @@ export const siteContent = {
       "Kis csapatként közvetlenül dolgozunk veled: először megértjük, mire kell a rendszer, utána építünk hozzá használható szerkezetet, felületet és működést.",
     steps: [
       {
-        title: "Felmérés",
-        text: "Megnézzük a célokat, a jelenlegi tartalmakat, a szükséges funkciókat és azt, kik fogják használni az adminfelületet.",
+        title: "Megértjük",
+        text: "Megismerjük a célt, a felhasználókat, a jelenlegi problémákat és azt, hogy mit kell a rendszernek megoldania.",
       },
       {
-        title: "Szerkezet és működés",
-        text: "Kitaláljuk az oldaltérképet, az adatstruktúrát, az űrlapokat, jogosultságokat és a szerkesztési logikát.",
+        title: "Megtervezzük",
+        text: "Felépítjük az oldalstruktúrát, a tartalomtípusokat, az adminlogikát és a szükséges funkciókat.",
       },
       {
-        title: "Fejlesztés",
-        text: "Felépítjük a publikus oldalt és a hozzá tartozó kezelőfelületet, majd közösen finomítjuk a működést.",
+        title: "Megépítjük",
+        text: "Elkészítjük a weboldalt, adminfelületet, űrlapokat, integrációkat és a szükséges technikai alapokat.",
       },
       {
-        title: "Élesítés és támogatás",
-        text: "Segítünk az indulásban, a tárhelyben, mentésekben, hibajavításban és a későbbi bővítésekben.",
+        title: "Átadjuk",
+        text: "Betanítunk, dokumentálunk, átadjuk a hozzáféréseket, és segítünk az éles indulásban.",
+      },
+      {
+        title: "Üzemeltetjük",
+        text: "Igény esetén gondoskodunk a hostingról, mentésekről, frissítésekről, supportról és továbbfejlesztésről.",
       },
     ],
   },
@@ -60,20 +68,16 @@ export const siteContent = {
       "Nem nagy ügynökségi gépezetként dolgozunk. Két emberrel, közvetlen kommunikációval és gyakorlati szemlélettel építünk webes rendszereket.",
     items: [
       {
-        title: "Használható adminlogika",
-        text: "A szerkesztőfelület nem utólagos extra, hanem a rendszer része.",
+        title: "Közvetlen kommunikáció",
+        text: "Nem account manageren keresztül dolgozol. Azokkal beszélsz, akik ténylegesen értik és építik a rendszert.",
       },
       {
-        title: "Intézményi és üzleti gondolkodás",
-        text: "Portálokban, dokumentumokban, jogosultságokban, űrlapokban és napi folyamatokban gondolkodunk.",
+        title: "Szerkeszthető admin",
+        text: "Nem zárt dobozt adunk át. A cél, hogy az ügyfél is tudja kezelni azokat a tartalmakat és folyamatokat, amelyek a mindennapi működéshez kellenek.",
       },
       {
-        title: "Kis csapat, közvetlen munka",
-        text: "A projekt nem vész el rétegek között: azokkal beszélsz, akik tervezik és építik.",
-      },
-      {
-        title: "Indulás utáni figyelem",
-        text: "Hosting, mentés, frissítés és támogatás is része lehet a közös munkának.",
+        title: "Üzemeltethető alapok",
+        text: "A hosting, backup, frissítések, hozzáférések és support nem utólagos gondolatok, hanem a rendszer részei.",
       },
     ],
   },
@@ -89,6 +93,8 @@ export const siteContent = {
       "Milyen űrlapokra, értesítésekre vagy munkafolyamatokra van szükség?",
       "Kell-e tárhely, domain, mentés, karbantartás vagy hosszabb távú támogatás?",
     ],
+    ctaLabel: "Beszéljünk a projektről",
+    ctaHref: "#kapcsolat",
   },
 
   contact: {
@@ -117,10 +123,10 @@ export const siteContent = {
   footer: {
     tagline: "Webes rendszerek, amiket nem csak nézni lehet, hanem használni is.",
     links: [
-      { label: "Mit építünk", href: "#services" },
-      { label: "Munkák", href: "#projects" },
-      { label: "Folyamat", href: "#process" },
-      { label: "Kapcsolat", href: "#contact" },
+      { label: "Mit építünk", href: "#mit-epitunk" },
+      { label: "Munkák", href: "#munkak" },
+      { label: "Folyamat", href: "#folyamat" },
+      { label: "Kapcsolat", href: "#kapcsolat" },
     ],
     legalLinks: [
       { label: "Impresszum", href: "legal-hu.html" },

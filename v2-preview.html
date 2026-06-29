@@ -12,28 +12,28 @@
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="#home" aria-label="CodeNest V2 preview főoldal">CodeNest</a>
+      <a class="brand" href="#hero" aria-label="CodeNest V2 preview főoldal">CodeNest</a>
 
       <nav class="site-nav" aria-label="V2 preview navigáció" data-render="navigation">
-        <a href="#services">Mit építünk</a>
-        <a href="#projects">Munkák</a>
-        <a href="#process">Folyamat</a>
-        <a href="#team">Rólunk</a>
-        <a href="#contact">Kapcsolat</a>
+        <a href="#mit-epitunk">Mit építünk</a>
+        <a href="#munkak">Munkák</a>
+        <a href="#folyamat">Folyamat</a>
+        <a href="#bors-david">Rólunk</a>
+        <a href="#kapcsolat">Kapcsolat</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero section" id="home">
+    <section class="hero section" id="hero">
       <div class="container hero-layout">
         <div class="hero-copy">
           <p class="section-kicker">CodeNest V2</p>
           <h1 data-render="hero-headline">V2 hero headline betöltése...</h1>
           <p class="hero-subtitle" data-render="hero-subheadline">V2 hero szöveg betöltése...</p>
           <div class="button-row">
-            <a class="button button-primary" href="#contact" data-render="hero-primary-cta">Kapcsolat</a>
-            <a class="button button-secondary" href="#services" data-render="hero-secondary-cta">Mit építünk</a>
+            <a class="button button-primary" href="#kapcsolat" data-render="hero-primary-cta">Kapcsolat</a>
+            <a class="button button-secondary" href="#mit-epitunk" data-render="hero-secondary-cta">Mit építünk</a>
           </div>
         </div>
 
@@ -45,15 +45,17 @@
       </div>
     </section>
 
-    <section class="section" id="problem">
+    <section class="section" id="problema">
       <div class="container section-shell">
         <p class="section-kicker">Problem</p>
         <h2 data-render="problem-title">Problem</h2>
         <p data-render="problem-text">Placeholder section for the V2 problem framing.</p>
+        <div class="card-grid compact-grid" data-render="problem-points"></div>
+        <p class="section-note" data-render="problem-solution"></p>
       </div>
     </section>
 
-    <section class="section" id="services">
+    <section class="section" id="mit-epitunk">
       <div class="container section-shell">
         <p class="section-kicker">Mit építünk</p>
         <h2>Mit építünk</h2>
@@ -66,7 +68,7 @@
       </div>
     </section>
 
-    <section class="section" id="projects">
+    <section class="section" id="munkak">
       <div class="container section-shell">
         <p class="section-kicker">Kiemelt munkák</p>
         <h2>Kiemelt munkák</h2>
@@ -79,23 +81,25 @@
       </div>
     </section>
 
-    <section class="section" id="process">
+    <section class="section" id="folyamat">
       <div class="container section-shell">
         <p class="section-kicker">Folyamat</p>
         <h2 data-render="process-title">Folyamat</h2>
         <p data-render="process-intro">Placeholder section for the V2 project process.</p>
+        <div class="card-grid process-grid" data-render="process-steps"></div>
       </div>
     </section>
 
-    <section class="section" id="why">
+    <section class="section" id="miert-codenest">
       <div class="container section-shell">
         <p class="section-kicker">Miért CodeNest</p>
         <h2 data-render="why-title">Miért CodeNest</h2>
         <p data-render="why-intro">Placeholder section for the V2 trust and differentiation points.</p>
+        <div class="card-grid compact-grid" data-render="why-items"></div>
       </div>
     </section>
 
-    <section class="section" id="team">
+    <section class="section" id="bors-david">
       <div class="container section-shell">
         <p class="section-kicker">Bors + Dávid</p>
         <h2 data-render="team-title">Bors + Dávid</h2>
@@ -109,15 +113,16 @@
       </div>
     </section>
 
-    <section class="section" id="scope">
+    <section class="section" id="scope-arazas">
       <div class="container section-shell">
         <p class="section-kicker">Scope / árazás</p>
         <h2 data-render="scope-title">Scope / árazás</h2>
         <p data-render="scope-text">Placeholder section for scope and pricing explanation without public prices.</p>
+        <div data-render="scope-details"></div>
       </div>
     </section>
 
-    <section class="section" id="contact">
+    <section class="section" id="kapcsolat">
       <div class="container section-shell">
         <p class="section-kicker">Kapcsolat</p>
         <h2 data-render="contact-title">Kapcsolat</h2>
