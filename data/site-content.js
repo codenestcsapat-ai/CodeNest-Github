@@ -21,9 +21,31 @@ export const siteContent = {
   },
 
   problem: {
-    title: "A jó weboldal nem áll meg a látványnál.",
+    title: "A legtöbb weboldal elkészül. Aztán nehéz használni.",
     text:
       "Sok szervezetnek nem újabb statikus bemutatkozó oldalra van szüksége, hanem olyan rendszerre, amit a csapat tényleg tud használni: híreket kezelni, dokumentumokat feltölteni, űrlapokat fogadni, folyamatokat követni és biztonságosan működtetni.",
+    painPoints: [
+      {
+        title: "Nehéz frissíteni",
+        text: "A tartalom elavul, mert minden módosítás külön utánajárást vagy fejlesztői segítséget igényel.",
+      },
+      {
+        title: "Szétszórt tartalmak",
+        text: "Dokumentumok, hírek és információk több helyen élnek, ezért nehéz rendben tartani őket.",
+      },
+      {
+        title: "E-mail káosz",
+        text: "Ajánlatkérések, jelentkezések és bejelentések könnyen elvesznek a beérkező üzenetek között.",
+      },
+      {
+        title: "Nincs biztos átadás",
+        text: "A weboldal elkészül, de nem mindig egyértelmű, ki kezeli, hogyan frissül és ki tartja üzemben.",
+      },
+    ],
+    beforeAfter: {
+      before: ["Szétszórt tartalmak", "Fejlesztőfüggőség", "E-mail káosz"],
+      after: ["Szerkeszthető admin", "Rendezett tartalom", "Átlátható folyamat"],
+    },
     points: [
       "A tartalom legyen szerkeszthető fejlesztői segítség nélkül.",
       "Az adminfelület legyen átlátható azoknak is, akik naponta használják.",

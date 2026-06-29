@@ -55,22 +55,39 @@ const renderHero = () => {
   const secondaryCta = document.querySelector('[data-render="hero-secondary-cta"]');
   if (primaryCta) primaryCta.href = fallback(hero.primaryCtaHref, "#kapcsolat");
   if (secondaryCta) secondaryCta.href = fallback(hero.secondaryCtaHref, "#mit-epitunk");
+
+  const supportItems = getArray(siteContent.whyCodeNest?.items)
+    .map((item) => item.title)
+    .filter(Boolean)
+    .slice(0, 3);
+  const supportChips = supportItems.map((item) => createElement("span", "hero-chip", item));
+  if (supportChips.length) clearAndAppend('[data-render="hero-support-chips"]', supportChips);
 };
 
 const renderProblem = () => {
   const problem = siteContent.problem || {};
-  const points = getArray(problem.points);
+  const points = getArray(problem.painPoints).length ? getArray(problem.painPoints) : getArray(problem.points);
 
   setText('[data-render="problem-title"]', problem.title, "Problem");
   setText('[data-render="problem-text"]', problem.text, "V2 problem framing.");
 
   const cards = points.map((point) => {
     const card = createElement("article", "card compact-card");
-    card.append(createElement("p", "", fallback(point, "V2 problémapont.")));
+    if (typeof point === "string") {
+      card.append(createElement("p", "", fallback(point, "V2 problémapont.")));
+      return card;
+    }
+
+    card.append(
+      createElement("h3", "", fallback(point.title, "Probléma")),
+      createElement("p", "", fallback(point.text, "V2 problémapont."))
+    );
     return card;
   });
 
   if (cards.length) clearAndAppend('[data-render="problem-points"]', cards);
+
+  renderProblemComparison(problem.beforeAfter);
 
   const solutionElement = document.querySelector('[data-render="problem-solution"]');
   if (solutionElement) {
@@ -80,21 +97,83 @@ const renderProblem = () => {
   }
 };
 
+const renderProblemComparison = (comparison) => {
+  const container = document.querySelector('[data-render="problem-comparison"]');
+  if (!container) return;
+
+  const beforeItems = getArray(comparison?.before);
+  const afterItems = getArray(comparison?.after);
+  if (!beforeItems.length && !afterItems.length) return;
+
+  const before = createComparisonColumn("Előtte", beforeItems);
+  const after = createComparisonColumn("Utána", afterItems);
+  container.replaceChildren(before, after);
+};
+
+const createComparisonColumn = (title, items) => {
+  const column = createElement("div", "compare-column");
+  column.append(createElement("h3", "", title));
+
+  const list = createElement("ul", "plain-list");
+  items.forEach((item) => {
+    list.append(createElement("li", "", String(item)));
+  });
+
+  column.append(list);
+  return column;
+};
+
 const renderServices = () => {
-  const cards = services.map((service) => {
-    const card = createElement("article", "card");
+  const cards = services.slice(0, 3).map((service, index) => {
+    const card = createElement("article", "card service-card");
+    const moduleHint = createServiceModule(index);
     const title = createElement("h3", "", fallback(service.title, "Szolgáltatás"));
     const description = createElement("p", "", fallback(service.shortDescription, "Rövid leírás később."));
     const details = createElement("p", "", fallback(service.supportingText, ""));
     const chips = createList(service.chips, "chips");
+    const features = createList(service.features, "feature-list");
+    const cta = createElement("a", "button button-secondary", fallback(service.ctaLabel, "Beszéljünk róla"));
 
-    card.append(title, description);
+    cta.href = "#kapcsolat";
+
+    card.append(moduleHint, title, description);
     if (details.textContent) card.append(details);
+    if (features) card.append(features);
     if (chips) card.append(chips);
+    card.append(cta);
     return card;
   });
 
   if (cards.length) clearAndAppend('[data-render="services"]', cards);
+};
+
+const createServiceModule = (index) => {
+  const module = createElement("div", "service-module");
+
+  if (index === 0) {
+    module.append(
+      createElement("span", "module-line wide"),
+      createElement("span", "module-line"),
+      createElement("span", "module-pill", "Dokumentumtár")
+    );
+    return module;
+  }
+
+  if (index === 1) {
+    module.append(
+      createElement("span", "module-block"),
+      createElement("span", "module-block small"),
+      createElement("span", "module-pill", "Szerkeszthető")
+    );
+    return module;
+  }
+
+  module.append(
+    createElement("span", "module-step"),
+    createElement("span", "module-step"),
+    createElement("span", "module-pill", "Workflow")
+  );
+  return module;
 };
 
 const renderProjects = () => {
