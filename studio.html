@@ -5,22 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="google4b9d11cc3ca1b57c">
-    <meta name="description" content="Meet CodeNest Studio: the two-person team behind reliable web systems, interfaces and automations.">
+    <meta name="description" content="Start a project with CodeNest Studio. Work directly with Bors Gugi and David Fekete on clear, reliable digital systems.">
     <meta name="author" content="CodeNest">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://codenest.hu/studio.html">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://codenest.hu/studio.html">
-    <meta property="og:title" content="CodeNest - Studio">
-    <meta property="og:description" content="You work directly with us. No account managers. No handoffs. Just two people who care about building the right solution.">
+    <meta property="og:title" content="CodeNest - Studio / Start a Project">
+    <meta property="og:description" content="Two people. No layers. Just direct collaboration on digital systems that are fast, reliable and built to grow with you.">
     <meta property="og:image" content="https://codenest.hu/logo_szoveggel.png">
     <meta name="twitter:card" content="summary_large_image">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260622-studio-page">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260629-studio-start">
+    <link rel="stylesheet" href="studio-start.css?v=20260629">
     <link rel="stylesheet" href="cookie-consent.css">
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
@@ -28,40 +29,35 @@
     <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png">
     <link rel="apple-touch-icon" href="/favicon-192x192.png">
 
-    <title>CodeNest - Studio</title>
+    <title>CodeNest - Studio / Start a Project</title>
 </head>
 
-<body data-page="studio">
-    <a class="skip-link" href="#main-content" data-en="Skip to content" data-hu="Ugrás a tartalomra">Skip to content</a>
+<body data-page="studio-start">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div id="sr-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-    <header class="header" id="header" role="banner">
-        <div class="container">
-            <nav class="nav" role="navigation" aria-label="Main navigation">
-                <a href="index.html" class="logo" aria-label="CodeNest home">
-                    <picture>
-                        <source type="image/webp" srcset="public_optimized/logo_png-64.webp 64w, public_optimized/logo_png-112.webp 112w" sizes="44px">
-                        <img src="logo_png.png" alt="CodeNest logo" width="44" height="44" loading="eager" decoding="async">
-                    </picture>
+    <header class="header studio-header" id="header" role="banner">
+        <div class="studio-container">
+            <nav class="nav studio-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html" class="logo studio-logo" aria-label="CodeNest home">
+                    <span class="code-mark" aria-hidden="true">&lt;/&gt;</span>
                     <span class="brand">CodeNest</span>
                 </a>
 
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.html#work" class="nav-link" data-en="Work" data-hu="Munkák">Work</a></li>
-                    <li><a href="services.html" class="nav-link" data-en="Services" data-hu="Szolgáltatások">Services</a></li>
-                    <li><a href="case-studies.html" class="nav-link" data-en="Case Studies" data-hu="Esettanulmányok">Case Studies</a></li>
-                    <li><a href="studio.html" class="nav-link active" data-en="Studio" data-hu="Stúdió">Studio</a></li>
-                    <li><a href="#lab" class="nav-link" data-en="Lab" data-hu="Lab">Lab</a></li>
-                    <li><a href="#contact" class="nav-link" data-en="Contact" data-hu="Kapcsolat">Contact</a></li>
-                    <li class="mobile-language-switch" role="presentation"></li>
+                    <li><a href="index.html#work" class="nav-link">Work</a></li>
+                    <li><a href="services.html" class="nav-link">Services</a></li>
+                    <li><a href="case-studies.html" class="nav-link">Case Studies</a></li>
+                    <li><a href="studio.html" class="nav-link active">Studio</a></li>
+                    <li><a href="#lab" class="nav-link">Lab</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
 
-                <div class="nav-actions">
-                    <div class="language-switch" aria-label="Language switcher">
-                        <a href="#" class="lang-btn" data-lang="hu" aria-pressed="false">HU</a>
-                        <span class="lang-divider">/</span>
-                        <a href="#" class="lang-btn active" data-lang="en" aria-pressed="true">EN</a>
-                    </div>
+                <div class="nav-actions studio-nav-actions">
+                    <a href="#contact" class="btn btn-primary studio-nav-cta">Let's talk <span aria-hidden="true">&rarr;</span></a>
+                    <button class="theme-dot" type="button" aria-label="Theme preview">
+                        <span aria-hidden="true">◔</span>
+                    </button>
                 </div>
 
                 <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu" type="button">
@@ -73,344 +69,405 @@
         </div>
     </header>
 
-    <main id="main-content" role="main">
-        <section class="hero section-band" id="home">
-            <div class="container">
-                <div class="breadcrumb" aria-label="Breadcrumb">
-                    <a href="#home" data-en="Home" data-hu="Főoldal">Home</a>
-                    <span>/</span>
-                    <span data-en="Studio" data-hu="Stúdió">Studio</span>
-                </div>
-
-                <div class="hero-grid">
-                    <div class="hero-copy fade-in">
-                        <div class="eyebrow">
-                            <span class="icon-box icon-people" aria-hidden="true"></span>
-                            <span data-en="The people behind CodeNest" data-hu="Az emberek a CodeNest mögött">The people behind CodeNest</span>
-                        </div>
-                        <h1 data-en="We design and build systems you can rely on." data-hu="Megbízható rendszereket tervezünk és építünk.">We design and build systems you can rely on.</h1>
-                        <p data-en="You work directly with us. No account managers. No handoffs. Just two people who care about building the right solution together with you." data-hu="Közvetlenül velünk dolgozol. Nincsenek account managerek, nincs átadás-átvételi káosz. Csak két ember, aki veled együtt akar jó megoldást építeni.">You work directly with us. No account managers. No handoffs. Just two people who care about building the right solution together with you.</p>
-                        <div class="hero-actions">
-                            <a href="#contact" class="btn btn-primary">
-                                <span data-en="Let's start your project" data-hu="Indítsuk el a projekted">Let's start your project</span>
-                                <span aria-hidden="true">→</span>
-                            </a>
-                            <a href="#work" class="btn btn-secondary" data-en="See our work" data-hu="Munkáink">See our work</a>
-                        </div>
+    <main id="main-content" class="studio-main" role="main">
+        <section class="studio-hero">
+            <div class="studio-container studio-hero-grid">
+                <div class="studio-hero-copy">
+                    <div class="studio-badge">
+                        <span aria-hidden="true">⊙</span>
+                        Studio • Start a Project
                     </div>
+                    <h1>Two people. No layers. <span>Just direct collaboration.</span></h1>
+                    <p class="studio-lead">We're Bors Gugi and David Fekete. CodeNest is our studio. We design and build digital systems that are fast, reliable, and built to grow with you.</p>
 
-                    <section class="team-grid fade-in" id="studio" aria-label="CodeNest team">
-                        <article class="profile-card">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/GB_profil-400.webp 400w, public_optimized/GB_profil-800.webp 800w" sizes="(max-width: 760px) 100vw, 290px">
-                                <img src="GB_profil.jpg" alt="Bors Gugi portrait" width="420" height="420" loading="eager" decoding="async">
-                            </picture>
-                            <div class="profile-content">
-                                <h2>Bors Gugi</h2>
-                                <p class="role" data-en="Partner & Developer" data-hu="Partner és fejlesztő">Partner & Developer</p>
-                                <p data-en="Full-stack developer with a passion for clean code, automation and reliable systems." data-hu="Full-stack fejlesztő, aki a tiszta kódra, automatizációra és stabil rendszerekre figyel.">Full-stack developer with a passion for clean code, automation and reliable systems.</p>
-                                <div class="tag-row">
-                                    <span>Backend</span>
-                                    <span>Integrations</span>
-                                    <span>DevOps</span>
-                                </div>
-                            </div>
-                        </article>
-
-                        <article class="profile-card">
-                            <picture>
-                                <source type="image/webp" srcset="public_optimized/DF-400.webp 400w, public_optimized/DF-800.webp 800w" sizes="(max-width: 760px) 100vw, 290px">
-                                <img src="DF.jpg" alt="Dávid Fekete portrait" width="420" height="420" loading="eager" decoding="async">
-                            </picture>
-                            <div class="profile-content">
-                                <h2>Dávid Fekete</h2>
-                                <p class="role" data-en="Partner & Designer" data-hu="Partner és designer">Partner & Designer</p>
-                                <p data-en="UX-focused designer who turns complex requirements into clear, usable interfaces." data-hu="UX-fókuszú designer, aki az összetett igényekből tiszta, használható felületeket tervez.">UX-focused designer who turns complex requirements into clear, usable interfaces.</p>
-                                <div class="tag-row">
-                                    <span>UX / UI</span>
-                                    <span>Product Design</span>
-                                    <span>Prototyping</span>
-                                </div>
-                            </div>
-                        </article>
-                    </section>
-                </div>
-
-                <div class="trust-row fade-in" aria-label="Studio promises">
-                    <article>
-                        <span class="icon-box icon-search" aria-hidden="true"></span>
-                        <div>
-                            <h3 data-en="Direct collaboration" data-hu="Közvetlen együttműködés">Direct collaboration</h3>
-                            <p data-en="You talk to the people who build your system." data-hu="Azokkal beszélsz, akik ténylegesen építik a rendszert.">You talk to the people who build your system.</p>
-                        </div>
-                    </article>
-                    <article>
-                        <span class="icon-box icon-users" aria-hidden="true"></span>
-                        <div>
-                            <h3 data-en="Full transparency" data-hu="Teljes átláthatóság">Full transparency</h3>
-                            <p data-en="Clear updates, open communication." data-hu="Érthető státuszok, nyílt kommunikáció.">Clear updates, open communication.</p>
-                        </div>
-                    </article>
-                    <article>
-                        <span class="icon-box icon-shield" aria-hidden="true"></span>
-                        <div>
-                            <h3 data-en="Built for the long term" data-hu="Hosszú távra építve">Built for the long term</h3>
-                            <p data-en="Reliable systems that grow with your needs." data-hu="Stabil rendszerek, amelyek veled tudnak fejlődni.">Reliable systems that grow with your needs.</p>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-band process-section" id="services">
-            <div class="container split-layout">
-                <section class="panel wide-panel fade-in" aria-labelledby="process-title">
-                    <h2 id="process-title" data-en="How we work" data-hu="Hogyan dolgozunk">How we work</h2>
-                    <div class="process-steps">
+                    <div class="hero-benefits" aria-label="Studio benefits">
                         <article>
-                            <span class="icon-box icon-discover" aria-hidden="true"></span>
-                            <h3 data-en="1. Discover" data-hu="1. Feltárás">1. Discover</h3>
-                            <p data-en="We learn about your goals, users and current challenges." data-hu="Megértjük a célokat, felhasználókat és jelenlegi nehézségeket.">We learn about your goals, users and current challenges.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-plan" aria-hidden="true"></span>
-                            <h3 data-en="2. Plan" data-hu="2. Tervezés">2. Plan</h3>
-                            <p data-en="We define the scope, structure and the right approach." data-hu="Meghatározzuk a scope-ot, struktúrát és a megfelelő utat.">We define the scope, structure and the right approach.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-design" aria-hidden="true"></span>
-                            <h3 data-en="3. Design" data-hu="3. Design">3. Design</h3>
-                            <p data-en="We design clear, usable interfaces that solve real needs." data-hu="Átlátható, használható felületeket tervezünk valós igényekre.">We design clear, usable interfaces that solve real needs.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-build" aria-hidden="true"></span>
-                            <h3 data-en="4. Build" data-hu="4. Fejlesztés">4. Build</h3>
-                            <p data-en="We develop, test and integrate your system with care." data-hu="Lefejlesztjük, teszteljük és gondosan összekötjük a rendszert.">We develop, test and integrate your system with care.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-launch" aria-hidden="true"></span>
-                            <h3 data-en="5. Launch & support" data-hu="5. Indítás és support">5. Launch & support</h3>
-                            <p data-en="We help you launch smoothly and stay by your side." data-hu="Segítünk simán élesíteni, majd melletted maradunk.">We help you launch smoothly and stay by your side.</p>
-                        </article>
-                    </div>
-                </section>
-
-                <section class="panel advantage-panel fade-in" aria-labelledby="advantage-title">
-                    <h2 id="advantage-title" data-en="Why a two-person studio can be an advantage" data-hu="Miért lehet előny a kétfős stúdió">Why a two-person studio can be an advantage</h2>
-                    <ul class="check-list">
-                        <li data-en="You work with the people who do the work." data-hu="Azokkal dolgozol, akik ténylegesen megcsinálják a munkát.">You work with the people who do the work.</li>
-                        <li data-en="Faster decisions and no unnecessary layers." data-hu="Gyorsabb döntések és kevesebb felesleges kör.">Faster decisions and no unnecessary layers.</li>
-                        <li data-en="Deep focus on your product, not on bureaucracy." data-hu="Mély fókusz a termékeden, nem a bürokrácián.">Deep focus on your product, not on bureaucracy.</li>
-                        <li data-en="Flexible, adaptable and personally accountable." data-hu="Rugalmas, alkalmazkodó és személyesen felelős működés.">Flexible, adaptable and personally accountable.</li>
-                    </ul>
-                </section>
-            </div>
-        </section>
-
-        <section class="section-band" id="work">
-            <div class="container">
-                <section class="panel fade-in">
-                    <h2 data-en="Our principles" data-hu="Alapelveink">Our principles</h2>
-                    <div class="principles-grid">
-                        <article>
-                            <span class="icon-box icon-eye" aria-hidden="true"></span>
-                            <h3 data-en="Clarity first" data-hu="Először tisztaság">Clarity first</h3>
-                            <p data-en="We distill complexity into simple, understandable solutions and interfaces." data-hu="A komplexitást egyszerű, érthető megoldásokká és felületekké alakítjuk.">We distill complexity into simple, understandable solutions and interfaces.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-puzzle" aria-hidden="true"></span>
-                            <h3 data-en="Practical systems" data-hu="Gyakorlati rendszerek">Practical systems</h3>
-                            <p data-en="We build what works, reliable, maintainable and tailored to your business." data-hu="Olyat építünk, ami működik: stabil, karbantartható és az üzletedhez illeszkedik.">We build what works, reliable, maintainable and tailored to your business.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-message" aria-hidden="true"></span>
-                            <h3 data-en="Direct communication" data-hu="Közvetlen kommunikáció">Direct communication</h3>
-                            <p data-en="We keep the lines short and the feedback loops tight." data-hu="Rövid kommunikációs útvonalakat és gyors visszajelzési köröket tartunk.">We keep the lines short and the feedback loops tight.</p>
-                        </article>
-                        <article>
-                            <span class="icon-box icon-trend" aria-hidden="true"></span>
-                            <h3 data-en="Long-term thinking" data-hu="Hosszú távú gondolkodás">Long-term thinking</h3>
-                            <p data-en="We care about what happens after launch and design systems that can grow." data-hu="Az élesítés utáni működésre is figyelünk, és fejleszthető rendszereket tervezünk.">We care about what happens after launch and design systems that can grow.</p>
-                        </article>
-                    </div>
-                </section>
-            </div>
-        </section>
-
-        <section class="section-band" id="lab">
-            <div class="container">
-                <section class="panel tools-panel fade-in">
-                    <h2 data-en="The tools we work with" data-hu="Eszközök, amelyekkel dolgozunk">The tools we work with</h2>
-                    <div class="tools-grid">
-                        <article>
-                            <h3>Frontend</h3>
-                            <div class="tool-row">
-                                <span class="tool-icon" aria-label="React" title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Next.js" title="Next.js"><img src="https://cdn.simpleicons.org/nextdotjs/071329" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="TypeScript" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Tailwind CSS" title="Tailwind CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="" loading="lazy" decoding="async"></span>
-                            </div>
-                        </article>
-                        <article>
-                            <h3>Backend</h3>
-                            <div class="tool-row">
-                                <span class="tool-icon" aria-label="Node.js" title="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Python" title="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label=".NET" title=".NET"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="OpenAPI" title="OpenAPI"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openapi/openapi-original.svg" alt="" loading="lazy" decoding="async"></span>
-                            </div>
-                        </article>
-                        <article>
-                            <h3 data-en="Database & Storage" data-hu="Adatbázis és tárolás">Database & Storage</h3>
-                            <div class="tool-row">
-                                <span class="tool-icon" aria-label="PostgreSQL" title="PostgreSQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="MongoDB" title="MongoDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Redis" title="Redis"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Firebase" title="Firebase"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-original.svg" alt="" loading="lazy" decoding="async"></span>
-                            </div>
-                        </article>
-                        <article>
-                            <h3>Cloud & DevOps</h3>
-                            <div class="tool-row">
-                                <span class="tool-icon" aria-label="Amazon Web Services" title="Amazon Web Services"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="Docker" title="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="GitHub" title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" loading="lazy" decoding="async"></span>
-                                <span class="tool-icon" aria-label="GitHub Actions" title="GitHub Actions"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/githubactions/githubactions-original.svg" alt="" loading="lazy" decoding="async"></span>
-                            </div>
-                        </article>
-                    </div>
-                    <p class="tools-note" data-en="We choose the right tools for the job, not the other way around." data-hu="Mindig a feladathoz választunk eszközt, nem fordítva.">We choose the right tools for the job, not the other way around.</p>
-                </section>
-            </div>
-        </section>
-
-        <section class="section-band" id="case-studies">
-            <div class="container split-layout">
-                <section class="panel faq-panel fade-in" id="faq" data-accordion="true" aria-labelledby="faq-title">
-                    <h2 id="faq-title" data-en="How collaboration works" data-hu="Hogyan működik az együttműködés">How collaboration works</h2>
-                    <article class="faq-card open">
-                        <button class="faq-question" id="faq1-btn" aria-expanded="true" aria-controls="faq1" data-en="Who will I work with?" data-hu="Kivel fogok dolgozni?">Who will I work with?</button>
-                        <div class="faq-answer" id="faq1" role="region" aria-labelledby="faq1-btn" data-en="You work directly with the two founders: design and product decisions with Dávid, technical planning and implementation with Bors." data-hu="Közvetlenül a két alapítóval dolgozol: Dáviddal a design és termékoldalon, Borssal a technikai tervezésen és megvalósításon.">You work directly with the two founders: design and product decisions with Dávid, technical planning and implementation with Bors.</div>
-                    </article>
-                    <article class="faq-card">
-                        <button class="faq-question" id="faq2-btn" aria-expanded="false" aria-controls="faq2" data-en="How do you keep me updated?" data-hu="Hogyan tartotok naprakészen?">How do you keep me updated?</button>
-                        <div class="faq-answer" id="faq2" role="region" aria-labelledby="faq2-btn" data-en="We keep communication short and practical: milestones, visible progress, review points and direct answers when something changes." data-hu="Röviden és praktikusan kommunikálunk: mérföldkövek, látható haladás, review pontok és közvetlen válaszok, ha valami változik.">We keep communication short and practical: milestones, visible progress, review points and direct answers when something changes.</div>
-                    </article>
-                    <article class="faq-card">
-                        <button class="faq-question" id="faq3-btn" aria-expanded="false" aria-controls="faq3" data-en="How do you estimate time and cost?" data-hu="Hogyan becsültök időt és költséget?">How do you estimate time and cost?</button>
-                        <div class="faq-answer" id="faq3" role="region" aria-labelledby="faq3-btn" data-en="After discovery, we split the project into clear deliverables and give you an estimate that reflects scope, complexity and integrations." data-hu="A feltárás után világos elemekre bontjuk a projektet, és a scope, komplexitás és integrációk alapján adunk becslést.">After discovery, we split the project into clear deliverables and give you an estimate that reflects scope, complexity and integrations.</div>
-                    </article>
-                    <article class="faq-card">
-                        <button class="faq-question" id="faq4-btn" aria-expanded="false" aria-controls="faq4" data-en="Do you work on long-term projects?" data-hu="Dolgoztok hosszú távú projekteken?">Do you work on long-term projects?</button>
-                        <div class="faq-answer" id="faq4" role="region" aria-labelledby="faq4-btn" data-en="Yes. We can support launch, maintenance, iteration, integrations and smaller product improvements after the first release." data-hu="Igen. Élesítés után supportban, karbantartásban, iterációban, integrációkban és kisebb fejlesztésekben is tudunk segíteni.">Yes. We can support launch, maintenance, iteration, integrations and smaller product improvements after the first release.</div>
-                    </article>
-                    <article class="faq-card">
-                        <button class="faq-question" id="faq5-btn" aria-expanded="false" aria-controls="faq5" data-en="What if I already have a team or vendor?" data-hu="Mi van, ha már van csapatom vagy beszállítóm?">What if I already have a team or vendor?</button>
-                        <div class="faq-answer" id="faq5" role="region" aria-labelledby="faq5-btn" data-en="We can join as a focused design and development partner, or help with a specific interface, workflow or integration." data-hu="Be tudunk kapcsolódni fókuszált design-fejlesztő partnerként, vagy egy konkrét felületben, folyamatban, integrációban.">We can join as a focused design and development partner, or help with a specific interface, workflow or integration.</div>
-                    </article>
-                </section>
-
-                <section class="panel testimonial-panel fade-in" aria-labelledby="testimonial-title">
-                    <h2 id="testimonial-title" data-en="What our clients say" data-hu="Mit mondanak ügyfeleink">What our clients say</h2>
-                    <blockquote>
-                        <span class="quote-mark" aria-hidden="true">“</span>
-                        <p data-en="CodeNest didn't just build a system for us, they truly understood our business. Working directly with Bors and Dávid made the process smooth, transparent and effective from day one." data-hu="A CodeNest nem csak rendszert épített nekünk, hanem tényleg megértette az üzletünket. Borssal és Dáviddal közvetlenül dolgozni gördülékeny, átlátható és hatékony volt az első naptól.">CodeNest didn't just build a system for us, they truly understood our business. Working directly with Bors and Dávid made the process smooth, transparent and effective from day one.</p>
-                        <footer>
-                            <img src="ref_Ildiko.jpg" alt="Client portrait" width="48" height="48" loading="lazy" decoding="async">
+                            <span class="studio-icon">ⓘ</span>
                             <div>
-                                <strong>Máté Kovács</strong>
-                                <span data-en="Founder, Summit Program" data-hu="Alapító, Summit Program">Founder, Summit Program</span>
+                                <h2>Direct access</h2>
+                                <p>Talk to the people building your product.</p>
                             </div>
-                        </footer>
-                    </blockquote>
-                    <div class="slider-dots" aria-hidden="true">
-                        <span class="active"></span>
-                        <span></span>
-                        <span></span>
+                        </article>
+                        <article>
+                            <span class="studio-icon">⌘</span>
+                            <div>
+                                <h2>Clear communication</h2>
+                                <p>No handoffs, no runaround. Just straight answers.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="studio-icon">◇</span>
+                            <div>
+                                <h2>Built to last</h2>
+                                <p>Clean code, solid systems, measurable results.</p>
+                            </div>
+                        </article>
                     </div>
-                </section>
+                </div>
+
+                <div class="studio-profiles" aria-label="CodeNest founders">
+                    <article class="studio-profile-card">
+                        <picture>
+                            <source type="image/webp" srcset="public_optimized/GB_profil-400.webp 400w, public_optimized/GB_profil-800.webp 800w" sizes="(max-width: 760px) 100vw, 300px">
+                            <img src="GB_profil.jpg" alt="Bors Gugi portrait" width="420" height="360" loading="eager" decoding="async">
+                        </picture>
+                        <div>
+                            <h2>Bors Gugi</h2>
+                            <p class="role">Partner & Developer</p>
+                            <div class="studio-tags">
+                                <span>System Architecture</span>
+                                <span>Backend</span>
+                                <span>DevOps</span>
+                            </div>
+                            <p>I build the foundations: scalable systems, clean APIs, and reliable infrastructure that keep things fast and secure.</p>
+                        </div>
+                    </article>
+
+                    <article class="studio-profile-card">
+                        <picture>
+                            <source type="image/webp" srcset="public_optimized/DF-400.webp 400w, public_optimized/DF-800.webp 800w" sizes="(max-width: 760px) 100vw, 300px">
+                            <img src="DF.jpg" alt="David Fekete portrait" width="420" height="360" loading="eager" decoding="async">
+                        </picture>
+                        <div>
+                            <h2>David Fekete</h2>
+                            <p class="role">Partner & Designer</p>
+                            <div class="studio-tags">
+                                <span>Product Design</span>
+                                <span>UI/UX</span>
+                                <span>Front-end</span>
+                            </div>
+                            <p>I shape the experience: intuitive interfaces, clear flows, and design systems that make products a joy to use.</p>
+                        </div>
+                    </article>
+                    <p class="hand-note side-note">We work side-by-side in every project.</p>
+                </div>
             </div>
         </section>
 
-        <section class="section-band contact-band" id="contact">
-            <div class="container">
-                <div class="cta-panel fade-in">
-                    <div>
-                        <h2 data-en="Ready to build something great together?" data-hu="Készen állsz valami igazán jóra?">Ready to build something great together?</h2>
-                        <p data-en="Let's talk about your idea and how we can help." data-hu="Beszéljünk az ötletedről és arról, hogyan tudunk segíteni.">Let's talk about your idea and how we can help.</p>
+        <section class="studio-section">
+            <div class="studio-container studio-proof-grid">
+                <section class="studio-card studio-wide-card">
+                    <h2>Why two-person studio works</h2>
+                    <div class="studio-benefit-grid">
+                        <article>
+                            <span class="studio-icon">◷</span>
+                            <h3>Faster decisions</h3>
+                            <p>We align quickly and ship without delay.</p>
+                        </article>
+                        <article>
+                            <span class="studio-icon">⌂</span>
+                            <h3>Consistent quality</h3>
+                            <p>We review each other's work at every step.</p>
+                        </article>
+                        <article>
+                            <span class="studio-icon">♙</span>
+                            <h3>Accountable by default</h3>
+                            <p>You always know who's doing what and why.</p>
+                        </article>
+                        <article>
+                            <span class="studio-icon">◎</span>
+                            <h3>Long-term thinking</h3>
+                            <p>We care about your product beyond the first launch.</p>
+                        </article>
                     </div>
-                    <a href="mailto:info.codenest.hu@gmail.com" class="btn btn-light">
-                        <span data-en="Start a conversation" data-hu="Kezdjünk beszélgetni">Start a conversation</span>
-                        <span aria-hidden="true">→</span>
-                    </a>
-                    <ul>
-                        <li data-en="Free consultation" data-hu="Ingyenes konzultáció">Free consultation</li>
-                        <li data-en="No obligation" data-hu="Nincs kötelezettség">No obligation</li>
-                    </ul>
-                </div>
+                </section>
 
-                <form class="contact-form fade-in" aria-label="Contact form" novalidate>
-                    <div class="form-grid">
+                <aside class="studio-card quote-card">
+                    <strong aria-hidden="true">“</strong>
+                    <p>We built CodeNest to be the kind of studio we always wanted to work with: transparent, focused, and genuinely invested in our clients.</p>
+                    <footer>
+                        <span>— Bors & David</span>
+                        <div class="mini-avatars" aria-hidden="true">
+                            <img src="GB_profil.jpg" alt="">
+                            <img src="DF.jpg" alt="">
+                        </div>
+                    </footer>
+                </aside>
+            </div>
+        </section>
+
+        <section class="studio-section">
+            <div class="studio-container studio-card process-card">
+                <h2>How we work</h2>
+                <div class="studio-process-grid">
+                    <article>
+                        <span class="studio-icon">ϟ</span>
+                        <h3>Clarity first</h3>
+                        <p>We ask the right questions to understand the real goal.</p>
+                    </article>
+                    <article>
+                        <span class="studio-icon">⌁</span>
+                        <h3>Keep it simple</h3>
+                        <p>We design and build what matters: nothing more.</p>
+                    </article>
+                    <article>
+                        <span class="studio-icon">✳</span>
+                        <h3>Iterate & improve</h3>
+                        <p>We release, learn, and refine based on real feedback.</p>
+                    </article>
+                    <article>
+                        <span class="studio-icon">□</span>
+                        <h3>Secure by default</h3>
+                        <p>We follow best practices and protect your data.</p>
+                    </article>
+                    <article>
+                        <span class="studio-icon">♙</span>
+                        <h3>Partnership mindset</h3>
+                        <p>We treat your product like it's our own.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="studio-section" id="contact">
+            <div class="studio-container project-panel">
+                <aside class="project-intro">
+                    <span class="section-label">Start a Project</span>
+                    <h2>Let's build something great together.</h2>
+                    <p>Tell us about your idea or project. The more details you share, the better we can help.</p>
+
+                    <div class="project-steps">
+                        <article>
+                            <span class="studio-icon">⌘</span>
+                            <div>
+                                <h3>Tell us about your project</h3>
+                                <p>Share goals, audience, and key features.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="studio-icon">✓</span>
+                            <div>
+                                <h3>We'll review & get back</h3>
+                                <p>We reply within 1-2 business days.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="studio-icon">☏</span>
+                            <div>
+                                <h3>Discovery call</h3>
+                                <p>Quick call to align on scope and next steps.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="studio-icon">□</span>
+                            <div>
+                                <h3>Proposal & roadmap</h3>
+                                <p>Clear plan, timeline, and transparent pricing.</p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="not-ready-card">
+                        <span class="studio-icon">ⓘ</span>
+                        <div>
+                            <h3>Not ready yet?</h3>
+                            <p>That's okay. Save this page and reach out anytime. We're here when you're ready.</p>
+                        </div>
+                        <span class="paper-plane" aria-hidden="true">⌁</span>
+                    </div>
+                </aside>
+
+                <form class="project-form" id="projectForm" novalidate>
+                    <div class="form-row three">
                         <label>
-                            <span data-en="Name" data-hu="Név">Name</span>
-                            <input type="text" name="name" placeholder="Full name" data-en-placeholder="Full name" data-hu-placeholder="Teljes név" required autocomplete="name">
+                            <span>Your name *</span>
+                            <input type="text" name="name" placeholder="e.g. John Smith" required autocomplete="name">
+                            <small class="field-error">Please enter your name.</small>
                         </label>
                         <label>
-                            <span>Email</span>
-                            <input type="email" name="email" placeholder="email@example.com" data-en-placeholder="email@example.com" data-hu-placeholder="email@example.com" required autocomplete="email">
+                            <span>Email address *</span>
+                            <input type="email" name="email" placeholder="john@company.com" required autocomplete="email">
+                            <small class="field-error">Please enter a valid email.</small>
                         </label>
                         <label>
-                            <span data-en="Project type" data-hu="Projekt típusa">Project type</span>
-                            <select name="project" required>
-                                <option value="" data-en="Select a project type" data-hu="Válassz projekt típust">Select a project type</option>
-                                <option value="website" data-en="Website or web system" data-hu="Weboldal vagy webes rendszer">Website or web system</option>
-                                <option value="admin" data-en="Admin interface" data-hu="Admin felület">Admin interface</option>
-                                <option value="automation" data-en="Automation or integration" data-hu="Automatizáció vagy integráció">Automation or integration</option>
-                                <option value="not-sure" data-en="Not sure yet" data-hu="Még nem tudom">Not sure yet</option>
+                            <span>Company (optional)</span>
+                            <input type="text" name="company" placeholder="e.g. Acme Inc." autocomplete="organization">
+                        </label>
+                    </div>
+
+                    <fieldset class="project-types">
+                        <legend>Project type *</legend>
+                        <label class="project-type-card selected">
+                            <input type="radio" name="projectType" value="Custom Web App" checked required>
+                            <span class="studio-icon">▣</span>
+                            Custom Web App
+                        </label>
+                        <label class="project-type-card">
+                            <input type="radio" name="projectType" value="SaaS Platform">
+                            <span class="studio-icon">◇</span>
+                            SaaS Platform
+                        </label>
+                        <label class="project-type-card">
+                            <input type="radio" name="projectType" value="Website / Landing Page">
+                            <span class="studio-icon">▤</span>
+                            Website / Landing Page
+                        </label>
+                        <label class="project-type-card">
+                            <input type="radio" name="projectType" value="E-commerce">
+                            <span class="studio-icon">▱</span>
+                            E-commerce
+                        </label>
+                        <label class="project-type-card">
+                            <input type="radio" name="projectType" value="Other">
+                            <span class="studio-icon">…</span>
+                            Other
+                        </label>
+                    </fieldset>
+
+                    <div class="form-row three">
+                        <label>
+                            <span>Budget range (USD) *</span>
+                            <select name="budget" required>
+                                <option value="">Select budget range</option>
+                                <option>$2,000 - $5,000</option>
+                                <option>$5,000 - $10,000</option>
+                                <option>$10,000 - $25,000</option>
+                                <option>$25,000+</option>
                             </select>
+                            <small class="field-error">Please select a budget range.</small>
                         </label>
                         <label>
-                            <span data-en="Message" data-hu="Üzenet">Message</span>
-                            <textarea name="message" rows="4" placeholder="Tell us about your project..." data-en-placeholder="Tell us about your project..." data-hu-placeholder="Mesélj a projektről..."></textarea>
+                            <span>Timeline *</span>
+                            <select name="timeline" required>
+                                <option value="">Select timeline</option>
+                                <option>ASAP</option>
+                                <option>1-2 months</option>
+                                <option>3-4 months</option>
+                                <option>Flexible</option>
+                            </select>
+                            <small class="field-error">Please select a timeline.</small>
+                        </label>
+                        <label>
+                            <span>Preferred start date</span>
+                            <input type="date" name="startDate">
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <span data-en="Send message" data-hu="Üzenet küldése">Send message</span>
-                        <span aria-hidden="true">→</span>
-                    </button>
-                </form>
 
-                <div class="footer-proof fade-in">
-                    <article>
-                        <span class="icon-box icon-monitor" aria-hidden="true"></span>
-                        <h3 data-en="Focused on your success" data-hu="A sikeredre fókuszálunk">Focused on your success</h3>
-                        <p data-en="Your goals drive our work." data-hu="A céljaid vezetik a munkánkat.">Your goals drive our work.</p>
+                    <label class="full-field">
+                        <span>Tell us about your project *</span>
+                        <textarea name="message" placeholder="What are you building? Who is it for? What are the main goals and must-have features?" required></textarea>
+                        <small class="field-error">Please tell us a little about the project.</small>
+                    </label>
+
+                    <div class="form-bottom-row">
+                        <label class="privacy-check">
+                            <input type="checkbox" name="privacy" required>
+                            <span>I have read and agree to the <a href="legal-hu.html">Privacy Policy</a>.</span>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Send project brief <span aria-hidden="true">&rarr;</span></button>
+                    </div>
+                    <small class="field-error privacy-error">Please accept the Privacy Policy.</small>
+
+                    <p class="form-success" role="status">Thanks! Your project brief has been sent.</p>
+
+                    <div class="trust-notes" aria-label="Form trust notes">
+                        <span>✓ No spam, ever.</span>
+                        <span>✓ Your data is private and secure.</span>
+                        <span>✓ We respond within 1-2 business days.</span>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="studio-section studio-bottom-section">
+            <div class="studio-container faq-cta-grid">
+                <section class="studio-card quick-answers" id="faq" aria-labelledby="faq-title">
+                    <h2 id="faq-title">Quick answers</h2>
+                    <article class="studio-faq-item">
+                        <button type="button" aria-expanded="false">How long does a typical project take?</button>
+                        <div>Most projects move through discovery, design, build and launch. Timeline depends on scope, integrations and content readiness.</div>
                     </article>
-                    <article>
-                        <span class="icon-box icon-lock" aria-hidden="true"></span>
-                        <h3 data-en="Secure & reliable" data-hu="Biztonságos és megbízható">Secure & reliable</h3>
-                        <p data-en="We follow best practices to protect your data." data-hu="Bevált gyakorlatokkal védjük az adataidat.">We follow best practices to protect your data.</p>
+                    <article class="studio-faq-item">
+                        <button type="button" aria-expanded="false">How much does it cost?</button>
+                        <div>We price by scope and long-term value, with clear deliverables and no surprise hourly billing.</div>
                     </article>
-                    <article>
-                        <span class="icon-box icon-check" aria-hidden="true"></span>
-                        <h3 data-en="Clear & honest" data-hu="Tiszta és őszinte">Clear & honest</h3>
-                        <p data-en="No hidden fees. No surprises." data-hu="Nincsenek rejtett díjak, nincs meglepetés.">No hidden fees. No surprises.</p>
+                    <article class="studio-faq-item">
+                        <button type="button" aria-expanded="false">Do you work with my team?</button>
+                        <div>Yes. We can collaborate with your internal team, existing vendor or key stakeholders.</div>
                     </article>
-                    <article>
-                        <span class="icon-box icon-globe" aria-hidden="true"></span>
-                        <h3 data-en="Based in Hungary" data-hu="Magyarországról dolgozunk">Based in Hungary</h3>
-                        <p data-en="Working with clients around the world." data-hu="Ügyfelekkel dolgozunk világszerte.">Working with clients around the world.</p>
+                    <article class="studio-faq-item">
+                        <button type="button" aria-expanded="false">What if I already have a site?</button>
+                        <div>We can audit what exists, keep what works and rebuild the parts that need a stronger system.</div>
                     </article>
-                </div>
+                    <article class="studio-faq-item">
+                        <button type="button" aria-expanded="false">Can you help with ongoing support?</button>
+                        <div>Yes. We can support hosting, monitoring, fixes, improvements and small product iterations after launch.</div>
+                    </article>
+                    <a href="services.html#faq" class="answers-link">See all answers <span aria-hidden="true">&rarr;</span></a>
+                </section>
+
+                <section class="blue-cta">
+                    <div>
+                        <span>Ready to talk?</span>
+                        <h2>Let's turn your idea into a product people love.</h2>
+                        <p>We'll listen, ask the right questions, and help you move forward with confidence.</p>
+                        <div class="cta-actions">
+                            <a href="mailto:info.codenest.hu@gmail.com" class="btn cta-light">Book a free call</a>
+                            <a href="mailto:info.codenest.hu@gmail.com" class="btn cta-outline">Send a message</a>
+                        </div>
+                    </div>
+                    <div class="cta-checks">
+                        <p>✓ Zero pressure, just a good conversation</p>
+                        <p>✓ Honest feedback and practical advice</p>
+                        <p>✓ Clear next steps: no obligations</p>
+                        <em>We can't wait to hear about your idea!</em>
+                    </div>
+                </section>
             </div>
         </section>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-        <div class="container">
-            <p data-en="© 2026 CodeNest Studio. All rights reserved." data-hu="© 2026 CodeNest Studio. Minden jog fenntartva.">© 2026 CodeNest Studio. All rights reserved.</p>
-            <div class="footer-lang"></div>
+    <footer class="studio-footer" role="contentinfo">
+        <div class="studio-container studio-footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo studio-logo" aria-label="CodeNest home">
+                    <span class="code-mark" aria-hidden="true">&lt;/&gt;</span>
+                    <span class="brand">CodeNest</span>
+                </a>
+                <p>We build digital systems that work. For municipalities. For businesses. For people.</p>
+            </div>
+            <nav aria-label="Footer work links">
+                <h2>Work</h2>
+                <a href="case-studies.html">Case studies</a>
+                <a href="index.html#work">Projects</a>
+            </nav>
+            <nav aria-label="Footer services links">
+                <h2>Services</h2>
+                <a href="municipal-institutional-portals.html">Municipal & Institutional Portals</a>
+                <a href="business-website-systems.html">Business Website Systems</a>
+                <a href="booking-reviews-local-presence.html">Booking & Events</a>
+                <a href="booking-reviews-local-presence.html">Reviews & Local Presence</a>
+                <a href="custom-web-tools.html">Custom Web Tools</a>
+            </nav>
+            <nav aria-label="Footer studio links">
+                <h2>Studio</h2>
+                <a href="studio.html">About us</a>
+                <a href="#contact">Our process</a>
+                <a href="#lab">Tech & CMS</a>
+            </nav>
+            <nav aria-label="Footer lab links" id="lab">
+                <h2>Lab</h2>
+                <a href="index.html#lab">Experiments</a>
+                <a href="index.html#lab">Articles</a>
+                <a href="index.html#lab">Open source</a>
+            </nav>
+            <nav aria-label="Footer company links">
+                <h2>Company</h2>
+                <a href="#contact">Contact</a>
+                <a href="legal-hu.html">Privacy</a>
+                <a href="legal-hu.html">Terms</a>
+            </nav>
+            <nav aria-label="Footer connect links">
+                <h2>Let's connect</h2>
+                <a href="mailto:hello@codenest.studio">hello@codenest.studio</a>
+                <div class="social-row" aria-label="Social links">
+                    <a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noopener noreferrer">GH</a>
+                    <a href="https://www.linkedin.com/company/codenest-hu/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">in</a>
+                    <a href="https://x.com/" aria-label="X" target="_blank" rel="noopener noreferrer">X</a>
+                </div>
+            </nav>
         </div>
+        <p class="footer-copy">© 2025 CodeNest Studio. All rights reserved.</p>
     </footer>
 
     <script type="application/ld+json">
@@ -423,23 +480,99 @@
         "description": "Two-person digital studio designing and building reliable web systems, interfaces and automations.",
         "founder": [
             { "@type": "Person", "name": "Bors Gugi" },
-            { "@type": "Person", "name": "Dávid Fekete" }
+            { "@type": "Person", "name": "David Fekete" }
         ],
         "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "Customer Service",
-            "email": "info.codenest.hu@gmail.com"
-        },
-        "sameAs": [
-            "https://www.facebook.com/share/17UPaEDB6e/",
-            "https://www.linkedin.com/company/codenest-hu/",
-            "https://www.instagram.com/team_codenest/"
-        ]
+            "email": "hello@codenest.studio"
+        }
     }
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
-    <script src="script.js?v=20260621-studio-redesign" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var navToggle = document.getElementById("menuToggle");
+            var navMenu = document.getElementById("navMenu");
+            if (navToggle && navMenu) {
+                navToggle.addEventListener("click", function () {
+                    var isOpen = navMenu.classList.toggle("active");
+                    navToggle.classList.toggle("active", isOpen);
+                    navToggle.setAttribute("aria-expanded", String(isOpen));
+                });
+            }
+
+            document.querySelectorAll(".project-type-card").forEach(function (card) {
+                card.addEventListener("click", function () {
+                    document.querySelectorAll(".project-type-card").forEach(function (item) {
+                        item.classList.remove("selected");
+                    });
+                    card.classList.add("selected");
+                });
+            });
+
+            document.querySelectorAll(".studio-faq-item button").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    var item = button.closest(".studio-faq-item");
+                    var isOpen = item.classList.toggle("open");
+                    button.setAttribute("aria-expanded", String(isOpen));
+                });
+            });
+
+            var form = document.getElementById("projectForm");
+            if (!form) return;
+
+            function setInvalid(field, invalid) {
+                var holder = field.closest("label") || field.closest(".project-form");
+                field.classList.toggle("invalid", invalid);
+                if (holder) holder.classList.toggle("has-error", invalid);
+            }
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                var valid = true;
+                form.querySelectorAll(".form-success").forEach(function (message) {
+                    message.classList.remove("show");
+                });
+
+                form.querySelectorAll("input[required]:not([type='radio']):not([type='checkbox']), select[required], textarea[required]").forEach(function (field) {
+                    var invalid = !field.checkValidity();
+                    setInvalid(field, invalid);
+                    if (invalid) valid = false;
+                });
+
+                var privacy = form.querySelector("input[name='privacy']");
+                var privacyError = form.querySelector(".privacy-error");
+                if (privacy) {
+                    var privacyInvalid = !privacy.checked;
+                    privacy.classList.toggle("invalid", privacyInvalid);
+                    if (privacyError) privacyError.classList.toggle("show", privacyInvalid);
+                    if (privacyInvalid) valid = false;
+                }
+
+                if (valid) {
+                    form.querySelector(".form-success").classList.add("show");
+                    form.reset();
+                    document.querySelectorAll(".project-type-card").forEach(function (item, index) {
+                        item.classList.toggle("selected", index === 0);
+                    });
+                    var firstType = form.querySelector("input[name='projectType']");
+                    if (firstType) firstType.checked = true;
+                }
+            });
+
+            form.addEventListener("input", function (event) {
+                var field = event.target;
+                if (field.matches("input, select, textarea")) {
+                    setInvalid(field, false);
+                    if (field.name === "privacy") {
+                        var privacyError = form.querySelector(".privacy-error");
+                        if (privacyError) privacyError.classList.remove("show");
+                    }
+                }
+            });
+        });
+    </script>
     <script src="cookie-consent.js" defer></script>
 </body>
 
