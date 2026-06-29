@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Custom Web Tools by CodeNest: simple, secure tools that replace spreadsheet and email workflows.">
+    <meta name="author" content="CodeNest">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://codenest.hu/custom-web-tools.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codenest.hu/custom-web-tools.html">
+    <meta property="og:title" content="CodeNest - Custom Web Tools">
+    <meta property="og:description" content="Turn spreadsheet and email workflows into simple, secure web tools that save time and reduce errors.">
+    <meta property="og:image" content="https://codenest.hu/logo_szoveggel.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260621-custom-tools">
+    <link rel="stylesheet" href="cookie-consent.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="/favicon-48x48.png" sizes="48x48" type="image/png">
+    <link rel="icon" href="/favicon-96x96.png" sizes="96x96" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon-192x192.png">
+    <title>CodeNest - Custom Web Tools</title>
+</head>
+
+<body class="tools-page" data-page="custom-tools">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div id="sr-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+    <header class="header" id="header" role="banner">
+        <div class="container">
+            <nav class="nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html#home" class="logo" aria-label="CodeNest home">
+                    <picture>
+                        <source type="image/webp" srcset="public_optimized/logo_png-64.webp 64w, public_optimized/logo_png-112.webp 112w" sizes="44px">
+                        <img src="logo_png.png" alt="CodeNest logo" width="44" height="44" loading="eager" decoding="async">
+                    </picture>
+                    <span class="brand">CodeNest</span>
+                </a>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html#work" class="nav-link">Work</a></li>
+                    <li><a href="services.html" class="nav-link active">Services</a></li>
+                    <li><a href="case-studies.html" class="nav-link">Case Studies</a></li>
+                    <li><a href="studio.html" class="nav-link">Studio</a></li>
+                    <li><a href="index.html#lab" class="nav-link">Lab</a></li>
+                    <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                    <li class="mobile-language-switch" role="presentation"></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="mailto:info.codenest.hu@gmail.com" class="btn btn-primary btn-nav">Let's talk</a>
+                    <div class="language-switch" aria-label="Language switcher">
+                        <a href="#" class="lang-btn" data-lang="hu" aria-pressed="false">HU</a>
+                        <span class="lang-divider">/</span>
+                        <a href="#" class="lang-btn active" data-lang="en" aria-pressed="true">EN</a>
+                    </div>
+                </div>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu" type="button">
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" role="main">
+        <section class="tools-hero">
+            <div class="container tools-hero-grid">
+                <div class="tools-hero-copy fade-in">
+                    <a class="back-pill" href="services.html">‹ Services</a>
+                    <h1><span>Custom</span><strong>Web Tools</strong></h1>
+                    <p>We turn spreadsheet and email workflows into simple, secure web tools that save time, reduce errors, and scale with you.</p>
+                    <div class="hero-actions">
+                        <a href="mailto:info.codenest.hu@gmail.com" class="btn btn-primary">Let's talk →</a>
+                        <a href="#how" class="btn btn-secondary">See how it works</a>
+                    </div>
+                </div>
+
+                <div class="tools-visual fade-in" aria-label="Custom tool dashboard preview">
+                    <div class="blueprint-grid" aria-hidden="true"></div>
+                    <article class="intake-card">
+                        <h2>Application Intake</h2>
+                        <span>New submission</span>
+                        <label>Name <b>Jane Cooper</b></label>
+                        <label>Email <b>jane@demo.com</b></label>
+                        <label>Department <b>Operations</b></label>
+                        <label>Request type <b>Access request</b></label>
+                        <label>Details <b>Need access to Q2 reports</b></label>
+                        <button type="button">Submit</button>
+                    </article>
+                    <article class="overview-card">
+                        <h2>Overview</h2>
+                        <div class="overview-stats"><span>New this week <strong>24</strong></span><span>In progress <strong>18</strong></span><span>Completed <strong>42</strong></span><span>SLA met <strong>96%</strong></span></div>
+                        <p>Requests over time</p>
+                        <div class="line-chart" aria-hidden="true"></div>
+                    </article>
+                    <article class="calculator-card">
+                        <h2>Calculator</h2>
+                        <label>Loan amount <strong>$50,000</strong></label>
+                        <div></div>
+                        <label>Interest rate <strong>6.25%</strong></label>
+                        <div></div>
+                        <label>Term (years) <strong>5</strong></label>
+                        <div></div>
+                        <strong>$966.28</strong>
+                        <a href="#contact">View amortization →</a>
+                    </article>
+                    <pre class="tool-code-card"><code>{
+  "tool": "Loan Calculator",
+  "inputs": {
+    "amount": 50000,
+    "rate": 6.25,
+    "years": 5
+  },
+  "output": {
+    "monthly": 966.28,
+    "currency": "USD"
+  }
+}</code></pre>
+                    <article class="status-board">
+                        <h2>Status board</h2>
+                        <div><span>New</span><span>In progress</span><span>Review</span><span>Done</span></div>
+                    </article>
+                    <article class="admin-mini-card"><h2>Admin</h2><p>Users <strong>24</strong></p><p>Roles <strong>5</strong></p><p>Workflows <strong>8</strong></p><a href="#handover">View →</a></article>
+                    <article class="activity-card"><h2>Recent activity</h2><p>New submission from Jane Cooper</p><p>Report generated</p><p>Access granted to Sam Lee</p><p>Data export complete</p></article>
+                </div>
+
+                <div class="service-pills tools-pills fade-in">
+                    <span>Fast to launch</span><span>Built for your team</span><span>Secure by design</span><span>Easy to manage</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="tools-section">
+            <div class="container tool-belief fade-in"><span>⌘</span><div><h2>If you can describe it, we can probably build it.</h2><p>Simple to use. Built around your process. Ready to grow.</p></div></div>
+        </section>
+
+        <section class="tools-section">
+            <div class="container">
+                <h2 class="tools-title">Typical tools we build</h2>
+                <div class="tool-types-grid">
+                    <article><span>▤</span><h3>Calculators</h3><p>Quotes, loans, pricing, ROI and more.</p></article>
+                    <article><span>☆</span><h3>Quizzes & Assessments</h3><p>Scoring, branching, certificates.</p></article>
+                    <article><span>▧</span><h3>Application Forms</h3><p>Multi-step forms with validation & uploads.</p></article>
+                    <article><span>♙</span><h3>Mini CRM</h3><p>Track leads, clients and activity.</p></article>
+                    <article><span>▥</span><h3>Dashboards</h3><p>KPIs, charts and real-time insights.</p></article>
+                    <article><span>↓</span><h3>Data Exports</h3><p>Excel, CSV, PDF with one click.</p></article>
+                    <article><span>⌂</span><h3>Notifications</h3><p>Email alerts and status updates.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="tools-section">
+            <div class="container tools-fit-grid">
+                <article class="tools-fit-card good fade-in"><h2>When custom makes sense</h2><ul><li>You have a manual or spreadsheet process that wastes time</li><li>You need a simple tool just for your team or clients</li><li>You want fewer errors and clearer tracking</li><li>You need role-based access or approvals</li><li>You plan to grow or reuse the tool long term</li></ul></article>
+                <article class="tools-fit-card bad fade-in"><h2>When it doesn't</h2><ul><li>You need a complex, multi-module system</li><li>You require public e-commerce or payments</li><li>You need a mobile app or offline access</li><li>You're not ready to define the workflow yet</li><li>You just need a one-off report</li></ul></article>
+                <aside class="not-sure-card fade-in"><h2>Not sure?</h2><p>We'll help you figure it out. Book a quick call and we'll map the best path.</p><a href="mailto:info.codenest.hu@gmail.com" class="btn btn-secondary">Book a discovery call →</a></aside>
+            </div>
+        </section>
+
+        <section class="tools-section" id="how">
+            <div class="container tools-process fade-in">
+                <h2>How we build it</h2>
+                <div>
+                    <article><span>1</span><h3>Discover</h3><p>We learn your process, users and goals.</p></article>
+                    <article><span>2</span><h3>Design</h3><p>We map the flow and prototype key screens.</p></article>
+                    <article><span>3</span><h3>Build</h3><p>We build your tool fast and securely.</p></article>
+                    <article><span>4</span><h3>Test & Refine</h3><p>You test it, we refine until it's right.</p></article>
+                    <article><span>5</span><h3>Launch</h3><p>We deploy and train your team.</p></article>
+                    <article><span>6</span><h3>Support & Evolve</h3><p>We support and improve over time.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="tools-section" id="handover">
+            <div class="container tools-bottom-grid">
+                <article class="handover-card fade-in"><div><h2>Handover that sticks</h2><p>You'll get everything you need to run the tool with confidence.</p><ul><li>Easy-to-use admin area</li><li>Step-by-step documentation</li><li>Video walkthroughs</li><li>Change request support</li></ul></div><div class="handover-visual"><span>Dashboard</span><span>Users</span><span>Settings</span><button type="button">Send bonus</button></div></article>
+                <article class="tool-testimonial fade-in"><strong>“</strong><p>CodeNest built a custom intake and tracking tool that replaced our messy spreadsheets. It's faster, cleaner, and our team actually enjoys using it.</p><div><img src="ref_Ildiko.jpg" alt="Samantha Lee" loading="lazy"><span><b>Samantha Lee</b>Operations Manager, BrightPath</span></div></article>
+                <article class="impact-mini fade-in"><h2>Impact</h2><p>Forms processed <strong>3x faster</strong></p><p>Errors reduced <strong>90%</strong></p><p>Time saved weekly <strong>8+ hrs</strong></p><p>Team satisfaction <strong>4.9/5</strong></p></article>
+            </div>
+        </section>
+
+        <section class="tools-section" id="contact">
+            <div class="container service-cta fade-in"><div class="paper-plane" aria-hidden="true">◇</div><div><h2>Let's build a tool that works the way you do.</h2><p>Book a free discovery call and let's map your idea.</p></div><a href="mailto:info.codenest.hu@gmail.com" class="btn btn-light">Let's talk →</a></div>
+        </section>
+    </main>
+
+    <footer class="services-footer" role="contentinfo">
+        <div class="container services-footer-grid">
+            <div><a href="index.html#home" class="logo"><img src="logo_png.png" alt="CodeNest logo" width="38" height="38"><span class="brand">CodeNest</span></a><p>We build digital systems that work.<br>For municipalities. For businesses. For people.</p></div>
+            <nav><h2>Work</h2><a href="case-studies.html">Case Studies</a><a href="index.html#work">Projects</a></nav>
+            <nav><h2>Services</h2><a href="municipal-institutional-portals.html">Municipal & Institutional Portals</a><a href="business-website-systems.html">Business Website Systems</a><a href="booking-reviews-local-presence.html">Booking & Events</a><a href="custom-web-tools.html">Custom Web Tools</a></nav>
+            <nav><h2>Studio</h2><a href="studio.html">About us</a><a href="index.html#lab">Tech & CMS</a></nav>
+            <nav><h2>Let's connect</h2><a href="mailto:info.codenest.hu@gmail.com">info.codenest.hu@gmail.com</a><a href="https://www.linkedin.com/company/codenest-hu/" target="_blank" rel="noopener noreferrer">LinkedIn</a></nav>
+        </div>
+        <p class="footer-copy">© 2026 CodeNest Studio. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
+    <script src="script.js?v=20260621-custom-tools" defer></script>
+    <script src="cookie-consent.js" defer></script>
+</body>
+
+</html>
