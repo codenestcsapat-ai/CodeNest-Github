@@ -2,6 +2,12 @@ export const teamIntro = {
   title: "Ketten visszük végig a projektet.",
   text:
     "A CodeNest mögött Bors és Dávid áll. Kis, fókuszált fejlesztőstúdióként dolgozunk: kevesebb projektet vállalunk egyszerre, de azokat közvetlenül visszük végig az első beszélgetéstől az éles indulásig.",
+  trustNotes: [
+    "Rövid kommunikációs út",
+    "Gyorsabb döntések",
+    "Kevesebb félreértés",
+    "Személyesebb együttműködés",
+  ],
 };
 
 export const team = [

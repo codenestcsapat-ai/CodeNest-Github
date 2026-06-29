@@ -105,15 +105,22 @@ export const siteContent = {
   },
 
   scope: {
-    title: "Minden projekt más méretű rendszer.",
+    title: "Minden projekt scope alapján indul.",
     text:
-      "Nem csomagárakból indulunk ki, hanem abból, mire kell használni a webes rendszert. A terjedelem függ a tartalomtípusoktól, adminfelülettől, űrlapoktól, jogosultságoktól, integrációktól és a támogatási igénytől.",
-    includesTitle: "Amiről általában beszélünk az első egyeztetésen",
+      "Nincsenek publikus, fix csomagáraink. Először megértjük, mire kell használni a webes rendszert, majd ehhez igazítjuk a feladat méretét, technikai alapját és az átadás utáni működést.",
+    summaryPoints: [
+      "Az ajánlat a szükséges weboldalra, adminfelületre, tartalmi szerkezetre és munkafolyamatokra épül.",
+      "Nem kell mindent egyszerre megépíteni: különválasztjuk az induláshoz fontos részeket és a későbbi bővítéseket.",
+      "Az egyeztetés után érthető, átlátható javaslatot adunk a feladatra.",
+    ],
+    includesTitle: "Mi alapján tisztázzuk?",
     includes: [
-      "Milyen tartalmakat kell kezelni?",
-      "Kik szerkesztik az oldalt vagy rendszert?",
-      "Milyen űrlapokra, értesítésekre vagy munkafolyamatokra van szükség?",
-      "Kell-e tárhely, domain, mentés, karbantartás vagy hosszabb távú támogatás?",
+      "Funkciók és oldaltípusok",
+      "Adminfelület és jogosultságok",
+      "Tartalomtípusok és szerkesztési logika",
+      "Űrlapok, értesítések és workflow-k",
+      "Hosting, mentés és support",
+      "Későbbi bővítés lehetőségei",
     ],
     ctaLabel: "Beszéljünk a projektről",
     ctaHref: "#kapcsolat",

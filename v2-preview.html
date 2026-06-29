@@ -121,7 +121,7 @@
       <div class="container section-shell">
         <p class="section-kicker">Kiemelt munkák</p>
         <h2>Kiemelt munkák</h2>
-        <div class="card-grid" data-render="projects">
+        <div class="projects-layout" data-render="projects">
           <article class="card">
             <h3>Munkák betöltése...</h3>
             <p>A V2 munkakártyák a data/projects.js fájlból érkeznek.</p>
@@ -135,7 +135,7 @@
         <p class="section-kicker">Folyamat</p>
         <h2 data-render="process-title">Folyamat</h2>
         <p data-render="process-intro">Placeholder section for the V2 project process.</p>
-        <div class="card-grid process-grid" data-render="process-steps"></div>
+        <div class="process-timeline" data-render="process-steps"></div>
       </div>
     </section>
 
@@ -143,17 +143,20 @@
       <div class="container section-shell">
         <p class="section-kicker">Miért CodeNest</p>
         <h2 data-render="why-title">Miért CodeNest</h2>
-        <p data-render="why-intro">Placeholder section for the V2 trust and differentiation points.</p>
-        <div class="card-grid compact-grid" data-render="why-items"></div>
+        <p class="why-note" data-render="why-intro">Placeholder section for the V2 trust and differentiation points.</p>
+        <div class="why-grid" data-render="why-items"></div>
       </div>
     </section>
 
     <section class="section" id="bors-david">
-      <div class="container section-shell">
-        <p class="section-kicker">Bors + Dávid</p>
-        <h2 data-render="team-title">Bors + Dávid</h2>
-        <p data-render="team-intro">Placeholder section for the two-person studio introduction.</p>
-        <div class="card-grid" data-render="team">
+      <div class="container section-shell team-shell">
+        <div class="team-copy">
+          <p class="section-kicker">Bors + Dávid</p>
+          <h2 data-render="team-title">Bors + Dávid</h2>
+          <p data-render="team-intro">Placeholder section for the two-person studio introduction.</p>
+          <div class="team-trust-list" data-render="team-notes" aria-label="Kis csapat előnyei"></div>
+        </div>
+        <div class="team-cards" data-render="team">
           <article class="card">
             <h3>Csapat betöltése...</h3>
             <p>A V2 csapatkártyák a data/team.js fájlból érkeznek.</p>
@@ -163,11 +166,14 @@
     </section>
 
     <section class="section" id="scope-arazas">
-      <div class="container section-shell">
-        <p class="section-kicker">Scope / árazás</p>
-        <h2 data-render="scope-title">Scope / árazás</h2>
-        <p data-render="scope-text">Placeholder section for scope and pricing explanation without public prices.</p>
-        <div data-render="scope-details"></div>
+      <div class="container section-shell scope-shell">
+        <div class="scope-copy">
+          <p class="section-kicker">Scope / árazás</p>
+          <h2 data-render="scope-title">Scope / árazás</h2>
+          <p data-render="scope-text">Placeholder section for scope and pricing explanation without public prices.</p>
+          <div class="scope-notes" data-render="scope-notes"></div>
+        </div>
+        <div class="scope-panel" data-render="scope-details"></div>
       </div>
     </section>
 

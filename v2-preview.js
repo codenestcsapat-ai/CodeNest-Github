@@ -177,25 +177,127 @@ const createServiceModule = (index) => {
 };
 
 const renderProjects = () => {
-  const cards = projects.map((project) => {
-    const card = createElement("article", project.highlighted ? "card card-highlighted" : "card");
-    const eyebrow = createElement("p", "section-kicker", fallback(project.category, "Projekt"));
-    const title = createElement("h3", "", fallback(project.title, "Projekt"));
-    const description = createElement("p", "", fallback(project.shortDescription, "Projektleírás később."));
-    const tags = createList(project.tags, "chips");
-    const link = createElement("a", "button button-secondary", "Megnyitás");
+  const featuredProject = projects.find((project) => project.highlighted) || projects[0];
+  const supportingProjects = projects.filter((project) => project !== featuredProject);
+  const children = [];
 
-    link.href = fallback(project.url, "#kapcsolat");
+  if (featuredProject) children.push(createFeaturedProject(featuredProject));
+
+  if (supportingProjects.length) {
+    const grid = createElement("div", "project-support-grid");
+    grid.append(...supportingProjects.map((project) => createProjectCard(project)));
+    children.push(grid);
+  }
+
+  children.push(createProjectsCta());
+
+  if (children.length) clearAndAppend('[data-render="projects"]', children);
+};
+
+const createFeaturedProject = (project) => {
+  const card = createElement("article", "project-featured");
+  const content = createElement("div", "project-featured-content");
+  const badgeRow = createElement("div", "project-badge-row");
+  const badge = createElement("span", "project-badge", "Kiemelt munka");
+  const status = createElement("span", "project-status", getProjectStatusLabel(project.status));
+  const category = createElement("p", "section-kicker", fallback(project.category, "Projekt"));
+  const title = createElement("h3", "", fallback(project.title, "Kiemelt munka"));
+  const description = createElement("p", "project-description", fallback(project.shortDescription, "Projektleírás később."));
+  const tags = createList(project.tags, "chips project-tags");
+  const link = createProjectLink(project, "Projekt megnyitása");
+
+  badgeRow.append(badge, status);
+  content.append(badgeRow, category, title, description);
+  if (tags) content.append(tags);
+  content.append(link);
+
+  card.append(content, createProjectMockup());
+  return card;
+};
+
+const createProjectCard = (project) => {
+  const card = createElement("article", "card project-card");
+  const category = createElement("p", "section-kicker", fallback(project.category, "Projekt"));
+  const title = createElement("h3", "", fallback(project.title, "Projekt"));
+  const description = createElement("p", "", fallback(project.shortDescription, "Projektleírás később."));
+  const tags = createList(project.tags, "chips project-tags");
+  const link = createProjectLink(project, "Megnyitás");
+
+  card.append(category, title, description);
+  if (tags) card.append(tags);
+  card.append(link);
+  return card;
+};
+
+const createProjectLink = (project, label) => {
+  const hasUrl = Boolean(fallback(project.url, ""));
+  const link = createElement("a", "button button-secondary project-link", label);
+  link.href = hasUrl ? project.url : "#kapcsolat";
+
+  if (hasUrl) {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
+  }
 
-    card.append(eyebrow, title, description);
-    if (tags) card.append(tags);
-    card.append(link);
-    return card;
-  });
+  return link;
+};
 
-  if (cards.length) clearAndAppend('[data-render="projects"]', cards);
+const getProjectStatusLabel = (status) => {
+  const value = fallback(status, "").toLowerCase();
+  if (value.includes("progress")) return "Hamarosan élesedő referencia";
+  if (value.includes("highlighted")) return "Kiemelt referencia";
+  if (value.includes("live")) return "Élő oldal";
+  return fallback(status, "Referencia");
+};
+
+const createProjectMockup = () => {
+  const mockup = createElement("div", "project-mockup");
+  const portal = createElement("div", "project-mockup-panel portal-panel");
+  const admin = createElement("div", "project-mockup-panel admin-panel");
+  const statusHint = createElement("div", "project-status-hint");
+
+  portal.append(
+    createElement("p", "mockup-label", "Publikus portál"),
+    createElement("h4", "", "Hírek és információk"),
+    createElement("span", "project-line wide"),
+    createElement("span", "project-line"),
+    createElement("span", "project-line short")
+  );
+
+  admin.append(
+    createElement("p", "mockup-label", "Admin"),
+    createProjectMockupRow("Hír közzététele", "Közzétéve"),
+    createProjectMockupRow("Dokumentumtár", "Frissítve"),
+    createProjectMockupRow("Esemény", "Vázlat")
+  );
+
+  statusHint.append(
+    createElement("span", "", "szerkeszthető tartalom"),
+    createElement("span", "", "rendezett dokumentumok"),
+    createElement("span", "", "átlátható működés")
+  );
+
+  mockup.append(portal, admin, statusHint);
+  return mockup;
+};
+
+const createProjectMockupRow = (title, status) => {
+  const row = createElement("div", "project-mockup-row");
+  row.append(createElement("span", "", title), createElement("strong", "", status));
+  return row;
+};
+
+const createProjectsCta = () => {
+  const cta = createElement("div", "projects-cta");
+  cta.append(
+    createElement("p", "", "Hasonló rendszert szeretnél?"),
+    createElement("a", "button button-primary", "Beszéljünk róla")
+  );
+
+  const link = cta.querySelector("a");
+  if (link) link.href = "#kapcsolat";
+
+  return cta;
 };
 
 const renderProcessAndWhy = () => {
@@ -225,14 +327,16 @@ const renderProcessAndWhy = () => {
     },
   ];
   const processSteps = dataSteps.length ? dataSteps : fallbackProcessSteps;
-  const processCards = processSteps.map((step, index) => {
+  const processCards = processSteps.slice(0, 5).map((step, index) => {
     const fallbackStep = fallbackProcessSteps[index] || {};
-    const card = createElement("article", "card process-card");
+    const card = createElement("article", "process-step");
     const number = createElement("span", "step-number", String(index + 1).padStart(2, "0"));
+    const body = createElement("div", "process-step-body");
     const title = createElement("h3", "", fallback(step.title, fallbackStep.title || "Lépés"));
     const text = createElement("p", "", fallback(step.text, fallbackStep.text));
 
-    card.append(number, title, text);
+    body.append(title, text);
+    card.append(number, body);
     return card;
   });
 
@@ -258,11 +362,14 @@ const renderProcessAndWhy = () => {
   const whyItems = dataWhyItems.length ? dataWhyItems : fallbackWhyItems;
   const whyCards = whyItems.map((item, index) => {
     const fallbackItem = fallbackWhyItems[index] || {};
-    const card = createElement("article", "card compact-card");
-    card.append(
+    const card = createElement("article", "why-card");
+    const icon = createWhyIcon(index);
+    const body = createElement("div", "why-card-body");
+    body.append(
       createElement("h3", "", fallback(item.title, fallbackItem.title || "CodeNest")),
       createElement("p", "", fallback(item.text, fallbackItem.text))
     );
+    card.append(icon, body);
     return card;
   });
 
@@ -271,22 +378,47 @@ const renderProcessAndWhy = () => {
   clearAndAppend('[data-render="why-items"]', whyCards);
 };
 
+const createWhyIcon = (index) => {
+  const icon = createElement("span", `why-icon why-icon-${index % 3}`);
+  icon.setAttribute("aria-hidden", "true");
+  return icon;
+};
+
 const renderTeam = () => {
   setText('[data-render="team-title"]', teamIntro.title, "Bors + Dávid");
   setText('[data-render="team-intro"]', teamIntro.text, "Kétfős CodeNest bemutatkozás.");
 
+  const fallbackTrustNotes = [
+    "Rövid kommunikációs út",
+    "Gyorsabb döntések",
+    "Kevesebb félreértés",
+    "Személyesebb együttműködés",
+  ];
+  const trustNotesData = getArray(teamIntro.trustNotes);
+  const trustNotes = (trustNotesData.length ? trustNotesData : fallbackTrustNotes).map((note) =>
+    createElement("span", "", note)
+  );
+  if (trustNotes.length) clearAndAppend('[data-render="team-notes"]', trustNotes);
+
   const cards = team.map((member) => {
-    const card = createElement("article", "card");
-    card.append(
-      createElement("h3", "", fallback(member.name, "Csapattag")),
-      createElement("p", "section-kicker", fallback(member.role, "Szerepkör")),
+    const name = fallback(member.name, "Csapattag");
+    const card = createElement("article", "team-card");
+    const avatar = createElement("span", "team-avatar", getInitial(name));
+    const content = createElement("div", "team-card-content");
+
+    content.append(
+      createElement("h3", "", name),
+      createElement("p", "team-role", fallback(member.role, "Szerepkör")),
       createElement("p", "", fallback(member.shortText, "Bemutatkozás később."))
     );
+    card.append(avatar, content);
     return card;
   });
 
   if (cards.length) clearAndAppend('[data-render="team"]', cards);
 };
+
+const getInitial = (name) => Array.from(fallback(name, "C").trim())[0]?.toUpperCase() || "C";
 
 const renderScope = () => {
   const scope = siteContent.scope || {};
@@ -296,21 +428,39 @@ const renderScope = () => {
   setText('[data-render="scope-title"]', scope.title, "Scope / árazás");
   setText('[data-render="scope-text"]', scope.text, "Scope magyarázat később.");
 
+  const notes = getArray(scope.summaryPoints).map((point) => createElement("p", "scope-note-item", point));
+  if (notes.length) clearAndAppend('[data-render="scope-notes"]', notes);
+
   const children = [];
   const includesTitle = fallback(scope.includesTitle, "");
-  const includes = createList(scope.includes, "plain-list");
+  const includes = createScopeChecklist(scope.includes);
   const ctaLabel = fallback(scope.ctaLabel, "");
 
   if (includesTitle) children.push(createElement("h3", "", includesTitle));
   if (includes) children.push(includes);
 
   if (ctaLabel) {
-    const cta = createElement("a", "button button-secondary", ctaLabel);
+    const cta = createElement("a", "button button-primary", ctaLabel);
     cta.href = fallback(scope.ctaHref, "#kapcsolat");
     children.push(cta);
   }
 
   details.replaceChildren(...children);
+};
+
+const createScopeChecklist = (items) => {
+  const scopeItems = getArray(items);
+  if (!scopeItems.length) return null;
+
+  const list = createElement("ul", "scope-check-list");
+  scopeItems.forEach((item) => {
+    const row = createElement("li", "scope-check-row");
+    const check = createElement("span", "scope-check-icon");
+    check.setAttribute("aria-hidden", "true");
+    row.append(check, createElement("span", "", String(item)));
+    list.append(row);
+  });
+  return list;
 };
 
 const renderContact = () => {
