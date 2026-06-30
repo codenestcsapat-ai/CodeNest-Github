@@ -8,7 +8,22 @@ export const projects = [
     shortDescription:
       "Önkormányzati portál hírekkel, dokumentumtárral, eseményekkel és szerkeszthető adminlogikával.",
     tags: ["önkormányzat", "portál", "admin", "dokumentumtár"],
+    desktopImage: "CodeNEst media web/gardony-hero-desktop.png",
+    mobileImage: "CodeNEst media web/gardony-mobile-home.png",
     highlighted: true,
+  },
+  {
+    title: "Ildiko Fonad",
+    slug: "ildiko-fonad",
+    url: "https://www.ildiko-fonad.com/",
+    category: "Szakértői / szolgáltatói weboldal",
+    status: "published",
+    shortDescription:
+      "Többnyelvű szakértői weboldal szolgáltatások, bemutatkozás, galéria és kapcsolat fókuszú felépítéssel.",
+    tags: ["szakértői oldal", "szolgáltatások", "galéria", "többnyelvűség", "kapcsolat"],
+    desktopImage: "CodeNEst media web/ildiko-fonad-desktop.png",
+    mobileImage: "CodeNEst media web/ildiko-fonad-mobile.png",
+    highlighted: false,
   },
   {
     title: "Googee",
@@ -19,6 +34,8 @@ export const projects = [
     shortDescription:
       "Üzleti webes jelenlét, amely a márka bemutatását és a látogatói tájékozódást támogatja.",
     tags: ["üzleti weboldal", "márka", "bemutatkozás"],
+    desktopImage: "CodeNEst media web/googee-desktop.png",
+    mobileImage: "CodeNEst media web/googee-mobile.png",
     highlighted: false,
   },
   {
@@ -30,6 +47,8 @@ export const projects = [
     shortDescription:
       "Közösségi fókuszú platform, amely egy célzott online jelenlét és tagsági élmény alapját adja.",
     tags: ["közösség", "platform", "webes jelenlét"],
+    desktopImage: "CodeNEst media web/bossclub-desktop.png",
+    mobileImage: "CodeNEst media web/bossclub-mobile.png",
     highlighted: false,
   },
   {
@@ -41,6 +60,8 @@ export const projects = [
     shortDescription:
       "Zenei és eseményalapú weboldal karakteres vizuális világgal és könnyen bejárható tartalmi szerkezettel.",
     tags: ["zene", "esemény", "kampányoldal"],
+    desktopImage: "CodeNEst media web/rockvibe-desktop.png",
+    mobileImage: "CodeNEst media web/rockvibe-mobile.png",
     highlighted: false,
   },
   {
@@ -52,6 +73,8 @@ export const projects = [
     shortDescription:
       "Termék- és márkafókuszú weboldal, amely egyszerűen mutatja be az ajánlatot és a kapcsolódó tartalmakat.",
     tags: ["márka", "termék", "landing"],
+    desktopImage: "CodeNEst media web/greengoo-desktop.png",
+    mobileImage: "CodeNEst media web/greengoo-mobile.png",
     highlighted: false,
   },
   {
@@ -63,6 +86,8 @@ export const projects = [
     shortDescription:
       "Oktatási célú oldal jelentkezési fókuszú tartalommal és átlátható információs felépítéssel.",
     tags: ["oktatás", "jelentkezés", "információs oldal"],
+    desktopImage: "CodeNEst media web/skillbridge-home-desktop.png",
+    mobileImage: "CodeNEst media web/skillbridge-home-mobile.png",
     highlighted: false,
   },
 ];

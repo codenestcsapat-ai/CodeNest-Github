@@ -150,16 +150,19 @@ export const siteContent = {
   },
 
   footer: {
-    tagline: "Webes rendszerek, amiket nem csak nézni lehet, hanem használni is.",
+    brandName: "CodeNest",
+    tagline: "Webes rendszerek, amiket használni is lehet.",
     links: [
       { label: "Mit építünk", href: "#mit-epitunk" },
       { label: "Munkák", href: "#munkak" },
       { label: "Folyamat", href: "#folyamat" },
+      { label: "Rólunk", href: "#bors-david" },
       { label: "Kapcsolat", href: "#kapcsolat" },
     ],
     legalLinks: [
-      { label: "Impresszum", href: "legal-hu.html" },
       { label: "Adatvédelem", href: "legal-hu.html" },
+      { label: "Impresszum", href: "legal-hu.html" },
     ],
+    copyright: "© 2026 CodeNest. Minden jog fenntartva.",
   },
 };

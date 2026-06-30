@@ -211,17 +211,23 @@ const createFeaturedProject = (project) => {
   if (tags) content.append(tags);
   content.append(link);
 
-  card.append(content, createProjectMockup());
+  card.append(content, createProjectVisual(project));
   return card;
 };
 
 const createProjectCard = (project) => {
   const card = createElement("article", "card project-card");
+  const thumbnail = createProjectThumbnail(project);
   const category = createElement("p", "section-kicker", fallback(project.category, "Projekt"));
   const title = createElement("h3", "", fallback(project.title, "Projekt"));
   const description = createElement("p", "", fallback(project.shortDescription, "Projektleírás később."));
   const tags = createList(project.tags, "chips project-tags");
   const link = createProjectLink(project, "Megnyitás");
+
+  if (thumbnail) {
+    card.classList.add("has-project-image");
+    card.append(thumbnail);
+  }
 
   card.append(category, title, description);
   if (tags) card.append(tags);
@@ -240,6 +246,75 @@ const createProjectLink = (project, label) => {
   }
 
   return link;
+};
+
+const createProjectThumbnail = (project) => {
+  const desktopSrc = getProjectImageSrc(project, "desktop");
+  if (!desktopSrc) return null;
+
+  const figure = createElement("figure", "project-thumbnail");
+  const image = createProjectImage(desktopSrc, `${fallback(project.title, "Projekt")} képernyőkép`, "project-thumbnail-image");
+
+  image.onerror = () => {
+    const card = figure.closest(".project-card");
+    if (card) card.classList.remove("has-project-image");
+    figure.remove();
+  };
+
+  figure.append(image);
+  return figure;
+};
+
+const createProjectVisual = (project) => {
+  const desktopSrc = getProjectImageSrc(project, "desktop");
+  if (!desktopSrc) return createProjectMockup();
+
+  const visual = createElement("div", "project-screenshot project-featured-screenshot");
+  const desktopFrame = createElement("figure", "screenshot-frame desktop-frame");
+  const desktopImage = createProjectImage(desktopSrc, `${fallback(project.title, "Projekt")} desktop képernyőkép`, "project-screenshot-image");
+
+  desktopImage.onerror = () => {
+    visual.replaceWith(createProjectMockup());
+  };
+
+  desktopFrame.append(desktopImage);
+  visual.append(desktopFrame);
+
+  const mobileSrc = getProjectImageSrc(project, "mobile");
+  if (mobileSrc) {
+    const mobileFrame = createElement("figure", "screenshot-frame mobile-frame");
+    const mobileImage = createProjectImage(mobileSrc, `${fallback(project.title, "Projekt")} mobil képernyőkép`, "project-screenshot-image");
+
+    mobileImage.onerror = () => {
+      mobileFrame.remove();
+    };
+
+    mobileFrame.append(mobileImage);
+    visual.append(mobileFrame);
+  }
+
+  return visual;
+};
+
+const createProjectImage = (src, alt, className) => {
+  const image = createElement("img", className);
+  image.src = src;
+  image.alt = alt;
+  image.loading = "lazy";
+  image.decoding = "async";
+  return image;
+};
+
+const getProjectImageSrc = (project, type) => {
+  const directValue = project?.[`${type}Image`];
+  const legacyValue = project?.imageAssets?.[type];
+  return normalizeProjectImagePath(directValue || legacyValue);
+};
+
+const normalizeProjectImagePath = (path) => {
+  const value = fallback(path, "");
+  if (!value) return "";
+  return value.includes("/") ? value : `CodeNEst media web/${value}`;
 };
 
 const getProjectStatusLabel = (status) => {
@@ -484,7 +559,59 @@ const renderContact = () => {
 };
 
 const renderFooter = () => {
-  setText('[data-render="footer-tagline"]', siteContent.footer?.tagline, "CodeNest V2");
+  const footer = siteContent.footer || {};
+  const container = document.querySelector('[data-render="footer"]');
+  if (!container) {
+    setText('[data-render="footer-tagline"]', footer.tagline, "CodeNest V2");
+    return;
+  }
+
+  const brandArea = createElement("div", "footer-brand-area");
+  const brand = createElement("a", "footer-brand", fallback(footer.brandName, "CodeNest"));
+  const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest V2"));
+  const copyright = createElement("p", "footer-copyright", fallback(footer.copyright, ""));
+
+  brand.href = "#hero";
+  brandArea.append(brand, tagline);
+  if (copyright.textContent) brandArea.append(copyright);
+
+  const groups = createElement("div", "footer-groups");
+  const navGroup = createFooterLinkGroup("Oldalak", footer.links);
+  const legalGroup = createFooterLinkGroup("Jogi", footer.legalLinks);
+  const contactGroup = createElement("div", "footer-group");
+  const contactTitle = createElement("h3", "", "Kapcsolat");
+  const contactEmail = createElement("a", "", fallback(siteContent.contact?.email, ""));
+
+  if (contactEmail.textContent) {
+    contactEmail.href = `mailto:${contactEmail.textContent}`;
+    contactGroup.append(contactTitle, contactEmail);
+  }
+
+  if (navGroup) groups.append(navGroup);
+  if (legalGroup) groups.append(legalGroup);
+  if (contactEmail.textContent) groups.append(contactGroup);
+
+  container.replaceChildren(brandArea, groups);
+};
+
+const createFooterLinkGroup = (title, links) => {
+  const footerLinks = getArray(links);
+  if (!footerLinks.length) return null;
+
+  const group = createElement("div", "footer-group");
+  const heading = createElement("h3", "", title);
+  const list = createElement("ul", "footer-link-list");
+
+  footerLinks.forEach((item) => {
+    const listItem = createElement("li", "");
+    const link = createElement("a", "", fallback(item.label, "Link"));
+    link.href = fallback(item.href, "#hero");
+    listItem.append(link);
+    list.append(listItem);
+  });
+
+  group.append(heading, list);
+  return group;
 };
 
 const createList = (items, className) => {
