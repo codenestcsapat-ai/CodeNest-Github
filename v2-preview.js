@@ -253,7 +253,11 @@ const createProjectThumbnail = (project) => {
   if (!desktopSrc) return null;
 
   const figure = createElement("figure", "project-thumbnail");
-  const image = createProjectImage(desktopSrc, `${fallback(project.title, "Projekt")} képernyőkép`, "project-thumbnail-image");
+  const image = createProjectImage(
+    desktopSrc,
+    `${fallback(project.title, "Projekt")} képernyőkép`,
+    "project-thumbnail-image"
+  );
 
   image.onerror = () => {
     const card = figure.closest(".project-card");
@@ -262,6 +266,13 @@ const createProjectThumbnail = (project) => {
   };
 
   figure.append(image);
+  bindScreenshotZoom(
+    figure,
+    desktopSrc,
+    `${fallback(project.title, "Projekt")} képernyőkép`,
+    "desktop"
+  );
+
   return figure;
 };
 
@@ -271,31 +282,50 @@ const createProjectVisual = (project) => {
 
   const visual = createElement("div", "project-screenshot project-featured-screenshot");
   const desktopFrame = createElement("figure", "screenshot-frame desktop-frame");
-  const desktopImage = createProjectImage(desktopSrc, `${fallback(project.title, "Projekt")} desktop képernyőkép`, "project-screenshot-image");
+  const desktopImage = createProjectImage(
+    desktopSrc,
+    `${fallback(project.title, "Projekt")} desktop képernyőkép`,
+    "project-screenshot-image"
+  );
 
   desktopImage.onerror = () => {
     visual.replaceWith(createProjectMockup());
   };
 
   desktopFrame.append(desktopImage);
+  bindScreenshotZoom(
+    desktopFrame,
+    desktopSrc,
+    `${fallback(project.title, "Projekt")} desktop nézet`,
+    "desktop"
+  );
   visual.append(desktopFrame);
 
   const mobileSrc = getProjectImageSrc(project, "mobile");
   if (mobileSrc) {
     const mobileFrame = createElement("figure", "screenshot-frame mobile-frame");
-    const mobileImage = createProjectImage(mobileSrc, `${fallback(project.title, "Projekt")} mobil képernyőkép`, "project-screenshot-image");
+    const mobileImage = createProjectImage(
+      mobileSrc,
+      `${fallback(project.title, "Projekt")} mobil képernyőkép`,
+      "project-screenshot-image"
+    );
 
     mobileImage.onerror = () => {
       mobileFrame.remove();
     };
 
     mobileFrame.append(mobileImage);
+    bindScreenshotZoom(
+      mobileFrame,
+      mobileSrc,
+      `${fallback(project.title, "Projekt")} mobil nézet`,
+      "mobile"
+    );
     visual.append(mobileFrame);
   }
 
   return visual;
 };
-
 const createProjectImage = (src, alt, className) => {
   const image = createElement("img", className);
   image.src = src;
@@ -304,7 +334,83 @@ const createProjectImage = (src, alt, className) => {
   image.decoding = "async";
   return image;
 };
+const bindScreenshotZoom = (element, src, alt, variant = "desktop") => {
+  if (!element || !src) return;
 
+  element.classList.add("is-zoomable");
+  element.setAttribute("role", "button");
+  element.setAttribute("tabindex", "0");
+  element.setAttribute("aria-label", `${alt} megnyitása nagy nézetben`);
+
+  const open = () => openScreenshotLightbox(src, alt, variant);
+
+  element.addEventListener("click", open);
+  element.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      open();
+    }
+  });
+};
+
+const openScreenshotLightbox = (src, alt, variant = "desktop") => {
+  let lightbox = document.querySelector(".screenshot-lightbox");
+
+  if (!lightbox) {
+    lightbox = createScreenshotLightbox();
+  }
+
+  const image = lightbox.querySelector(".screenshot-lightbox-image");
+  image.src = src;
+  image.alt = alt || "";
+
+  lightbox.classList.toggle("is-mobile", variant === "mobile");
+  lightbox.classList.toggle("is-desktop", variant !== "mobile");
+  lightbox.classList.add("is-open");
+  document.body.classList.add("has-screenshot-lightbox");
+
+  const closeButton = lightbox.querySelector(".screenshot-lightbox-close");
+  if (closeButton) closeButton.focus({ preventScroll: true });
+};
+
+const closeScreenshotLightbox = () => {
+  const lightbox = document.querySelector(".screenshot-lightbox");
+  if (!lightbox) return;
+
+  lightbox.classList.remove("is-open", "is-mobile", "is-desktop");
+  document.body.classList.remove("has-screenshot-lightbox");
+};
+
+const createScreenshotLightbox = () => {
+  const lightbox = createElement("div", "screenshot-lightbox");
+
+  lightbox.innerHTML = `
+    <div class="screenshot-lightbox-backdrop" data-close="true"></div>
+    <div class="screenshot-lightbox-panel" role="dialog" aria-modal="true" aria-label="Képernyőkép nagy nézetben">
+      <button class="screenshot-lightbox-close" type="button" aria-label="Bezárás">×</button>
+      <img class="screenshot-lightbox-image" alt="">
+    </div>
+  `;
+
+  document.body.append(lightbox);
+
+  lightbox.addEventListener("click", (event) => {
+    if (
+      event.target.dataset.close === "true" ||
+      event.target.closest(".screenshot-lightbox-close")
+    ) {
+      closeScreenshotLightbox();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeScreenshotLightbox();
+    }
+  });
+
+  return lightbox;
+};
 const getProjectImageSrc = (project, type) => {
   const directValue = project?.[`${type}Image`];
   const legacyValue = project?.imageAssets?.[type];
