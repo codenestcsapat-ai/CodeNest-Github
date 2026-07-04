@@ -159,7 +159,7 @@ For each case study:
 
 - [ ] No retired team member names appear.
 - [ ] No fake metrics appear.
-- [ ] No invented client quotes appear.
+- [ ] No invented unsourced customer claims appear.
 - [ ] No public prices appear.
 - [ ] No named pricing package tiers appear.
 - [ ] Gárdony remains the only highlighted project.

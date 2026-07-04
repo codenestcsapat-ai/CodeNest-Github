@@ -52,3 +52,18 @@ This follow-up pass kept the existing V2 structure and focused on visual refinem
 - Contact and footer styling were refined to feel more conversational, trustworthy, and structured.
 
 No live homepage migration, SEO/AEO implementation, i18n work, or contact integration was included in this continuation pass.
+
+## UI Design Reference Alignment Notes
+
+The local `CodeNest media web/UI design/` folder contains nine untracked PNG references. They were used only as visual direction in this pass and were not renamed, moved, edited, optimized, staged, or committed.
+
+The alignment direction is:
+
+- Warmer paper-like page foundation instead of a plain stacked-section feel.
+- Stronger large framed compositions for the hero, Gárdony proof area, and case study hero.
+- More visible public website, admin, and mobile system rhythm in the hero.
+- Softer sand borders, muted green trust details, and deeper navy footer closure.
+- More screenshot-led case study pages while keeping the reference-page format short.
+- More human, low-pressure contact presentation without wiring a form integration.
+
+This pass intentionally avoids new product content, fake metrics, unsourced customer claims, public pricing, live homepage migration, and framework/tooling changes.
