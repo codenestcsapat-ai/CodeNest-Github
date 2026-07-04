@@ -662,16 +662,41 @@ const renderContact = () => {
   setText('[data-render="contact-title"]', contact.title, "Kapcsolat");
   setText('[data-render="contact-text"]', contact.text, "Kapcsolati szöveg később.");
 
+  const labels = contact.formLabels || {};
+  const side = createElement("div", "contact-side");
   const email = createElement(
-    "p",
-    "",
+    "a",
+    "contact-email-card",
     `${fallback(contact.emailLabel, "E-mail")}: ${fallback(contact.email, "info@codenest.hu")}`
   );
-  const title = createElement("h3", "", fallback(contact.formLabels?.projectType, "Projekt típusa"));
-  const options = createList(contact.projectTypes, "plain-list");
+  const trustList = createElement("ul", "contact-trust-list");
+  ["Nem kell kész specifikáció", "Közvetlenül Borssal vagy Dáviddal beszélsz", "1-2 munkanapon belül válaszolunk"].forEach((note) => {
+    trustList.append(createElement("li", "", note));
+  });
 
-  details.replaceChildren(email, title);
-  if (options) details.append(options);
+  email.href = `mailto:${fallback(contact.email, "info@codenest.hu")}`;
+  side.append(email, trustList);
+
+  const formPreview = createElement("div", "contact-form-preview");
+  const title = createElement("h3", "", fallback(labels.projectType, "Projekt típusa"));
+  const options = createList(contact.projectTypes, "plain-list contact-option-list");
+  const fieldGrid = createElement("div", "contact-field-grid");
+  [
+    fallback(labels.name, "Név"),
+    fallback(labels.email, "E-mail"),
+    "Cég / intézmény",
+    fallback(labels.message, "Üzenet"),
+  ].forEach((label, index) => {
+    const field = createElement("span", index === 3 ? "contact-field is-message" : "contact-field", label);
+    fieldGrid.append(field);
+  });
+  const cta = createElement("a", "button button-primary", fallback(labels.submit, "Beszéljünk a projektről"));
+  cta.href = `mailto:${fallback(contact.email, "info@codenest.hu")}`;
+
+  formPreview.append(title);
+  if (options) formPreview.append(options);
+  formPreview.append(fieldGrid, cta);
+  details.replaceChildren(side, formPreview);
 };
 
 const renderFooter = () => {

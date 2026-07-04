@@ -95,12 +95,20 @@ const createHero = (project, data) => {
   copy.append(actions);
 
   const card = createElement("aside", "case-hero-card");
-  card.append(
+  const heroImage = getProjectImageSrc(project, "desktop");
+  const cardChildren = [];
+  if (heroImage) {
+    cardChildren.push(
+      createImageLink(project, heroImage, "case-hero-shot", fallback(project.title, "Projekt") + " képernyőkép")
+    );
+  }
+  cardChildren.push(
     createElement("span", "project-badge", getStatusLabel(project.status)),
     createElement("h2", "", fallback(project.title, "Projekt")),
     createElement("p", "", fallback(project.category, "CodeNest projekt")),
     createElement("p", "", fallback(project.shortDescription, fallback(data.summary, "")))
   );
+  card.append(...cardChildren);
 
   container.append(copy, card);
   section.append(container);
