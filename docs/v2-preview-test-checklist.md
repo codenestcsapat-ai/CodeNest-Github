@@ -16,7 +16,7 @@ Then open:
 http://localhost:8080/v2-preview.html
 ```
 
-## 2. Basic Page Load Checks
+## 2. Page Load Checks
 
 - [ ] Preview loads without a blank page.
 - [ ] Browser console has no JavaScript errors.
@@ -47,7 +47,7 @@ Also check:
 
 ## 4. Content Checks
 
-- [ ] No Dani, Dániel, or Ábel appears anywhere in the preview.
+- [ ] No retired team member names appear anywhere in the preview.
 - [ ] No fake metrics appear.
 - [ ] No public prices appear.
 - [ ] Hero uses the V2 headline: "Webes rendszerek, amiket nem csak nézni lehet, hanem használni is."

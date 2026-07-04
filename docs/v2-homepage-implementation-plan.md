@@ -295,7 +295,7 @@ Future place: update before final V2 launch, ideally right after the first visib
 Patterns that can stay:
 
 - Buttons: `.btn`, `.btn-primary`, `.btn-outline`, `.btn-small`, `.btn-full`.
-- Basic cards: usable if reduced and made less repetitive.
+- Simple cards: usable if reduced and made less repetitive.
 - Grids: `.services-grid`, `.portfolio-grid`, `.process-grid`, `.why-grid`, `.footer-content` can be adapted.
 - Responsive utilities and breakpoints.
 - Fade-in animation, if it remains subtle and does not fight readability.

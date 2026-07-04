@@ -13,7 +13,7 @@ export const services = [
       "Űrlapok, bejelentések és alap munkafolyamatok",
     ],
     chips: ["portál", "admin", "dokumentumtár", "űrlapok"],
-    ctaLabel: "Portált szeretnék",
+    ctaLabel: "Beszéljünk a projektről",
   },
   {
     title: "Adminos üzleti weboldalak",
@@ -28,8 +28,8 @@ export const services = [
       "Kapcsolati és ajánlatkérő űrlapok",
       "Hosting, mentés és karbantartási támogatás",
     ],
-    chips: ["üzleti weboldal", "CMS", "ajánlatkérés", "támogatás"],
-    ctaLabel: "Adminos weboldalt kérek",
+    chips: ["üzleti weboldal", "admin", "ajánlatkérés", "támogatás"],
+    ctaLabel: "Beszéljünk a projektről",
   },
   {
     title: "Egyedi webes eszközök",
@@ -45,6 +45,6 @@ export const services = [
       "Exportok, értesítések és folyamatlépések",
     ],
     chips: ["webes eszköz", "workflow", "dashboard", "adatkezelés"],
-    ctaLabel: "Egyedi eszközről beszéljünk",
+    ctaLabel: "Beszéljünk a projektről",
   },
 ];

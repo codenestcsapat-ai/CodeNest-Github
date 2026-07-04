@@ -91,7 +91,7 @@ const createHero = (project, data) => {
   );
 
   if (liveUrl) actions.append(createButton(liveUrl, "Élő oldal megnyitása", "primary", true));
-  actions.append(createButton("v2-preview.html#kapcsolat", "Beszéljünk hasonlóról", "secondary"));
+  actions.append(createButton("v2-preview.html#kapcsolat", "Beszéljünk a projektről", "secondary"));
   copy.append(actions);
 
   const card = createElement("aside", "case-hero-card");

@@ -127,25 +127,24 @@ export const siteContent = {
   },
 
   contact: {
-    title: "Beszéljünk arról, mire kell használnod a rendszert.",
+    title: "Beszéljünk a projektedről.",
     text:
-      "Írd le röviden, milyen weboldalt, portált, adminfelületet vagy eszközt szeretnél. Nem kell kész specifikáció: elég, ha látjuk a problémát és a célt.",
-    emailLabel: "Email",
+      "Nem kell kész specifikáció. Írd le röviden, min dolgoztok, mire lenne szükség, mi pedig segítünk kitalálni a jó következő lépést.",
+    emailLabel: "E-mail",
     email: "info.codenest.hu@gmail.com",
     formLabels: {
       name: "Név",
-      email: "Email",
+      email: "E-mail",
       projectType: "Projekt típusa",
       message: "Üzenet",
-      submit: "Elküldöm",
+      submit: "Beszéljünk a projektről",
     },
     projectTypes: [
-      "Önkormányzati vagy intézményi portál",
+      "Önkormányzati / intézményi portál",
       "Adminos üzleti weboldal",
       "Egyedi webes eszköz",
-      "Űrlap vagy munkafolyamat",
-      "Hosting, backup vagy támogatás",
-      "Még nem tudom pontosan",
+      "Meglévő oldal újragondolása",
+      "Még nem tudom",
     ],
   },
 

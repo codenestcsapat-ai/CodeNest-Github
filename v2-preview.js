@@ -132,7 +132,7 @@ const renderServices = () => {
     const details = createElement("p", "", fallback(service.supportingText, ""));
     const chips = createList(service.chips, "chips");
     const features = createList(service.features, "feature-list");
-    const cta = createElement("a", "button button-secondary", fallback(service.ctaLabel, "Beszéljünk róla"));
+    const cta = createElement("a", "button button-secondary", fallback(service.ctaLabel, "Beszéljünk a projektről"));
 
     cta.href = "#kapcsolat";
 
@@ -482,7 +482,7 @@ const createProjectsCta = () => {
   const cta = createElement("div", "projects-cta");
   cta.append(
     createElement("p", "", "Hasonló rendszert szeretnél?"),
-    createElement("a", "button button-primary", "Beszéljünk róla")
+    createElement("a", "button button-primary", "Beszéljünk a projektről")
   );
 
   const link = cta.querySelector("a");
@@ -665,7 +665,7 @@ const renderContact = () => {
   const email = createElement(
     "p",
     "",
-    `${fallback(contact.emailLabel, "Email")}: ${fallback(contact.email, "info@codenest.hu")}`
+    `${fallback(contact.emailLabel, "E-mail")}: ${fallback(contact.email, "info@codenest.hu")}`
   );
   const title = createElement("h3", "", fallback(contact.formLabels?.projectType, "Projekt típusa"));
   const options = createList(contact.projectTypes, "plain-list");

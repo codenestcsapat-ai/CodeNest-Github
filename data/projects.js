@@ -109,7 +109,7 @@ export const projects = [
       modules: ["szolgáltatások", "bemutatkozás", "galéria", "többnyelvű tartalom", "kapcsolat"],
       resultTitle: "Miért jó alap?",
       resultText:
-        "A weboldal a szakértői bizalmat és a szolgáltatói tájékozódást támogatja, felesleges ügynökségi zaj nélkül.",
+        "A weboldal a szakértői bizalmat és a szolgáltatói tájékozódást támogatja, túlmagyarázott marketingnyelv nélkül.",
       takeaway:
         "Kisebb szakértői oldalaknál is fontos, hogy a tartalom szerkezete tényleg segítse a döntést és a kapcsolatfelvételt.",
     },
@@ -123,7 +123,7 @@ export const projects = [
     category: "Üzleti weboldal",
     status: "live",
     shortDescription:
-      "Üzleti webes jelenlét, amely a márka bemutatását és a látogatói tájékozódást támogatja.",
+      "Üzleti bemutatkozó oldal, amely a márka üzenetét és a látogatói tájékozódást teszi egyértelműbbé.",
     tags: ["üzleti weboldal", "márka", "bemutatkozás"],
     desktopImage: "CodeNest media web/googee-desktop.png",
     mobileImage: "CodeNest media web/googee-mobile.png",
@@ -132,7 +132,7 @@ export const projects = [
       eyebrow: "Üzleti weboldal",
       headline: "Márkabemutató üzleti weboldal tiszta tartalmi útvonallal.",
       summary:
-        "A Googee esetében a cél egy rendezett, márkát támogató online jelenlét volt, ahol a látogató gyorsan megtalálja a legfontosabb információkat.",
+        "A Googee esetében a cél egy rendezett, márkát támogató üzleti oldal volt, ahol a látogató gyorsan megtalálja a legfontosabb információkat.",
       overview: [
         { label: "Típus", value: "üzleti weboldal" },
         { label: "Fókusz", value: "márka és tájékozódás" },
@@ -174,25 +174,25 @@ export const projects = [
     category: "Közösség / platform",
     status: "live",
     shortDescription:
-      "Közösségi fókuszú platform, amely egy célzott online jelenlét és tagsági élmény alapját adja.",
-    tags: ["közösség", "platform", "webes jelenlét"],
+      "Közösségi fókuszú weboldal, amely egy célzott ajánlatot és márkavilágot rendez áttekinthető formába.",
+    tags: ["közösség", "platform", "közösségi oldal"],
     desktopImage: "CodeNest media web/bossclub-desktop.png",
     mobileImage: "CodeNest media web/bossclub-mobile.png",
     highlighted: false,
     caseStudy: {
       eyebrow: "Közösségi platform",
-      headline: "Közösségi fókuszú webes jelenlét strukturált bemutatkozással.",
+      headline: "Közösségi fókuszú weboldal strukturált bemutatkozással.",
       summary:
-        "A BossClub olyan online felületként jelenik meg, amely nem csak információt ad, hanem egy közösségi működés digitális alapját is kijelöli.",
+        "A BossClub olyan publikus felületként jelenik meg, amely érthetően mutatja be a közösségi ajánlatot, a hangulatot és a kapcsolódó tartalmakat.",
       overview: [
         { label: "Típus", value: "közösség / platform" },
-        { label: "Fókusz", value: "tagság, közösség, pozicionálás" },
+        { label: "Fókusz", value: "közösség, ajánlat, pozicionálás" },
         { label: "Állapot", value: "éles oldal" },
       ],
       challengeTitle: "A kihívás",
       challenge: [
         "A közösségi üzenetet úgy kellett online formába rendezni, hogy ne váljon túlzsúfolt bemutatkozássá.",
-        "A tagsági és közösségi jellegnek már az első néhány képernyőn érthetőnek kellett lennie.",
+        "A közösségi jellegnek már az első néhány képernyőn érthetőnek kellett lennie.",
       ],
       solutionTitle: "A megoldás",
       solution: [
@@ -202,18 +202,18 @@ export const projects = [
         },
         {
           title: "Erős első benyomás",
-          text: "A vizuális és szöveges elemek célja, hogy gyorsan megmutassák, milyen közösségi térbe érkezik a látogató.",
+          text: "A vizuális és szöveges elemek célja, hogy gyorsan megmutassák, milyen közösségi ajánlat köré épül az oldal.",
         },
       ],
       visualTitle: "Közösségi jelenlét képernyőképei",
       visualText: "A desktop és mobil nézet a publikus platform-jellegű oldalt mutatja.",
       modulesTitle: "Fő elemek",
-      modules: ["közösségi pozicionálás", "tagsági üzenet", "bemutatkozó blokkok", "mobilnézet"],
+      modules: ["közösségi pozicionálás", "ajánlati üzenet", "bemutatkozó blokkok", "mobilnézet"],
       resultTitle: "Mit ad ez az alap?",
       resultText:
-        "Egy olyan online jelenlétet, amelynek van karaktere, de közben rendezett marad a látogatói tájékozódás.",
+        "Egy karakteres, mégis rendezett weboldalt, ahol a látogató gyorsan megérti a közösségi irányt.",
       takeaway:
-        "Közösségi projektnél a weboldal akkor működik, ha nem csak beszél a közösségről, hanem szerkezetet is ad neki.",
+        "Közösségi projektnél a weboldal akkor működik jól, ha karaktert ad, de közben nem nehezíti meg a tájékozódást.",
     },
   },
   {
