@@ -1,6 +1,6 @@
 # CodeNest V2 Media Asset Map
 
-Created for the V2 preview. This document maps the current files in `CodeNEst media web/` to clean canonical names and recommends where each asset should be used later.
+Created for the V2 preview. This document maps the current files in `CodeNest media web/` to clean canonical names and recommends where each asset should be used later.
 
 Inspection note: the folder currently contains cleanly named PNG screenshots. No duplicate or numbered files were found. Image dimensions and file names were inspected directly. Before wiring images into the UI, do one final browser-level visual QA pass for exact crop, visible browser chrome, mobile status bars, localhost URLs, and any sensitive admin data.
 
@@ -33,7 +33,7 @@ Inspection note: the folder currently contains cleanly named PNG screenshots. No
 
 ## Missing Expected Assets
 
-These clean names were expected for the Gárdony/admin story but are not currently present in `CodeNEst media web/`.
+These clean names were expected for the Gárdony/admin story but are not currently present in `CodeNest media web/`.
 
 | Expected clean file name | Recommended source | Recommended usage | Priority | Cleanup / direct-use notes |
 |---|---|---|---|---|

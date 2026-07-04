@@ -236,55 +236,73 @@ const createProjectCard = (project) => {
 };
 
 const createProjectLink = (project, label) => {
-  const hasUrl = Boolean(fallback(project.url, ""));
   const link = createElement("a", "button button-secondary project-link", label);
-  link.href = hasUrl ? project.url : "#kapcsolat";
+  link.href = getProjectCaseStudyHref(project);
+  return link;
+};
 
-  if (hasUrl) {
+const getProjectCaseStudyHref = (project) => {
+  const explicitHref = fallback(project?.caseStudyHref, "");
+  if (explicitHref) return explicitHref;
+  const slug = fallback(project?.slug, "");
+  return slug ? "case-study.html?project=" + encodeURIComponent(slug) : "#munkak";
+};
+
+const getProjectLiveUrl = (project) => fallback(project?.liveUrl, fallback(project?.url, ""));
+
+const createProjectLivePreviewLink = (project, className, label) => {
+  const link = createElement("a", className + " is-external-preview");
+  const liveUrl = getProjectLiveUrl(project);
+
+  link.href = liveUrl || getProjectCaseStudyHref(project);
+  link.setAttribute("aria-label", liveUrl ? label + " megnyitása új lapon" : label + " esettanulmány megnyitása");
+
+  if (liveUrl) {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
   }
 
   return link;
 };
-
 const createProjectThumbnail = (project) => {
   const desktopSrc = getProjectImageSrc(project, "desktop");
   if (!desktopSrc) return null;
 
-  const figure = createElement("figure", "project-thumbnail");
+  const title = fallback(project.title, "Projekt");
+  const previewLink = createProjectLivePreviewLink(
+    project,
+    "project-thumbnail",
+    title + " élő oldal"
+  );
   const image = createProjectImage(
     desktopSrc,
-    `${fallback(project.title, "Projekt")} képernyőkép`,
+    title + " képernyőkép",
     "project-thumbnail-image"
   );
 
   image.onerror = () => {
-    const card = figure.closest(".project-card");
+    const card = previewLink.closest(".project-card");
     if (card) card.classList.remove("has-project-image");
-    figure.remove();
+    previewLink.remove();
   };
 
-  figure.append(image);
-  bindScreenshotZoom(
-    figure,
-    desktopSrc,
-    `${fallback(project.title, "Projekt")} képernyőkép`,
-    "desktop"
-  );
-
-  return figure;
+  previewLink.append(image);
+  return previewLink;
 };
-
 const createProjectVisual = (project) => {
   const desktopSrc = getProjectImageSrc(project, "desktop");
   if (!desktopSrc) return createProjectMockup();
 
+  const title = fallback(project.title, "Projekt");
   const visual = createElement("div", "project-screenshot project-featured-screenshot");
-  const desktopFrame = createElement("figure", "screenshot-frame desktop-frame");
+  const desktopFrame = createProjectLivePreviewLink(
+    project,
+    "screenshot-frame desktop-frame",
+    title + " desktop nézet"
+  );
   const desktopImage = createProjectImage(
     desktopSrc,
-    `${fallback(project.title, "Projekt")} desktop képernyőkép`,
+    title + " desktop képernyőkép",
     "project-screenshot-image"
   );
 
@@ -293,20 +311,18 @@ const createProjectVisual = (project) => {
   };
 
   desktopFrame.append(desktopImage);
-  bindScreenshotZoom(
-    desktopFrame,
-    desktopSrc,
-    `${fallback(project.title, "Projekt")} desktop nézet`,
-    "desktop"
-  );
   visual.append(desktopFrame);
 
   const mobileSrc = getProjectImageSrc(project, "mobile");
   if (mobileSrc) {
-    const mobileFrame = createElement("figure", "screenshot-frame mobile-frame");
+    const mobileFrame = createProjectLivePreviewLink(
+      project,
+      "screenshot-frame mobile-frame",
+      title + " mobil nézet"
+    );
     const mobileImage = createProjectImage(
       mobileSrc,
-      `${fallback(project.title, "Projekt")} mobil képernyőkép`,
+      title + " mobil képernyőkép",
       "project-screenshot-image"
     );
 
@@ -315,12 +331,6 @@ const createProjectVisual = (project) => {
     };
 
     mobileFrame.append(mobileImage);
-    bindScreenshotZoom(
-      mobileFrame,
-      mobileSrc,
-      `${fallback(project.title, "Projekt")} mobil nézet`,
-      "mobile"
-    );
     visual.append(mobileFrame);
   }
 
@@ -420,7 +430,7 @@ const getProjectImageSrc = (project, type) => {
 const normalizeProjectImagePath = (path) => {
   const value = fallback(path, "");
   if (!value) return "";
-  return value.includes("/") ? value : `CodeNEst media web/${value}`;
+  return value.includes("/") ? value : `CodeNest media web/${value}`;
 };
 
 const getProjectStatusLabel = (status) => {
