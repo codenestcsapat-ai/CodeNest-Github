@@ -40,3 +40,15 @@ The V2 preview is functional and content-correct, but the visual system still ne
 - Legal pages refresh.
 - 404 page.
 - Full design system and style guide.
+
+## Continuation Pass Notes
+
+This follow-up pass kept the existing V2 structure and focused on visual refinement only.
+
+- The hero received tighter headline scale, clearer CTA rhythm, and a more integrated public/admin/mobile mockup composition.
+- Service cards received stronger hierarchy, calmer density, and more crafted module hints.
+- Project proof cards received stronger framing, cleaner thumbnail treatment, and a more reference-like Gárdony feature composition.
+- Case study pages received additional screenshot-led polish for the hero, overview, visual section, and bottom CTA.
+- Contact and footer styling were refined to feel more conversational, trustworthy, and structured.
+
+No live homepage migration, SEO/AEO implementation, i18n work, or contact integration was included in this continuation pass.
