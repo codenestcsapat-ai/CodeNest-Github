@@ -4619,3 +4619,457 @@ body::before {
     margin-inline: auto;
   }
 }
+/* V2 reference-led composition polish */
+:root {
+  --reference-ink-soft: rgba(17, 34, 53, 0.72);
+  --reference-stone-line: rgba(198, 183, 155, 0.42);
+  --reference-card-surface: rgba(255, 253, 247, 0.88);
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 7% 4%, rgba(232, 220, 198, 0.66), transparent 30rem),
+    radial-gradient(circle at 88% 7%, rgba(230, 239, 230, 0.58), transparent 32rem),
+    linear-gradient(180deg, rgba(255, 253, 247, 0.86), rgba(248, 243, 233, 0.96) 36rem, rgba(248, 243, 233, 1)),
+    repeating-linear-gradient(90deg, rgba(17, 34, 53, 0.018) 0 1px, transparent 1px 84px),
+    repeating-linear-gradient(180deg, rgba(17, 34, 53, 0.014) 0 1px, transparent 1px 84px);
+}
+
+main {
+  overflow: hidden;
+}
+
+.hero {
+  min-height: auto;
+  padding-block: clamp(3.1rem, 5vw, 4.9rem) clamp(3.5rem, 5.4vw, 5.1rem);
+}
+
+.hero-layout {
+  grid-template-columns: minmax(0, 0.86fr) minmax(500px, 1.14fr);
+}
+
+.hero h1 {
+  font-size: clamp(2.22rem, 3.85vw, 3.85rem);
+  line-height: 1.075;
+}
+
+.hero-subtitle {
+  max-width: 650px;
+  color: var(--reference-ink-soft);
+}
+
+.hero-visual {
+  min-height: clamp(400px, 35vw, 470px);
+  border-radius: 30px;
+  background:
+    linear-gradient(90deg, rgba(17, 34, 53, 0.024) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(17, 34, 53, 0.024) 1px, transparent 1px),
+    radial-gradient(circle at 16% 18%, rgba(232, 220, 198, 0.92), transparent 17rem),
+    radial-gradient(circle at 82% 80%, rgba(230, 239, 230, 0.86), transparent 20rem),
+    linear-gradient(135deg, rgba(255, 253, 247, 0.72), rgba(241, 232, 216, 0.62));
+  background-size: 42px 42px, 42px 42px, auto, auto, auto;
+}
+
+.hero-visual::before {
+  width: 7.2rem;
+  height: 7.2rem;
+  background:
+    radial-gradient(circle, transparent 36%, rgba(63, 113, 93, 0.14) 37% 39%, transparent 40%),
+    radial-gradient(circle, transparent 58%, rgba(212, 195, 165, 0.28) 59% 61%, transparent 62%);
+}
+
+.mockup-card {
+  border-color: var(--reference-stone-line);
+}
+
+.mockup-public {
+  width: min(75%, 520px);
+  min-height: 236px;
+}
+
+.mockup-admin {
+  width: min(78%, 510px);
+}
+
+.mockup-mobile {
+  width: 110px;
+  min-height: 200px;
+}
+
+.section {
+  padding-block: clamp(3.8rem, 6vw, 5.9rem);
+}
+
+.section + .section {
+  padding-top: clamp(3.2rem, 5.2vw, 5rem);
+}
+
+.card,
+.why-card,
+.team-card,
+.scope-panel,
+.contact-side,
+.contact-form-preview,
+.case-panel,
+.case-overview-card,
+.case-bottom-cta,
+.case-hero-card {
+  background-color: var(--reference-card-surface);
+  border-color: var(--reference-stone-line);
+}
+
+.card,
+.service-card,
+.project-card,
+.process-step,
+.why-card,
+.team-card {
+  box-shadow: 0 14px 32px rgba(17, 34, 53, 0.052), var(--shadow-inset);
+}
+
+.service-card {
+  min-height: auto;
+  padding: clamp(1.12rem, 1.8vw, 1.38rem);
+}
+
+.service-module {
+  min-height: 54px;
+  border-radius: 16px;
+}
+
+.service-card p:nth-of-type(2) {
+  color: rgba(89, 102, 115, 0.82);
+}
+
+.project-featured {
+  grid-template-columns: minmax(0, 0.68fr) minmax(520px, 1.32fr);
+  gap: clamp(1.35rem, 3.4vw, 3rem);
+  border-radius: 30px;
+}
+
+.project-featured-content {
+  padding-block: 0.35rem;
+}
+
+.project-featured-screenshot {
+  min-height: clamp(320px, 29vw, 430px);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(232, 220, 198, 0.42), transparent 12rem),
+    radial-gradient(circle at 88% 82%, rgba(230, 239, 230, 0.48), transparent 14rem),
+    linear-gradient(135deg, rgba(255, 253, 247, 0.72), rgba(240, 231, 215, 0.5));
+}
+
+.desktop-frame {
+  width: min(96%, 800px);
+  box-shadow: 0 24px 54px rgba(17, 34, 53, 0.14), var(--shadow-inset);
+}
+
+.mobile-frame {
+  width: min(20%, 112px);
+}
+
+.project-support-grid {
+  gap: clamp(0.92rem, 1.55vw, 1.16rem);
+}
+
+.project-card {
+  border-radius: 22px;
+}
+
+.project-thumbnail {
+  height: clamp(122px, 9.6vw, 148px);
+  margin-bottom: 0.85rem;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 247, 0.9), rgba(232, 220, 198, 0.36));
+}
+
+.project-thumbnail-image {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.process-step,
+.why-card,
+.team-card {
+  border-radius: 20px;
+}
+
+.case-hero {
+  min-height: auto;
+  padding-block: clamp(3.2rem, 5.6vw, 5.2rem) clamp(2.8rem, 4.8vw, 4.2rem);
+}
+
+.case-hero-grid {
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+}
+
+.case-hero-copy h1 {
+  font-size: clamp(2.08rem, 3.65vw, 3.45rem);
+  line-height: 1.08;
+}
+
+.case-hero-card {
+  border-radius: 30px;
+}
+
+.case-hero-shot,
+.case-shot-desktop {
+  border-radius: 20px;
+  box-shadow: 0 22px 52px rgba(17, 34, 53, 0.11), var(--shadow-inset);
+}
+
+.case-visual-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.2fr);
+}
+
+.case-shot-mobile {
+  max-width: 210px;
+  justify-self: center;
+}
+
+#kapcsolat {
+  padding-bottom: clamp(3.4rem, 5.8vw, 5rem);
+}
+
+#kapcsolat [data-render="contact-details"] {
+  align-items: start;
+}
+
+.site-footer {
+  margin-top: 0;
+  border-top: 1px solid rgba(174, 197, 181, 0.18);
+}
+
+@media (max-width: 1180px) {
+  .hero-layout,
+  .project-featured,
+  .case-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual,
+  .project-featured-screenshot,
+  .case-hero-card {
+    width: min(100%, 840px);
+  }
+}
+
+@media (max-width: 780px) {
+  .hero h1 {
+    font-size: clamp(2rem, 8.2vw, 2.86rem);
+  }
+
+  .hero-visual {
+    min-height: 330px;
+  }
+
+  .project-featured-screenshot {
+    min-height: 268px;
+  }
+
+  .case-visual-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding-top: 2.2rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.95rem, 10.6vw, 2.48rem);
+  }
+
+  .hero-visual {
+    min-height: auto;
+  }
+
+  .mockup-public,
+  .mockup-admin {
+    width: 100%;
+  }
+
+  .project-featured {
+    border-radius: 22px;
+  }
+
+  .project-thumbnail {
+    height: clamp(124px, 38vw, 150px);
+  }
+
+  .mobile-frame {
+    width: min(36%, 104px);
+  }
+
+  .case-hero-copy h1 {
+    font-size: clamp(1.92rem, 10vw, 2.46rem);
+  }
+}
+
+/* V2 sticky navigation usability fix */
+.site-header {
+  z-index: 60;
+}
+
+.site-nav {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* V2 logo integration and final navigation finish */
+.site-header {
+  z-index: 80;
+  background: rgba(248, 243, 233, 0.94);
+  box-shadow: 0 14px 34px rgba(17, 34, 53, 0.06);
+}
+
+.header-inner {
+  min-height: 74px;
+}
+
+.brand,
+.footer-brand {
+  gap: 0.68rem;
+}
+
+.brand::before,
+.footer-brand::before {
+  display: none;
+}
+
+.brand-mark,
+.footer-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.brand-mark {
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 14px;
+  filter: drop-shadow(0 8px 14px rgba(17, 34, 53, 0.12));
+}
+
+.brand span,
+.footer-brand span {
+  line-height: 1;
+}
+
+.site-nav {
+  position: relative;
+  z-index: 2;
+}
+
+.site-nav a {
+  border: 1px solid transparent;
+}
+
+.site-nav a:not([href="#kapcsolat"]):hover {
+  border-color: rgba(221, 210, 191, 0.72);
+  background: rgba(255, 253, 247, 0.78);
+}
+
+.site-nav a[href="#kapcsolat"] {
+  box-shadow: 0 12px 24px rgba(63, 113, 93, 0.2), var(--shadow-inset);
+}
+
+.hero-copy .section-kicker {
+  color: var(--color-accent-dark);
+}
+
+.hero-visual,
+.project-featured,
+.case-hero-card,
+.contact-form-preview {
+  outline: 1px solid rgba(255, 253, 247, 0.42);
+  outline-offset: -1px;
+}
+
+.project-featured-screenshot,
+.case-hero-shot,
+.case-shot-desktop {
+  background-color: rgba(255, 253, 247, 0.9);
+}
+
+.project-card.has-project-image:hover .project-thumbnail-image,
+.case-hero-shot:hover img,
+.case-shot:hover img {
+  transform: scale(1.012);
+}
+
+.case-hero-shot img,
+.case-shot img {
+  transition: transform 220ms ease;
+}
+
+.footer-brand-mark {
+  width: 2.75rem;
+  height: 2.75rem;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.2));
+}
+
+.site-footer .footer-brand {
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .header-inner {
+    gap: 0.82rem;
+  }
+
+  .brand-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    position: sticky;
+    top: 0;
+  }
+
+  .header-inner {
+    padding-block: 0.72rem;
+  }
+
+  .brand {
+    font-size: 1.08rem;
+  }
+
+  .brand-mark {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 12px;
+  }
+
+  .site-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.18rem;
+    scrollbar-width: none;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav a {
+    flex: 0 0 auto;
+  }
+
+  .footer-brand-mark {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+}

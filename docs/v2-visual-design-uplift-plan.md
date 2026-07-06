@@ -67,3 +67,24 @@ The alignment direction is:
 - More human, low-pressure contact presentation without wiring a form integration.
 
 This pass intentionally avoids new product content, fake metrics, unsourced customer claims, public pricing, live homepage migration, and framework/tooling changes.
+
+## Reference-Led Composition Polish Notes
+
+This pass used the local `CodeNest media web/UI design/` folder as reference-only material. The files were not renamed, moved, edited, staged, optimized, or committed.
+
+Applied alignment decisions:
+
+- Shifted the page foundation toward a warmer paper surface with very subtle grid/stone structure.
+- Reduced first-screen dominance by tightening hero scale while keeping the public/admin/mobile system composition central.
+- Kept the hero visual as a usable-system mockup, but made the frame softer, more integrated, and less like a separate bordered block.
+- Reduced repeated card heaviness with softer stone borders, quieter shadows, and more consistent card surfaces.
+- Strengthened the Gárdony proof composition with a wider screenshot frame and a smaller mobile overlay.
+- Kept supporting project cards compact so screenshots act as proof thumbnails, not oversized text-readable screenshots.
+- Nudged case study pages toward screenshot-led reference pages with calmer hero scale and more premium image framing.
+- Preserved the deep navy footer as the intentional closing section.
+
+No SVG conversion was required in this pass. If the reference folder should directly supply a nest, leaf, or line motif later, that should be converted deliberately into a small SVG asset after explicit approval.
+
+## Logo Integration Notes
+
+This finish pass uses the real CodeNest bird mark directly in the V2 preview and case study navigation. The footer uses the bird-only footer logo asset with editable HTML text beside it, instead of using a wide text-logo image. The UI reference folder remains inspiration-only; no reference images were moved, edited, renamed, staged, or committed.

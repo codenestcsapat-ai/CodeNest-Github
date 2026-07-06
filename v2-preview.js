@@ -670,7 +670,7 @@ const renderContact = () => {
     `${fallback(contact.emailLabel, "E-mail")}: ${fallback(contact.email, "info@codenest.hu")}`
   );
   const trustList = createElement("ul", "contact-trust-list");
-  ["Nem kell kész specifikáció", "Közvetlenül Borssal vagy Dáviddal beszélsz", "1-2 munkanapon belül válaszolunk"].forEach((note) => {
+  ["Nem kell kész specifikáció", "Közvetlenül velünk beszélsz", "1-2 munkanapon belül válaszolunk"].forEach((note) => {
     trustList.append(createElement("li", "", note));
   });
 
@@ -708,10 +708,17 @@ const renderFooter = () => {
   }
 
   const brandArea = createElement("div", "footer-brand-area");
-  const brand = createElement("a", "footer-brand", fallback(footer.brandName, "CodeNest"));
+  const brand = createElement("a", "footer-brand");
+  const brandMark = createElement("img", "footer-brand-mark");
+  const brandText = createElement("span", "", fallback(footer.brandName, "CodeNest"));
   const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest V2"));
   const copyright = createElement("p", "footer-copyright", fallback(footer.copyright, ""));
 
+  brandMark.src = "logo_footer-modified.png";
+  brandMark.alt = "";
+  brandMark.setAttribute("aria-hidden", "true");
+  brandMark.loading = "eager";
+  brand.append(brandMark, brandText);
   brand.href = "#hero";
   brandArea.append(brand, tagline);
   if (copyright.textContent) brandArea.append(copyright);
