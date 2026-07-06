@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CodeNest V2 Preview</title>
+  <link rel="stylesheet" href="v2-styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#hero" aria-label="CodeNest V2 preview főoldal"><img class="brand-mark" src="logo_png.png" alt="" aria-hidden="true"><span>CodeNest</span></a>
+
+      <nav class="site-nav" aria-label="V2 preview navigáció" data-render="navigation">
+        <a href="#mit-epitunk">Mit építünk</a>
+        <a href="#munkak">Munkák</a>
+        <a href="#folyamat">Folyamat</a>
+        <a href="#bors-david">Rólunk</a>
+        <a href="#kapcsolat">Kapcsolat</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section" id="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <p class="section-kicker">CodeNest V2</p>
+          <h1 data-render="hero-headline">V2 hero headline betöltése...</h1>
+          <p class="hero-subtitle" data-render="hero-subheadline">V2 hero szöveg betöltése...</p>
+          <div class="button-row">
+            <a class="button button-primary" href="#kapcsolat" data-render="hero-primary-cta">Kapcsolat</a>
+            <a class="button button-secondary" href="#mit-epitunk" data-render="hero-secondary-cta">Mit építünk</a>
+          </div>
+          <div class="hero-support" data-render="hero-support-chips" aria-label="CodeNest V2 bizalmi pontok"></div>
+        </div>
+
+        <div class="hero-visual" aria-label="CodeNest által épített használható webes rendszer előnézete">
+          <article class="mockup-card mockup-public">
+            <div class="mockup-topbar">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <p class="mockup-label">Publikus oldal</p>
+            <h2>Hírek és információk</h2>
+            <div class="mockup-row wide"></div>
+            <div class="mockup-row"></div>
+            <div class="mockup-row short"></div>
+            <div class="mockup-content-grid">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </article>
+
+          <article class="mockup-card mockup-admin">
+            <div class="mockup-card-header">
+              <div>
+                <p class="mockup-label">Adminfelület</p>
+                <h3>Dokumentumok</h3>
+              </div>
+              <span class="mockup-action">Új hír</span>
+            </div>
+            <div class="admin-list">
+              <div class="admin-row">
+                <span>Testületi jegyzőkönyv</span>
+                <strong>Közzétéve</strong>
+              </div>
+              <div class="admin-row">
+                <span>Nyári nyitvatartás</span>
+                <strong class="draft">Vázlat</strong>
+              </div>
+              <div class="admin-row">
+                <span>Rendezvény meghívó</span>
+                <strong>Közzétéve</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="mockup-card mockup-mobile">
+            <div class="mobile-notch"></div>
+            <p class="mockup-label">Mobil nézet</p>
+            <div class="mobile-nav"></div>
+            <div class="mobile-line wide"></div>
+            <div class="mobile-line"></div>
+            <div class="mobile-card"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="problema">
+      <div class="container section-shell">
+        <p class="section-kicker">Problem</p>
+        <h2 data-render="problem-title">Problem</h2>
+        <p data-render="problem-text">Placeholder section for the V2 problem framing.</p>
+        <div class="problem-compare" data-render="problem-comparison"></div>
+        <div class="card-grid compact-grid" data-render="problem-points"></div>
+        <p class="section-note" data-render="problem-solution"></p>
+      </div>
+    </section>
+
+    <section class="section" id="mit-epitunk">
+      <div class="container section-shell">
+        <p class="section-kicker">Mit építünk</p>
+        <h2>Mit építünk</h2>
+        <div class="card-grid" data-render="services">
+          <article class="card">
+            <h3>Szolgáltatások betöltése...</h3>
+            <p>A V2 szolgáltatáskártyák a data/services.js fájlból érkeznek.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="munkak">
+      <div class="container section-shell">
+        <p class="section-kicker">Kiemelt munkák</p>
+        <h2>Kiemelt munkák</h2>
+        <div class="projects-layout" data-render="projects">
+          <article class="card">
+            <h3>Munkák betöltése...</h3>
+            <p>A V2 munkakártyák a data/projects.js fájlból érkeznek.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="folyamat">
+      <div class="container section-shell">
+        <p class="section-kicker">Folyamat</p>
+        <h2 data-render="process-title">Folyamat</h2>
+        <p data-render="process-intro">Placeholder section for the V2 project process.</p>
+        <div class="process-timeline" data-render="process-steps"></div>
+      </div>
+    </section>
+
+    <section class="section" id="miert-codenest">
+      <div class="container section-shell">
+        <p class="section-kicker">Miért CodeNest</p>
+        <h2 data-render="why-title">Miért CodeNest</h2>
+        <p class="why-note" data-render="why-intro">Placeholder section for the V2 trust and differentiation points.</p>
+        <div class="why-grid" data-render="why-items"></div>
+      </div>
+    </section>
+
+    <section class="section" id="bors-david">
+      <div class="container section-shell team-shell">
+        <div class="team-copy">
+          <p class="section-kicker">Bors + Dávid</p>
+          <h2 data-render="team-title">Bors + Dávid</h2>
+          <p data-render="team-intro">Placeholder section for the two-person studio introduction.</p>
+          <div class="team-trust-list" data-render="team-notes" aria-label="Kis csapat előnyei"></div>
+        </div>
+        <div class="team-cards" data-render="team">
+          <article class="card">
+            <h3>Csapat betöltése...</h3>
+            <p>A V2 csapatkártyák a data/team.js fájlból érkeznek.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="scope-arazas">
+      <div class="container section-shell scope-shell">
+        <div class="scope-copy">
+          <p class="section-kicker">Scope / árazás</p>
+          <h2 data-render="scope-title">Scope / árazás</h2>
+          <p data-render="scope-text">Placeholder section for scope and pricing explanation without public prices.</p>
+          <div class="scope-notes" data-render="scope-notes"></div>
+        </div>
+        <div class="scope-panel" data-render="scope-details"></div>
+      </div>
+    </section>
+
+    <section class="section" id="kapcsolat">
+      <div class="container section-shell">
+        <p class="section-kicker">Kapcsolat</p>
+        <h2 data-render="contact-title">Kapcsolat</h2>
+        <p data-render="contact-text">Placeholder section for the future V2 contact block.</p>
+        <div data-render="contact-details"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner" data-render="footer">
+      <div>
+        <p>CodeNest</p>
+        <p data-render="footer-tagline">V2 footer tagline betöltése...</p>
+      </div>
+    </div>
+  </footer>
+  <script type="module" src="v2-preview.js"></script>
+</body>
+
+</html>
