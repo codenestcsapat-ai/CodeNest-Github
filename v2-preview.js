@@ -772,6 +772,56 @@ const createList = (items, className) => {
   return list;
 };
 
+const initSectionNavigation = () => {
+  const links = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
+  if (!links.length) return;
+
+  const sectionLinks = links
+    .map((link) => {
+      const id = link.getAttribute("href")?.slice(1);
+      const section = id ? document.getElementById(id) : null;
+      return section ? { link, section, id } : null;
+    })
+    .filter(Boolean);
+
+  if (!sectionLinks.length) return;
+
+  const setActiveLink = (activeId) => {
+    sectionLinks.forEach(({ link, id }) => {
+      const isActive = id === activeId;
+      link.classList.toggle("is-active", isActive);
+
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+        if (window.matchMedia("(max-width: 560px)").matches) {
+          link.scrollIntoView({ block: "nearest", inline: "center" });
+        }
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  setActiveLink(sectionLinks[0].id);
+
+  if (!("IntersectionObserver" in window)) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const activeEntry = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0];
+
+      if (activeEntry?.target?.id) setActiveLink(activeEntry.target.id);
+    },
+    {
+      rootMargin: "-34% 0px -54% 0px",
+      threshold: [0.12, 0.28, 0.48, 0.68],
+    }
+  );
+
+  sectionLinks.forEach(({ section }) => observer.observe(section));
+};
 renderNavigation();
 renderHero();
 renderProblem();
@@ -782,3 +832,4 @@ renderTeam();
 renderScope();
 renderContact();
 renderFooter();
+initSectionNavigation();
