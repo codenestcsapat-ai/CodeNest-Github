@@ -1,4 +1,4 @@
-import { siteContent } from "./data/site-content.js";
+﻿import { siteContent } from "./data/site-content.js";
 import { services } from "./data/services.js";
 import { projects } from "./data/projects.js";
 import { teamIntro, team } from "./data/team.js";
@@ -222,7 +222,7 @@ const createProjectCard = (project) => {
   const title = createElement("h3", "", fallback(project.title, "Projekt"));
   const description = createElement("p", "", fallback(project.shortDescription, "Projektleírás később."));
   const tags = createList(project.tags, "chips project-tags");
-  const link = createProjectLink(project, "Megnyitás");
+  const link = createProjectLink(project, "Projekt megnyitása");
 
   if (thumbnail) {
     card.classList.add("has-project-image");
@@ -236,11 +236,14 @@ const createProjectCard = (project) => {
 };
 
 const createProjectLink = (project, label) => {
+  const title = fallback(project?.title, "Projekt");
   const link = createElement("a", "button button-secondary project-link", label);
   link.href = getProjectCaseStudyHref(project);
+  link.dataset.linkType = "case-study";
+  link.setAttribute("aria-label", title + " projekt megnyitása");
+  link.title = "Projekt megnyitása";
   return link;
 };
-
 const getProjectCaseStudyHref = (project) => {
   const explicitHref = fallback(project?.caseStudyHref, "");
   if (explicitHref) return explicitHref;
@@ -255,7 +258,9 @@ const createProjectLivePreviewLink = (project, className, label) => {
   const liveUrl = getProjectLiveUrl(project);
 
   link.href = liveUrl || getProjectCaseStudyHref(project);
-  link.setAttribute("aria-label", liveUrl ? label + " megnyitása új lapon" : label + " esettanulmány megnyitása");
+  link.dataset.linkType = liveUrl ? "external-preview" : "case-study-preview";
+  link.setAttribute("aria-label", liveUrl ? label + " megnyitása új lapon" : label + " projekt megnyitása");
+  link.title = liveUrl ? "Élő oldal megnyitása" : "Projekt megnyitása";
 
   if (liveUrl) {
     link.target = "_blank";
@@ -662,23 +667,27 @@ const renderContact = () => {
   setText('[data-render="contact-title"]', contact.title, "Kapcsolat");
   setText('[data-render="contact-text"]', contact.text, "Kapcsolati szöveg később.");
 
+  const emailAddress = fallback(contact.email, "info@codenest.hu");
   const labels = contact.formLabels || {};
   const side = createElement("div", "contact-side");
   const email = createElement(
     "a",
     "contact-email-card",
-    `${fallback(contact.emailLabel, "E-mail")}: ${fallback(contact.email, "info@codenest.hu")}`
+    `${fallback(contact.emailLabel, "E-mail")}: ${emailAddress}`
   );
   const trustList = createElement("ul", "contact-trust-list");
   ["Nem kell kész specifikáció", "Közvetlenül velünk beszélsz", "1-2 munkanapon belül válaszolunk"].forEach((note) => {
     trustList.append(createElement("li", "", note));
   });
 
-  email.href = `mailto:${fallback(contact.email, "info@codenest.hu")}`;
+  email.href = `mailto:${emailAddress}`;
+  email.dataset.linkType = "email";
+  email.setAttribute("aria-label", "E-mail írása a CodeNestnek");
   side.append(email, trustList);
 
   const formPreview = createElement("div", "contact-form-preview");
   const title = createElement("h3", "", fallback(labels.projectType, "Projekt típusa"));
+  const note = createElement("p", "contact-form-note", "A beszélgetés e-mailben indul, nem kell kész specifikáció.");
   const options = createList(contact.projectTypes, "plain-list contact-option-list");
   const fieldGrid = createElement("div", "contact-field-grid");
   [
@@ -691,14 +700,15 @@ const renderContact = () => {
     fieldGrid.append(field);
   });
   const cta = createElement("a", "button button-primary", fallback(labels.submit, "Beszéljünk a projektről"));
-  cta.href = `mailto:${fallback(contact.email, "info@codenest.hu")}`;
+  cta.href = `mailto:${emailAddress}`;
+  cta.dataset.linkType = "email";
+  cta.setAttribute("aria-label", "Projektindító e-mail írása a CodeNestnek");
 
-  formPreview.append(title);
+  formPreview.append(title, note);
   if (options) formPreview.append(options);
   formPreview.append(fieldGrid, cta);
   details.replaceChildren(side, formPreview);
 };
-
 const renderFooter = () => {
   const footer = siteContent.footer || {};
   const container = document.querySelector('[data-render="footer"]');
@@ -787,11 +797,10 @@ const initSectionNavigation = () => {
   if (!sectionLinks.length) return;
 
   const header = document.querySelector(".site-header");
-  const mobileNavQuery = window.matchMedia("(max-width: 560px)");
   let currentActiveId = "";
   let ticking = false;
 
-  const setActiveLink = (activeId, shouldReveal = false) => {
+  const setActiveLink = (activeId) => {
     if (!activeId || activeId === currentActiveId) return;
     currentActiveId = activeId;
 
@@ -801,22 +810,24 @@ const initSectionNavigation = () => {
 
       if (isActive) {
         link.setAttribute("aria-current", "location");
-        if (shouldReveal && mobileNavQuery.matches) {
-          link.scrollIntoView({ block: "nearest", inline: "center" });
-        }
       } else {
         link.removeAttribute("aria-current");
       }
     });
   };
 
+  const getSectionTop = (section) => section.getBoundingClientRect().top + window.scrollY;
+
   const getActiveSectionId = () => {
     const headerOffset = header?.offsetHeight || 0;
-    const referenceY = window.scrollY + headerOffset + window.innerHeight * 0.28;
+    const referenceY = window.scrollY + headerOffset + window.innerHeight * 0.24;
+    const isNearPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
     let activeId = sectionLinks[0].id;
 
+    if (isNearPageEnd) return sectionLinks[sectionLinks.length - 1].id;
+
     sectionLinks.forEach(({ section, id }) => {
-      if (section.offsetTop <= referenceY) {
+      if (getSectionTop(section) <= referenceY) {
         activeId = id;
       }
     });
@@ -826,7 +837,7 @@ const initSectionNavigation = () => {
 
   const updateActiveLink = () => {
     ticking = false;
-    setActiveLink(getActiveSectionId(), true);
+    setActiveLink(getActiveSectionId());
   };
 
   const requestUpdate = () => {
@@ -834,6 +845,13 @@ const initSectionNavigation = () => {
     ticking = true;
     window.requestAnimationFrame(updateActiveLink);
   };
+
+  sectionLinks.forEach(({ link, id }) => {
+    link.addEventListener("click", () => {
+      setActiveLink(id);
+      window.setTimeout(requestUpdate, 120);
+    });
+  });
 
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
@@ -852,3 +870,4 @@ renderScope();
 renderContact();
 renderFooter();
 initSectionNavigation();
+

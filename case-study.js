@@ -17,15 +17,16 @@ const createElement = (tag, className, text) => {
 const createButton = (href, label, variant = "secondary", external = false) => {
   const link = createElement("a", "button button-" + variant, label);
   link.href = href;
+  link.dataset.linkType = external ? "external" : href.includes("#kapcsolat") ? "contact-anchor" : "internal";
 
   if (external) {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
+    link.setAttribute("aria-label", label + " új lapon");
   }
 
   return link;
 };
-
 const getProjectFromUrl = () => {
   const params = new URLSearchParams(window.location.search);
   const slug = fallback(params.get("project"), "");
@@ -174,6 +175,9 @@ const createImageLink = (project, src, className, alt) => {
     wrapper.href = liveUrl;
     wrapper.target = "_blank";
     wrapper.rel = "noopener noreferrer";
+    wrapper.dataset.linkType = "external-preview";
+    wrapper.classList.add("is-external-preview");
+    wrapper.title = "Élő oldal megnyitása";
     wrapper.setAttribute("aria-label", alt + " megnyitása az élő oldalon");
   }
 
@@ -181,7 +185,6 @@ const createImageLink = (project, src, className, alt) => {
   wrapper.append(image);
   return wrapper;
 };
-
 const createVisualSection = (project, data) => {
   const desktopSrc = getProjectImageSrc(project, "desktop");
   const mobileSrc = getProjectImageSrc(project, "mobile");

@@ -189,3 +189,17 @@ Reviewer notes:
 ```text
 
 ```
+
+## Interaction QA Addendum
+
+Use this addendum after the focused UX/UI pass.
+
+- [ ] Navigation active state updates without flicker while slowly scrolling through `#munkak`.
+- [ ] Clicking each nav item lands with the section title visible below the sticky header.
+- [ ] Keyboard tab focus is visible on nav links, CTA buttons, project screenshots, case study links, contact email, and footer links.
+- [ ] Project screenshot badges communicate external live-site behavior.
+- [ ] `Megnyitás` buttons still open internal case study pages.
+- [ ] Case study live-site CTAs are visually distinct from contact CTAs.
+- [ ] Contact email route is clear and the form preview does not feel like a broken form.
+- [ ] Reduced-motion browser setting does not leave distracting hover/transition effects.
+- [ ] Mobile review at 375px confirms no horizontal scroll and no cramped footer/contact layout.

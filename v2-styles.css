@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --color-bg: #f8f3e9;
   --color-bg-soft: #fcf9f2;
   --color-surface: #fffdf7;
@@ -6391,3 +6391,455 @@ main {
     padding: 0.9rem;
   }
 }
+/* V2 UX interaction and responsive quality pass */
+html {
+  scroll-padding-top: clamp(94px, 9vh, 124px);
+}
+
+#hero,
+#problema,
+#mit-epitunk,
+#munkak,
+#folyamat,
+#miert-codenest,
+#bors-david,
+#scope-arazas,
+#kapcsolat {
+  scroll-margin-top: clamp(94px, 9vh, 124px);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid rgba(63, 113, 93, 0.34);
+  outline-offset: 4px;
+}
+
+.site-nav a:focus-visible {
+  outline-offset: 2px;
+}
+
+.site-nav a.is-active:not([href="#kapcsolat"]) {
+  border-color: rgba(63, 113, 93, 0.46);
+  background: rgba(230, 239, 230, 0.92);
+  color: var(--color-accent-dark);
+}
+
+.site-nav a.is-active[href="#kapcsolat"] {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: linear-gradient(180deg, #356b57, #244f41);
+  color: var(--color-white);
+}
+
+.button,
+.project-thumbnail,
+.screenshot-frame,
+.case-shot,
+.case-hero-shot,
+.contact-email-card,
+.footer-group a {
+  touch-action: manipulation;
+}
+
+.button {
+  min-height: 46px;
+}
+
+.button[data-link-type="email"],
+.contact-email-card[data-link-type="email"] {
+  cursor: pointer;
+}
+
+.project-thumbnail.is-external-preview,
+.screenshot-frame.is-external-preview,
+.case-shot.is-external-preview,
+.case-hero-shot.is-external-preview {
+  position: relative;
+}
+
+.project-thumbnail.is-external-preview::after,
+.desktop-frame.is-external-preview::after,
+.case-shot-desktop.is-external-preview::after,
+.case-hero-shot.is-external-preview::after {
+  right: 0.62rem;
+  bottom: 0.62rem;
+  width: auto;
+  min-width: 0;
+  height: 1.72rem;
+  padding: 0 0.58rem;
+  border: 1px solid rgba(255, 253, 247, 0.68);
+  border-radius: 999px;
+  background: rgba(17, 34, 53, 0.72);
+  color: var(--color-white);
+  content: "Élő oldal ↗";
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1;
+  opacity: 1;
+  transform: none;
+}
+
+.mobile-frame.is-external-preview::after,
+.case-shot-mobile.is-external-preview::after {
+  right: 0.48rem;
+  bottom: 0.48rem;
+  width: 1.55rem;
+  min-width: 0;
+  height: 1.55rem;
+  padding: 0;
+  content: "↗";
+  font-size: 0.72rem;
+}
+
+.project-thumbnail.is-external-preview:hover::after,
+.screenshot-frame.is-external-preview:hover::after,
+.case-shot.is-external-preview:hover::after,
+.case-hero-shot.is-external-preview:hover::after {
+  background: rgba(36, 79, 65, 0.9);
+}
+
+.project-link[data-link-type="case-study"] {
+  justify-content: space-between;
+  gap: 0.7rem;
+  border-color: rgba(221, 210, 191, 0.7);
+}
+
+.project-link[data-link-type="case-study"]::before {
+  content: none;
+  display: none;
+}
+
+.case-actions .button[data-link-type="external"]::before,
+.case-bottom-cta .button[data-link-type="contact-anchor"]::before {
+  padding: 0.18rem 0.42rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.case-actions .button[data-link-type="external"]::before {
+  content: "Élő";
+  background: rgba(255, 253, 247, 0.2);
+}
+
+.case-bottom-cta .button[data-link-type="contact-anchor"]::before {
+  content: "Kapcsolat";
+  background: rgba(255, 253, 247, 0.2);
+}
+
+.contact-email-card {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    background-color 160ms ease;
+}
+
+.contact-email-card:hover {
+  border-color: rgba(63, 113, 93, 0.48);
+  background: rgba(230, 239, 230, 0.5);
+  box-shadow: 0 12px 28px rgba(17, 34, 53, 0.07), var(--shadow-inset);
+  transform: translateY(-1px);
+}
+
+.contact-form-note {
+  max-width: 34rem;
+  margin: -0.45rem 0 0.1rem;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.contact-form-preview .button[data-link-type="email"] {
+  min-width: min(100%, 15rem);
+}
+
+.case-visual-grid {
+  align-items: start;
+}
+
+.case-shot[href]:hover,
+.case-hero-shot[href]:hover {
+  border-color: rgba(63, 113, 93, 0.38);
+}
+
+.case-check-list li,
+.case-module-list li,
+.case-solution-card {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.case-check-list li:hover,
+.case-module-list li:hover,
+.case-solution-card:hover {
+  border-color: rgba(174, 197, 181, 0.62);
+  background: rgba(255, 253, 247, 0.9);
+}
+
+@media (max-width: 1024px) {
+  html {
+    scroll-padding-top: 112px;
+  }
+
+  #hero,
+  #problema,
+  #mit-epitunk,
+  #munkak,
+  #folyamat,
+  #miert-codenest,
+  #bors-david,
+  #scope-arazas,
+  #kapcsolat {
+    scroll-margin-top: 112px;
+  }
+
+  .project-support-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    scroll-padding-top: 116px;
+  }
+
+  #hero,
+  #problema,
+  #mit-epitunk,
+  #munkak,
+  #folyamat,
+  #miert-codenest,
+  #bors-david,
+  #scope-arazas,
+  #kapcsolat {
+    scroll-margin-top: 116px;
+  }
+
+  .button-row {
+    gap: 0.55rem;
+  }
+
+  .button,
+  .project-link[data-link-type="case-study"] {
+    min-height: 44px;
+  }
+
+  .project-link[data-link-type="case-study"]::before {
+    font-size: 0.64rem;
+  }
+
+  .project-thumbnail.is-external-preview::after,
+  .desktop-frame.is-external-preview::after,
+  .case-shot-desktop.is-external-preview::after,
+  .case-hero-shot.is-external-preview::after {
+    height: 1.55rem;
+    padding-inline: 0.48rem;
+    font-size: 0.66rem;
+  }
+
+  .case-overview-grid,
+  .project-support-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .case-visual-grid {
+    gap: 0.85rem;
+  }
+
+  .case-shot-mobile {
+    width: min(210px, 58vw);
+  }
+}
+
+@media (max-width: 560px) {
+  html {
+    scroll-padding-top: 106px;
+  }
+
+  #hero,
+  #problema,
+  #mit-epitunk,
+  #munkak,
+  #folyamat,
+  #miert-codenest,
+  #bors-david,
+  #scope-arazas,
+  #kapcsolat {
+    scroll-margin-top: 106px;
+  }
+
+  .hero {
+    padding-bottom: 2.1rem;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 0.9rem;
+  }
+
+  .hero-visual {
+    min-height: 300px;
+  }
+
+  .mockup-admin .admin-row:nth-child(n+3),
+  .service-card .chips li:nth-child(n+3),
+  .project-card .chips li:nth-child(n+3) {
+    display: none;
+  }
+
+  .service-card,
+  .project-card,
+  .process-step,
+  .why-card,
+  .team-card,
+  .scope-panel,
+  .contact-side,
+  .contact-form-preview,
+  .case-panel,
+  .case-overview-card,
+  .case-bottom-cta {
+    padding: 0.88rem;
+  }
+
+  .project-thumbnail {
+    height: 118px;
+  }
+
+  .process-step p,
+  .why-card p,
+  .service-card p:nth-of-type(2),
+  .project-card p:not(.section-kicker) {
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .contact-form-note {
+    font-size: 0.86rem;
+  }
+
+  .contact-option-list li,
+  .contact-field {
+    min-height: 40px;
+    padding-block: 0.62rem;
+  }
+
+  .case-section {
+    padding-block: 2.25rem;
+  }
+
+  .case-hero {
+    padding-block: 2rem 2.25rem;
+  }
+
+  .case-shot-mobile {
+    width: min(190px, 62vw);
+  }
+
+  .footer-groups a,
+  .footer-tagline,
+  .footer-copyright {
+    line-height: 1.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .button:hover,
+  .project-card:hover,
+  .service-card:hover,
+  .case-shot:hover img,
+  .project-thumbnail:hover .project-thumbnail-image {
+    transform: none !important;
+  }
+}
+/* V2 UX badge positioning fix */
+.project-thumbnail.is-external-preview::after,
+.screenshot-frame.is-external-preview::after,
+.case-shot.is-external-preview::after,
+.case-hero-shot.is-external-preview::after {
+  position: absolute;
+  z-index: 5;
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+/* V2 must-fix: project CTA badge removal and mobile scroll safety */
+.project-link[data-link-type="case-study"] {
+  justify-content: center;
+  gap: 0;
+}
+
+.project-link[data-link-type="case-study"]::before {
+  display: none !important;
+  content: none !important;
+}
+
+.site-nav {
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+}
+
+.site-nav a {
+  scroll-margin-inline: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    align-items: stretch;
+  }
+
+  .site-nav {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav a {
+    flex: 0 0 auto;
+    min-height: 38px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-nav a {
+    min-height: 36px;
+    padding-inline: 0.58rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .site-nav a {
+    padding-inline: 0.52rem;
+    font-size: 0.8rem;
+  }
+}
+
+
