@@ -786,14 +786,22 @@ const initSectionNavigation = () => {
 
   if (!sectionLinks.length) return;
 
-  const setActiveLink = (activeId) => {
+  const header = document.querySelector(".site-header");
+  const mobileNavQuery = window.matchMedia("(max-width: 560px)");
+  let currentActiveId = "";
+  let ticking = false;
+
+  const setActiveLink = (activeId, shouldReveal = false) => {
+    if (!activeId || activeId === currentActiveId) return;
+    currentActiveId = activeId;
+
     sectionLinks.forEach(({ link, id }) => {
       const isActive = id === activeId;
       link.classList.toggle("is-active", isActive);
 
       if (isActive) {
         link.setAttribute("aria-current", "location");
-        if (window.matchMedia("(max-width: 560px)").matches) {
+        if (shouldReveal && mobileNavQuery.matches) {
           link.scrollIntoView({ block: "nearest", inline: "center" });
         }
       } else {
@@ -802,25 +810,36 @@ const initSectionNavigation = () => {
     });
   };
 
-  setActiveLink(sectionLinks[0].id);
+  const getActiveSectionId = () => {
+    const headerOffset = header?.offsetHeight || 0;
+    const referenceY = window.scrollY + headerOffset + window.innerHeight * 0.28;
+    let activeId = sectionLinks[0].id;
 
-  if (!("IntersectionObserver" in window)) return;
+    sectionLinks.forEach(({ section, id }) => {
+      if (section.offsetTop <= referenceY) {
+        activeId = id;
+      }
+    });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const activeEntry = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0];
+    return activeId;
+  };
 
-      if (activeEntry?.target?.id) setActiveLink(activeEntry.target.id);
-    },
-    {
-      rootMargin: "-34% 0px -54% 0px",
-      threshold: [0.12, 0.28, 0.48, 0.68],
-    }
-  );
+  const updateActiveLink = () => {
+    ticking = false;
+    setActiveLink(getActiveSectionId(), true);
+  };
 
-  sectionLinks.forEach(({ section }) => observer.observe(section));
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(updateActiveLink);
+  };
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  window.addEventListener("hashchange", () => window.setTimeout(requestUpdate, 80));
+
+  setActiveLink(getActiveSectionId());
 };
 renderNavigation();
 renderHero();

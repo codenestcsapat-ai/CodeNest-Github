@@ -88,3 +88,17 @@ No SVG conversion was required in this pass. If the reference folder should dire
 ## Logo Integration Notes
 
 This finish pass uses the real CodeNest bird mark directly in the V2 preview and case study navigation. The footer uses the bird-only footer logo asset with editable HTML text beside it, instead of using a wide text-logo image. The UI reference folder remains inspiration-only; no reference images were moved, edited, renamed, staged, or committed.
+
+## Final Composition Pass Notes
+
+This pass keeps the current V2 information architecture and focuses only on composition, hierarchy, and perceived finish.
+
+- Hero: stronger public/admin/mobile composition, tighter first-screen rhythm, smaller support chips, and a less placeholder-like mockup surface.
+- Problem: clearer before/after relationship and stronger solution summary treatment without changing the copy.
+- Services: more premium offer-card surfaces, cleaner module strips, quieter supporting text rhythm, and more intentional CTA spacing.
+- Projects: Gárdony is treated more like the main reference proof, with a wider editorial card and calmer screenshot frame; supporting cards stay compact and screenshot-led.
+- Process, why, team, scope: less skeleton-like cards, softer panel composition, and tighter vertical rhythm.
+- Contact and footer: contact reads more like a low-pressure conversation starter; footer closes with a deeper navy brand surface.
+- Mobile: hero, cards, project screenshots, and footer are compressed to reduce the endless stacked-card feeling.
+
+No content expansion, live homepage migration, image-file changes, pricing, fake metrics, fake testimonials, or old team references were added in this pass.
