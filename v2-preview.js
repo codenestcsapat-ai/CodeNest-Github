@@ -1053,6 +1053,33 @@ const initLanguageControls = () => {
   });
 };
 
+const getSectionLabels = () => {
+  const nav = siteContent.navigation?.items || [];
+  return {
+    problem: currentLanguage === "hu" ? "Probléma" : "Problem",
+    services: fallback(nav[0]?.label, currentLanguage === "de" ? "Was wir bauen" : currentLanguage === "en" ? "What we build" : "Mit építünk"),
+    projects: currentLanguage === "de" ? "Ausgewählte Arbeiten" : currentLanguage === "en" ? "Featured work" : "Kiemelt munkák",
+    process: fallback(nav[2]?.label, currentLanguage === "de" ? "Prozess" : currentLanguage === "en" ? "Process" : "Folyamat"),
+    why: currentLanguage === "de" ? "Warum CodeNest" : currentLanguage === "en" ? "Why CodeNest" : "Miért CodeNest",
+    team: "Bors + Dávid",
+    scope: currentLanguage === "de" ? "Scope / Preisfindung" : currentLanguage === "en" ? "Scope / pricing" : "Scope / árazás",
+    contact: fallback(nav[4]?.label, currentLanguage === "de" ? "Kontakt" : currentLanguage === "en" ? "Contact" : "Kapcsolat"),
+  };
+};
+
+const renderStaticSectionLabels = () => {
+  const labels = getSectionLabels();
+  setText('#problema .section-kicker', labels.problem, labels.problem);
+  setText('#mit-epitunk .section-kicker', labels.services, labels.services);
+  setText('#mit-epitunk h2', labels.services, labels.services);
+  setText('#munkak .section-kicker', labels.projects, labels.projects);
+  setText('#munkak h2', labels.projects, labels.projects);
+  setText('#folyamat .section-kicker', labels.process, labels.process);
+  setText('#miert-codenest .section-kicker', labels.why, labels.why);
+  setText('#bors-david .section-kicker', labels.team, labels.team);
+  setText('#scope-arazas .section-kicker', labels.scope, labels.scope);
+  setText('#kapcsolat .section-kicker', labels.contact, labels.contact);
+};
 const renderPage = () => {
   renderNavigation();
   renderLanguageSwitchers();
@@ -1073,6 +1100,7 @@ setDocumentLanguage(currentLanguage);
 renderPage();
 initMobileMenu();
 initLanguageControls();
+
 
 
 
