@@ -1,4 +1,4 @@
-﻿import {
+import {
   getLocalizedData,
   getUiTranslations,
   normalizeLanguage,
@@ -780,45 +780,72 @@ const renderContact = () => {
 
   const emailAddress = fallback(contact.email, "info@codenest.hu");
   const labels = contact.formLabels || {};
-  const side = createElement("div", "contact-side");
-  const email = createElement(
-    "a",
-    "contact-email-card",
-    `${fallback(contact.emailLabel, "E-mail")}: ${emailAddress}`
-  );
+  const ctaLabel = fallback(labels.submit, ui.talkProject);
+  const emailLabel = fallback(contact.emailLabel, "E-mail");
+
+  const side = createElement("div", "contact-side contact-conversation-card");
+  const eyebrow = createElement("p", "contact-eyebrow", fallback(ui.contactEyebrow, "Kapcsolat"));
+  const title = createElement("h3", "contact-conversation-title", fallback(ui.contactConversationTitle, "Írhatsz röviden is."));
+  const copy = createElement("p", "contact-conversation-copy", fallback(ui.contactConversationText, fallback(contact.text, "")));
+  const actionRow = createElement("div", "contact-action-row");
+  const cta = createElement("a", "button button-primary contact-primary-cta", ctaLabel);
+  const email = createElement("a", "contact-email-card", "");
+  const emailText = createElement("span", "contact-email-label", emailLabel);
+  const emailValue = createElement("strong", "", emailAddress);
+  const note = createElement("p", "contact-brief-note", fallback(ui.contactCtaNote, fallback(ui.contactNote, "")));
   const trustList = createElement("ul", "contact-trust-list");
-  ui.contactTrustNotes.forEach((note) => {
-    trustList.append(createElement("li", "", note));
-  });
+
+  cta.href = `mailto:${emailAddress}`;
+  cta.dataset.linkType = "email";
+  cta.setAttribute("aria-label", ctaLabel);
 
   email.href = `mailto:${emailAddress}`;
   email.dataset.linkType = "email";
-  email.setAttribute("aria-label", `${fallback(contact.emailLabel, "E-mail")}: ${emailAddress}`);
-  side.append(email, trustList);
+  email.setAttribute("aria-label", `${emailLabel}: ${emailAddress}`);
+  email.append(emailText, emailValue);
 
-  const formPreview = createElement("div", "contact-form-preview");
-  const title = createElement("h3", "", fallback(labels.projectType, "Projekt típusa"));
-  const note = createElement("p", "contact-form-note", ui.contactNote);
-  const options = createList(contact.projectTypes, "plain-list contact-option-list");
-  const fieldGrid = createElement("div", "contact-field-grid");
-  [
-    fallback(labels.name, "Név"),
-    fallback(labels.email, "E-mail"),
-    ui.companyField,
-    fallback(labels.message, "Üzenet"),
-  ].forEach((label, index) => {
-    const field = createElement("span", index === 3 ? "contact-field is-message" : "contact-field", label);
-    fieldGrid.append(field);
+  actionRow.append(cta, email);
+
+  getArray(ui.contactTrustNotes).forEach((item) => {
+    trustList.append(createElement("li", "", item));
   });
-  const cta = createElement("a", "button button-primary", fallback(labels.submit, ui.talkProject));
-  cta.href = `mailto:${emailAddress}`;
-  cta.dataset.linkType = "email";
-  cta.setAttribute("aria-label", ui.talkProject);
 
-  formPreview.append(title, note);
-  if (options) formPreview.append(options);
-  formPreview.append(fieldGrid, cta);
-  details.replaceChildren(side, formPreview);
+  side.append(eyebrow, title, copy, actionRow);
+  if (note.textContent) side.append(note);
+  if (trustList.childElementCount) side.append(trustList);
+
+  const helper = createElement("div", "contact-helper-card");
+  const helperHeader = createElement("div", "contact-helper-header");
+  helperHeader.append(
+    createElement("h3", "", fallback(ui.contactStarterTitle, "Mit írj nekünk?")),
+    createElement("p", "contact-helper-note", fallback(ui.contactStarterIntro, fallback(ui.contactNote, "")))
+  );
+
+  const prompts = createElement("ul", "contact-starter-list");
+  getArray(ui.contactStarterPrompts).forEach((prompt) => {
+    prompts.append(createElement("li", "", prompt));
+  });
+
+  const topics = createElement("div", "contact-topic-block");
+  const topicTitle = createElement("p", "contact-mini-title", fallback(ui.contactTopicTitle, fallback(labels.projectType, "Projekt típusa")));
+  const topicList = createList(contact.projectTypes, "plain-list contact-option-list contact-topic-list");
+  topics.append(topicTitle);
+  if (topicList) topics.append(topicList);
+
+  const next = createElement("div", "contact-next-card");
+  const nextTitle = createElement("h4", "", fallback(ui.contactNextTitle, "Mi történik utána?"));
+  const nextList = createElement("ul", "contact-next-list");
+  getArray(ui.contactNextSteps).forEach((step) => {
+    nextList.append(createElement("li", "", step));
+  });
+  next.append(nextTitle);
+  if (nextList.childElementCount) next.append(nextList);
+
+  helper.append(helperHeader);
+  if (prompts.childElementCount) helper.append(prompts);
+  helper.append(topics, next);
+
+  details.replaceChildren(side, helper);
 };
 const renderFooter = () => {
   const footer = siteContent.footer || {};
