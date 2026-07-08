@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="hu">
 
 <head>
@@ -18,10 +18,24 @@
     <div class="container header-inner">
       <a class="brand" href="v2-preview.html#hero" aria-label="CodeNest V2 preview főoldal"><img class="brand-mark" src="logo_png.png" alt="" aria-hidden="true"><span>CodeNest</span></a>
 
-      <nav class="site-nav" aria-label="Esettanulmány navigáció">
+      <nav class="site-nav" aria-label="Esettanulmány navigáció" data-render="case-navigation">
         <a href="v2-preview.html#munkak">← Vissza a munkákhoz</a>
         <a href="v2-preview.html#kapcsolat">Beszéljünk a projektről</a>
       </nav>
+
+      <div class="header-actions">
+        <div class="language-switcher desktop-language-switcher" data-render="language-switcher" aria-label="Nyelv"></div>
+        <button class="menu-toggle" type="button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Menü megnyitása">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobile-menu" hidden>
+        <nav class="mobile-menu-nav" aria-label="Mobil menü" data-render="mobile-navigation"></nav>
+        <div class="language-switcher mobile-language-switcher" data-render="mobile-language-switcher" aria-label="Nyelv"></div>
+      </div>
     </div>
   </header>
 
@@ -65,3 +79,4 @@
 </body>
 
 </html>
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="hu">
 
 <head>
@@ -25,6 +25,20 @@
         <a href="#bors-david">Rólunk</a>
         <a href="#kapcsolat">Kapcsolat</a>
       </nav>
+
+      <div class="header-actions">
+        <div class="language-switcher desktop-language-switcher" data-render="language-switcher" aria-label="Nyelv"></div>
+        <button class="menu-toggle" type="button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Menü megnyitása">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobile-menu" hidden>
+        <nav class="mobile-menu-nav" aria-label="Mobil menü" data-render="mobile-navigation"></nav>
+        <div class="language-switcher mobile-language-switcher" data-render="mobile-language-switcher" aria-label="Nyelv"></div>
+      </div>
     </div>
   </header>
 
@@ -203,3 +217,4 @@
 </body>
 
 </html>
+

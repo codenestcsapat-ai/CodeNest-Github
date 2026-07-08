@@ -1,7 +1,26 @@
-﻿import { siteContent } from "./data/site-content.js";
-import { services } from "./data/services.js";
-import { projects } from "./data/projects.js";
-import { teamIntro, team } from "./data/team.js";
+﻿import {
+  getLocalizedData,
+  getUiTranslations,
+  normalizeLanguage,
+  resolveInitialLanguage,
+  setDocumentLanguage,
+  storeLanguage,
+  supportedLanguages,
+  updateUrlLanguage,
+  withLanguageParam,
+} from "./data/i18n.js";
+
+let currentLanguage = resolveInitialLanguage();
+let localizedData = getLocalizedData(currentLanguage);
+let { siteContent, services, projects, teamIntro, team } = localizedData;
+let ui = localizedData.ui;
+let sectionNavigationCleanup = null;
+
+const refreshLocalizedData = () => {
+  localizedData = getLocalizedData(currentLanguage);
+  ({ siteContent, services, projects, teamIntro, team } = localizedData);
+  ui = getUiTranslations(currentLanguage);
+};
 
 const fallback = (value, fallbackText = "") => {
   if (typeof value === "string" && value.trim()) return value;
@@ -29,20 +48,60 @@ const clearAndAppend = (selector, children) => {
 
 const getArray = (value) => (Array.isArray(value) ? value : []);
 
-const renderNavigation = () => {
-  const items = Array.isArray(siteContent.navigation?.items)
-    ? siteContent.navigation.items
-    : [];
-
-  const links = items.map((item) => {
+const createNavigationLinks = (items) =>
+  items.map((item) => {
     const link = createElement("a", "", fallback(item.label, "Menü"));
     link.href = fallback(item.href, "#hero");
     return link;
   });
 
-  if (links.length) clearAndAppend('[data-render="navigation"]', links);
+const renderNavigation = () => {
+  const items = Array.isArray(siteContent.navigation?.items)
+    ? siteContent.navigation.items
+    : [];
+
+  const desktopNav = document.querySelector('[data-render="navigation"]');
+  const mobileNav = document.querySelector('[data-render="mobile-navigation"]');
+  const menu = document.getElementById("mobile-menu");
+
+  if (desktopNav) {
+    desktopNav.setAttribute("aria-label", ui.navigationLabel);
+    desktopNav.replaceChildren(...createNavigationLinks(items));
+  }
+
+  if (mobileNav) {
+    mobileNav.setAttribute("aria-label", ui.mobileMenuLabel);
+    mobileNav.replaceChildren(...createNavigationLinks(items));
+  }
+
+  if (menu) menu.setAttribute("aria-label", ui.mobileMenuLabel);
 };
 
+const renderLanguageSwitchers = () => {
+  const switchers = document.querySelectorAll(
+    '[data-render="language-switcher"], [data-render="mobile-language-switcher"]'
+  );
+
+  switchers.forEach((switcher) => {
+    switcher.setAttribute("aria-label", ui.languageLabel);
+    const buttons = supportedLanguages.map((language) => {
+      const button = createElement("button", "language-option", language.label);
+      button.type = "button";
+      button.dataset.language = language.code;
+      button.setAttribute("aria-label", language.name);
+      button.setAttribute("aria-pressed", String(language.code === currentLanguage));
+      button.classList.toggle("is-active", language.code === currentLanguage);
+      return button;
+    });
+    switcher.replaceChildren(...buttons);
+  });
+
+  const menuButton = document.querySelector(".menu-toggle");
+  if (menuButton) {
+    const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+    menuButton.setAttribute("aria-label", isOpen ? ui.closeMenu : ui.openMenu);
+  }
+};
 const renderHero = () => {
   const hero = siteContent.hero || {};
 
@@ -105,8 +164,8 @@ const renderProblemComparison = (comparison) => {
   const afterItems = getArray(comparison?.after);
   if (!beforeItems.length && !afterItems.length) return;
 
-  const before = createComparisonColumn("Előtte", beforeItems);
-  const after = createComparisonColumn("Utána", afterItems);
+  const before = createComparisonColumn(ui.before, beforeItems);
+  const after = createComparisonColumn(ui.after, afterItems);
   container.replaceChildren(before, after);
 };
 
@@ -198,13 +257,13 @@ const createFeaturedProject = (project) => {
   const card = createElement("article", "project-featured");
   const content = createElement("div", "project-featured-content");
   const badgeRow = createElement("div", "project-badge-row");
-  const badge = createElement("span", "project-badge", "Kiemelt munka");
+  const badge = createElement("span", "project-badge", ui.featuredWork);
   const status = createElement("span", "project-status", getProjectStatusLabel(project.status));
   const category = createElement("p", "section-kicker", fallback(project.category, "Projekt"));
   const title = createElement("h3", "", fallback(project.title, "Kiemelt munka"));
   const description = createElement("p", "project-description", fallback(project.shortDescription, "Projektleírás később."));
   const tags = createList(project.tags, "chips project-tags");
-  const link = createProjectLink(project, "Projekt megnyitása");
+  const link = createProjectLink(project, ui.projectOpen);
 
   badgeRow.append(badge, status);
   content.append(badgeRow, category, title, description);
@@ -222,7 +281,7 @@ const createProjectCard = (project) => {
   const title = createElement("h3", "", fallback(project.title, "Projekt"));
   const description = createElement("p", "", fallback(project.shortDescription, "Projektleírás később."));
   const tags = createList(project.tags, "chips project-tags");
-  const link = createProjectLink(project, "Projekt megnyitása");
+  const link = createProjectLink(project, ui.projectOpen);
 
   if (thumbnail) {
     card.classList.add("has-project-image");
@@ -240,15 +299,15 @@ const createProjectLink = (project, label) => {
   const link = createElement("a", "button button-secondary project-link", label);
   link.href = getProjectCaseStudyHref(project);
   link.dataset.linkType = "case-study";
-  link.setAttribute("aria-label", title + " projekt megnyitása");
-  link.title = "Projekt megnyitása";
+  link.setAttribute("aria-label", title + " " + ui.projectOpen.toLowerCase());
+  link.title = ui.projectOpen;
   return link;
 };
 const getProjectCaseStudyHref = (project) => {
   const explicitHref = fallback(project?.caseStudyHref, "");
-  if (explicitHref) return explicitHref;
+  if (explicitHref) return withLanguageParam(explicitHref, currentLanguage);
   const slug = fallback(project?.slug, "");
-  return slug ? "case-study.html?project=" + encodeURIComponent(slug) : "#munkak";
+  return slug ? withLanguageParam("case-study.html?project=" + encodeURIComponent(slug), currentLanguage) : "#munkak";
 };
 
 const getProjectLiveUrl = (project) => fallback(project?.liveUrl, fallback(project?.url, ""));
@@ -259,8 +318,8 @@ const createProjectLivePreviewLink = (project, className, label) => {
 
   link.href = liveUrl || getProjectCaseStudyHref(project);
   link.dataset.linkType = liveUrl ? "external-preview" : "case-study-preview";
-  link.setAttribute("aria-label", liveUrl ? label + " megnyitása új lapon" : label + " projekt megnyitása");
-  link.title = liveUrl ? "Élő oldal megnyitása" : "Projekt megnyitása";
+  link.setAttribute("aria-label", liveUrl ? label + " - " + ui.liveSiteNewTab : label + " - " + ui.projectOpen);
+  link.title = liveUrl ? ui.liveSiteOpen : ui.projectOpen;
 
   if (liveUrl) {
     link.target = "_blank";
@@ -440,12 +499,11 @@ const normalizeProjectImagePath = (path) => {
 
 const getProjectStatusLabel = (status) => {
   const value = fallback(status, "").toLowerCase();
-  if (value.includes("progress")) return "Hamarosan élesedő referencia";
-  if (value.includes("highlighted")) return "Kiemelt referencia";
-  if (value.includes("live")) return "Élő oldal";
-  return fallback(status, "Referencia");
+  if (value.includes("progress")) return ui.upcomingReference;
+  if (value.includes("highlighted")) return ui.featuredReference;
+  if (value.includes("published") || value.includes("live")) return ui.liveSite;
+  return fallback(status, ui.reference);
 };
-
 const createProjectMockup = () => {
   const mockup = createElement("div", "project-mockup");
   const portal = createElement("div", "project-mockup-panel portal-panel");
@@ -486,8 +544,8 @@ const createProjectMockupRow = (title, status) => {
 const createProjectsCta = () => {
   const cta = createElement("div", "projects-cta");
   cta.append(
-    createElement("p", "", "Hasonló rendszert szeretnél?"),
-    createElement("a", "button button-primary", "Beszéljünk a projektről")
+    createElement("p", "", ui.projectQuestion),
+    createElement("a", "button button-primary", ui.talkProject)
   );
 
   const link = cta.querySelector("a");
@@ -676,33 +734,33 @@ const renderContact = () => {
     `${fallback(contact.emailLabel, "E-mail")}: ${emailAddress}`
   );
   const trustList = createElement("ul", "contact-trust-list");
-  ["Nem kell kész specifikáció", "Közvetlenül velünk beszélsz", "1-2 munkanapon belül válaszolunk"].forEach((note) => {
+  ui.contactTrustNotes.forEach((note) => {
     trustList.append(createElement("li", "", note));
   });
 
   email.href = `mailto:${emailAddress}`;
   email.dataset.linkType = "email";
-  email.setAttribute("aria-label", "E-mail írása a CodeNestnek");
+  email.setAttribute("aria-label", `${fallback(contact.emailLabel, "E-mail")}: ${emailAddress}`);
   side.append(email, trustList);
 
   const formPreview = createElement("div", "contact-form-preview");
   const title = createElement("h3", "", fallback(labels.projectType, "Projekt típusa"));
-  const note = createElement("p", "contact-form-note", "A beszélgetés e-mailben indul, nem kell kész specifikáció.");
+  const note = createElement("p", "contact-form-note", ui.contactNote);
   const options = createList(contact.projectTypes, "plain-list contact-option-list");
   const fieldGrid = createElement("div", "contact-field-grid");
   [
     fallback(labels.name, "Név"),
     fallback(labels.email, "E-mail"),
-    "Cég / intézmény",
+    ui.companyField,
     fallback(labels.message, "Üzenet"),
   ].forEach((label, index) => {
     const field = createElement("span", index === 3 ? "contact-field is-message" : "contact-field", label);
     fieldGrid.append(field);
   });
-  const cta = createElement("a", "button button-primary", fallback(labels.submit, "Beszéljünk a projektről"));
+  const cta = createElement("a", "button button-primary", fallback(labels.submit, ui.talkProject));
   cta.href = `mailto:${emailAddress}`;
   cta.dataset.linkType = "email";
-  cta.setAttribute("aria-label", "Projektindító e-mail írása a CodeNestnek");
+  cta.setAttribute("aria-label", ui.talkProject);
 
   formPreview.append(title, note);
   if (options) formPreview.append(options);
@@ -734,10 +792,10 @@ const renderFooter = () => {
   if (copyright.textContent) brandArea.append(copyright);
 
   const groups = createElement("div", "footer-groups");
-  const navGroup = createFooterLinkGroup("Oldalak", footer.links);
-  const legalGroup = createFooterLinkGroup("Jogi", footer.legalLinks);
+  const navGroup = createFooterLinkGroup(ui.footerPages, footer.links);
+  const legalGroup = createFooterLinkGroup(ui.footerLegal, footer.legalLinks);
   const contactGroup = createElement("div", "footer-group");
-  const contactTitle = createElement("h3", "", "Kapcsolat");
+  const contactTitle = createElement("h3", "", ui.footerContact);
   const contactEmail = createElement("a", "", fallback(siteContent.contact?.email, ""));
 
   if (contactEmail.textContent) {
@@ -783,9 +841,9 @@ const createList = (items, className) => {
 };
 
 const initSectionNavigation = () => {
-  const links = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
-  if (!links.length) return;
+  if (sectionNavigationCleanup) sectionNavigationCleanup();
 
+  const links = Array.from(document.querySelectorAll('.site-nav a[href^="#"], .mobile-menu-nav a[href^="#"]'));
   const sectionLinks = links
     .map((link) => {
       const id = link.getAttribute("href")?.slice(1);
@@ -799,6 +857,7 @@ const initSectionNavigation = () => {
   const header = document.querySelector(".site-header");
   let currentActiveId = "";
   let ticking = false;
+  const clickHandlers = [];
 
   const setActiveLink = (activeId) => {
     if (!activeId || activeId === currentActiveId) return;
@@ -807,12 +866,8 @@ const initSectionNavigation = () => {
     sectionLinks.forEach(({ link, id }) => {
       const isActive = id === activeId;
       link.classList.toggle("is-active", isActive);
-
-      if (isActive) {
-        link.setAttribute("aria-current", "location");
-      } else {
-        link.removeAttribute("aria-current");
-      }
+      if (isActive) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
     });
   };
 
@@ -823,15 +878,10 @@ const initSectionNavigation = () => {
     const referenceY = window.scrollY + headerOffset + window.innerHeight * 0.24;
     const isNearPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
     let activeId = sectionLinks[0].id;
-
     if (isNearPageEnd) return sectionLinks[sectionLinks.length - 1].id;
-
     sectionLinks.forEach(({ section, id }) => {
-      if (getSectionTop(section) <= referenceY) {
-        activeId = id;
-      }
+      if (getSectionTop(section) <= referenceY) activeId = id;
     });
-
     return activeId;
   };
 
@@ -847,27 +897,142 @@ const initSectionNavigation = () => {
   };
 
   sectionLinks.forEach(({ link, id }) => {
-    link.addEventListener("click", () => {
+    const handler = () => {
       setActiveLink(id);
+      closeMobileMenu();
       window.setTimeout(requestUpdate, 120);
-    });
+    };
+    link.addEventListener("click", handler);
+    clickHandlers.push({ link, handler });
   });
 
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
-  window.addEventListener("hashchange", () => window.setTimeout(requestUpdate, 80));
-
+  window.addEventListener("hashchange", requestUpdate);
   setActiveLink(getActiveSectionId());
+
+  sectionNavigationCleanup = () => {
+    clickHandlers.forEach(({ link, handler }) => link.removeEventListener("click", handler));
+    window.removeEventListener("scroll", requestUpdate);
+    window.removeEventListener("resize", requestUpdate);
+    window.removeEventListener("hashchange", requestUpdate);
+    sectionNavigationCleanup = null;
+  };
 };
-renderNavigation();
-renderHero();
-renderProblem();
-renderServices();
-renderProjects();
-renderProcessAndWhy();
-renderTeam();
-renderScope();
-renderContact();
-renderFooter();
-initSectionNavigation();
+
+const getMobileMenuElements = () => ({
+  button: document.querySelector(".menu-toggle"),
+  menu: document.getElementById("mobile-menu"),
+  header: document.querySelector(".site-header"),
+});
+
+const setMobileMenuState = (open) => {
+  const { button, menu } = getMobileMenuElements();
+  if (!button || !menu) return;
+  button.setAttribute("aria-expanded", String(open));
+  button.setAttribute("aria-label", open ? ui.closeMenu : ui.openMenu);
+  menu.hidden = !open;
+  menu.classList.toggle("is-open", open);
+};
+
+const closeMobileMenu = () => setMobileMenuState(false);
+const toggleMobileMenu = () => {
+  const { button } = getMobileMenuElements();
+  setMobileMenuState(button?.getAttribute("aria-expanded") !== "true");
+};
+
+const initMobileMenu = () => {
+  const { button, header } = getMobileMenuElements();
+  if (!button || !header) return;
+
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleMobileMenu();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (button.getAttribute("aria-expanded") !== "true") return;
+    if (!header.contains(event.target)) closeMobileMenu();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMobileMenu();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 821px)").matches) closeMobileMenu();
+  });
+};
+
+const setLanguage = (language) => {
+  const nextLanguage = normalizeLanguage(language) || "hu";
+  currentLanguage = nextLanguage;
+  storeLanguage(currentLanguage);
+  updateUrlLanguage(currentLanguage);
+  setDocumentLanguage(currentLanguage);
+  refreshLocalizedData();
+  renderPage();
+  closeMobileMenu();
+};
+
+const initLanguageControls = () => {
+  document.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const button = target?.closest("[data-language]");
+    if (!button) return;
+    setLanguage(button.dataset.language);
+  });
+};
+
+const getSectionLabels = () => {
+  const nav = siteContent.navigation?.items || [];
+  return {
+    problem: currentLanguage === "de" ? "Problem" : currentLanguage === "en" ? "Problem" : "Probléma",
+    services: fallback(nav[0]?.label, currentLanguage === "de" ? "Was wir bauen" : currentLanguage === "en" ? "What we build" : "Mit építünk"),
+    projects: currentLanguage === "de" ? "Ausgewählte Arbeiten" : currentLanguage === "en" ? "Featured work" : "Kiemelt munkák",
+    process: fallback(nav[2]?.label, currentLanguage === "de" ? "Prozess" : currentLanguage === "en" ? "Process" : "Folyamat"),
+    why: currentLanguage === "de" ? "Warum CodeNest" : currentLanguage === "en" ? "Why CodeNest" : "Miért CodeNest",
+    team: currentLanguage === "de" ? "Bors + Dávid" : currentLanguage === "en" ? "Bors + Dávid" : "Bors + Dávid",
+    scope: currentLanguage === "de" ? "Scope / Preisfindung" : currentLanguage === "en" ? "Scope / pricing" : "Scope / árazás",
+    contact: fallback(nav[4]?.label, currentLanguage === "de" ? "Kontakt" : currentLanguage === "en" ? "Contact" : "Kapcsolat"),
+  };
+};
+
+const renderStaticSectionLabels = () => {
+  const labels = getSectionLabels();
+  setText('#problema .section-kicker', labels.problem, labels.problem);
+  setText('#mit-epitunk .section-kicker', labels.services, labels.services);
+  setText('#mit-epitunk h2', labels.services, labels.services);
+  setText('#munkak .section-kicker', labels.projects, labels.projects);
+  setText('#munkak h2', labels.projects, labels.projects);
+  setText('#folyamat .section-kicker', labels.process, labels.process);
+  setText('#miert-codenest .section-kicker', labels.why, labels.why);
+  setText('#bors-david .section-kicker', labels.team, labels.team);
+  setText('#scope-arazas .section-kicker', labels.scope, labels.scope);
+  setText('#kapcsolat .section-kicker', labels.contact, labels.contact);
+};
+
+const renderPage = () => {
+  renderNavigation();
+  renderLanguageSwitchers();
+  renderStaticSectionLabels();
+  renderHero();
+  renderProblem();
+  renderServices();
+  renderProjects();
+  renderProcessAndWhy();
+  renderTeam();
+  renderScope();
+  renderContact();
+  renderFooter();
+  initSectionNavigation();
+};
+
+setDocumentLanguage(currentLanguage);
+renderPage();
+initMobileMenu();
+initLanguageControls();
+
+
+
 
