@@ -77,23 +77,75 @@ const renderNavigation = () => {
   if (menu) menu.setAttribute("aria-label", ui.mobileMenuLabel);
 };
 
-const renderLanguageSwitchers = () => {
-  const switchers = document.querySelectorAll(
-    '[data-render="language-switcher"], [data-render="mobile-language-switcher"]'
+const createLanguageOption = (language) => {
+  const button = createElement("button", "language-option", "");
+  const isActive = language.code === currentLanguage;
+  button.type = "button";
+  button.dataset.language = language.code;
+  button.setAttribute("aria-label", language.name);
+  button.setAttribute("aria-pressed", String(isActive));
+  button.classList.toggle("is-active", isActive);
+  button.append(
+    createElement("span", "language-check", isActive ? "✓" : ""),
+    createElement("span", "language-name", language.name)
   );
+  return button;
+};
 
-  switchers.forEach((switcher) => {
+const closeLanguageDropdowns = () => {
+  document.querySelectorAll(".language-switcher.is-open").forEach((switcher) => {
+    const trigger = switcher.querySelector("[data-language-trigger]");
+    const dropdown = switcher.querySelector(".language-dropdown");
+    switcher.classList.remove("is-open");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    if (dropdown) dropdown.hidden = true;
+  });
+};
+
+const toggleLanguageDropdown = (trigger) => {
+  const switcher = trigger.closest(".language-switcher");
+  const dropdown = switcher?.querySelector(".language-dropdown");
+  if (!switcher || !dropdown) return;
+  const shouldOpen = trigger.getAttribute("aria-expanded") !== "true";
+  closeLanguageDropdowns();
+  switcher.classList.toggle("is-open", shouldOpen);
+  trigger.setAttribute("aria-expanded", String(shouldOpen));
+  dropdown.hidden = !shouldOpen;
+};
+
+const renderLanguageSwitchers = () => {
+  const current = supportedLanguages.find((language) => language.code === currentLanguage) || supportedLanguages[0];
+
+  document.querySelectorAll('[data-render="language-switcher"]').forEach((switcher) => {
+    switcher.classList.add("is-compact-selector");
     switcher.setAttribute("aria-label", ui.languageLabel);
-    const buttons = supportedLanguages.map((language) => {
-      const button = createElement("button", "language-option", language.label);
-      button.type = "button";
-      button.dataset.language = language.code;
-      button.setAttribute("aria-label", language.name);
-      button.setAttribute("aria-pressed", String(language.code === currentLanguage));
-      button.classList.toggle("is-active", language.code === currentLanguage);
-      return button;
-    });
-    switcher.replaceChildren(...buttons);
+
+    const trigger = createElement("button", "language-trigger", "");
+    trigger.type = "button";
+    trigger.dataset.languageTrigger = "true";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-label", `${ui.languageLabel}: ${current.name}`);
+    trigger.append(
+      createElement("span", "language-globe", ""),
+      createElement("span", "language-current", current.label),
+      createElement("span", "language-chevron", "⌄")
+    );
+
+    const dropdown = createElement("div", "language-dropdown");
+    dropdown.hidden = true;
+    dropdown.setAttribute("role", "listbox");
+    dropdown.append(...supportedLanguages.map(createLanguageOption));
+    switcher.replaceChildren(trigger, dropdown);
+  });
+
+  document.querySelectorAll('[data-render="mobile-language-switcher"]').forEach((switcher) => {
+    switcher.classList.add("is-mobile-language-list");
+    switcher.setAttribute("aria-label", ui.languageLabel);
+    const label = createElement("p", "language-section-label", ui.languageLabel);
+    const list = createElement("div", "language-list");
+    list.append(...supportedLanguages.map(createLanguageOption));
+    switcher.replaceChildren(label, list);
   });
 
   const menuButton = document.querySelector(".menu-toggle");
@@ -102,6 +154,7 @@ const renderLanguageSwitchers = () => {
     menuButton.setAttribute("aria-label", isOpen ? ui.closeMenu : ui.openMenu);
   }
 };
+
 const renderHero = () => {
   const hero = siteContent.hero || {};
 
@@ -972,44 +1025,32 @@ const setLanguage = (language) => {
   setDocumentLanguage(currentLanguage);
   refreshLocalizedData();
   renderPage();
+  closeLanguageDropdowns();
   closeMobileMenu();
 };
 
 const initLanguageControls = () => {
   document.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
+    const trigger = target?.closest("[data-language-trigger]");
+    if (trigger) {
+      event.stopPropagation();
+      toggleLanguageDropdown(trigger);
+      return;
+    }
+
     const button = target?.closest("[data-language]");
-    if (!button) return;
-    setLanguage(button.dataset.language);
+    if (button) {
+      setLanguage(button.dataset.language);
+      return;
+    }
+
+    if (!target?.closest(".language-switcher")) closeLanguageDropdowns();
   });
-};
 
-const getSectionLabels = () => {
-  const nav = siteContent.navigation?.items || [];
-  return {
-    problem: currentLanguage === "de" ? "Problem" : currentLanguage === "en" ? "Problem" : "Probléma",
-    services: fallback(nav[0]?.label, currentLanguage === "de" ? "Was wir bauen" : currentLanguage === "en" ? "What we build" : "Mit építünk"),
-    projects: currentLanguage === "de" ? "Ausgewählte Arbeiten" : currentLanguage === "en" ? "Featured work" : "Kiemelt munkák",
-    process: fallback(nav[2]?.label, currentLanguage === "de" ? "Prozess" : currentLanguage === "en" ? "Process" : "Folyamat"),
-    why: currentLanguage === "de" ? "Warum CodeNest" : currentLanguage === "en" ? "Why CodeNest" : "Miért CodeNest",
-    team: currentLanguage === "de" ? "Bors + Dávid" : currentLanguage === "en" ? "Bors + Dávid" : "Bors + Dávid",
-    scope: currentLanguage === "de" ? "Scope / Preisfindung" : currentLanguage === "en" ? "Scope / pricing" : "Scope / árazás",
-    contact: fallback(nav[4]?.label, currentLanguage === "de" ? "Kontakt" : currentLanguage === "en" ? "Contact" : "Kapcsolat"),
-  };
-};
-
-const renderStaticSectionLabels = () => {
-  const labels = getSectionLabels();
-  setText('#problema .section-kicker', labels.problem, labels.problem);
-  setText('#mit-epitunk .section-kicker', labels.services, labels.services);
-  setText('#mit-epitunk h2', labels.services, labels.services);
-  setText('#munkak .section-kicker', labels.projects, labels.projects);
-  setText('#munkak h2', labels.projects, labels.projects);
-  setText('#folyamat .section-kicker', labels.process, labels.process);
-  setText('#miert-codenest .section-kicker', labels.why, labels.why);
-  setText('#bors-david .section-kicker', labels.team, labels.team);
-  setText('#scope-arazas .section-kicker', labels.scope, labels.scope);
-  setText('#kapcsolat .section-kicker', labels.contact, labels.contact);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeLanguageDropdowns();
+  });
 };
 
 const renderPage = () => {
@@ -1032,6 +1073,10 @@ setDocumentLanguage(currentLanguage);
 renderPage();
 initMobileMenu();
 initLanguageControls();
+
+
+
+
 
 
 
