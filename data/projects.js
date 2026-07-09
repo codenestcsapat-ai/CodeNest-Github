@@ -8,19 +8,19 @@ export const projects = [
     category: "Önkormányzat / intézmény",
     status: "highlighted / in progress",
     shortDescription:
-      "Önkormányzati portál hírekkel, dokumentumtárral, eseményekkel és szerkeszthető adminlogikával.",
+      "Önkormányzati portál hírekkel, dokumentumtárral, eseményekkel és szerkeszthető admin működéssel.",
     tags: ["önkormányzat", "portál", "admin", "dokumentumtár"],
     desktopImage: "CodeNest media web/gardony-hero-desktop.png",
     mobileImage: "CodeNest media web/gardony-mobile-home.png",
     highlighted: true,
     caseStudy: {
       eyebrow: "Kiemelt munka",
-      headline: "Önkormányzati portál, ahol a publikus oldal és az adminlogika együtt dolgozik.",
+      headline: "Önkormányzati portál, ahol a publikus oldal és a szerkesztői admin együtt működik.",
       summary:
-        "A Gárdony Platform egy szerkeszthető intézményi portál hírekhez, dokumentumokhoz, eseményekhez és helyi tartalmakhoz. A fókusz nem csak a megjelenésen van, hanem azon is, hogy a rendszer átadás után kezelhető maradjon.",
+        "A Gárdony Platform szerkeszthető intézményi portál hírekhez, dokumentumokhoz, eseményekhez és helyi tartalmakhoz. A hangsúly azon van, hogy a publikus oldal mögött hosszú távon kezelhető admin és rendezett tartalmi szerkezet álljon.",
       overview: [
         { label: "Típus", value: "Önkormányzati / intézményi portál" },
-        { label: "Fókusz", value: "publikus portál + adminlogika" },
+        { label: "Fókusz", value: "publikus portál + szerkesztői admin" },
         { label: "Állapot", value: "kiemelt, folyamatban" },
       ],
       challengeTitle: "A kihívás",
@@ -37,7 +37,7 @@ export const projects = [
         },
         {
           title: "Portál logika",
-          text: "A publikus oldal nem külön díszlet, hanem a tartalmi rendszer kimenete: a látogató azt látja, amit az adminban rendben lehet tartani.",
+          text: "A publikus oldal nem külön díszlet, hanem a tartalmi rendszer kimenete: a látogató azt látja, amit a szerkesztői adminban rendben lehet tartani.",
         },
         {
           title: "Átadható működés",
@@ -58,7 +58,7 @@ export const projects = [
       ],
       resultTitle: "Mit ad ez az alap?",
       resultText:
-        "Egy olyan portálalapot, amelyben a tartalom nem ragad a fejlesztőnél: a szerkesztés, a struktúra és a publikus megjelenés egy rendszerben gondolkodik.",
+        "Egy olyan portálalapot, ahol a tartalom nem ragad a fejlesztőnél: a szerkesztés, a struktúra és a publikus megjelenés ugyanannak a rendszernek a része.",
       takeaway:
         "Ez az irány mutatja legjobban, mit értünk CodeNest alatt: webes rendszert építünk, nem csak egy kirakatoldalt.",
     },
@@ -72,7 +72,7 @@ export const projects = [
     category: "Szakértői / szolgáltatói weboldal",
     status: "published",
     shortDescription:
-      "Többnyelvű szakértői weboldal szolgáltatások, bemutatkozás, galéria és kapcsolat fókuszú felépítéssel.",
+      "Többnyelvű szakértői weboldal, amely a szolgáltatásokat, a bemutatkozást, a galériát és a kapcsolatfelvételt rendezi tiszta útvonalba.",
     tags: ["szakértői oldal", "szolgáltatások", "galéria", "többnyelvűség", "kapcsolat"],
     desktopImage: "CodeNest media web/ildiko-fonad-desktop.png",
     mobileImage: "CodeNest media web/ildiko-fonad-mobile.png",
@@ -123,7 +123,7 @@ export const projects = [
     category: "Üzleti weboldal",
     status: "live",
     shortDescription:
-      "Üzleti bemutatkozó oldal, amely a márka üzenetét és a látogatói tájékozódást teszi egyértelműbbé.",
+      "Üzleti weboldal, amely a márka üzenetét, a fő információkat és a kapcsolatfelvételi irányt teszi átláthatóvá.",
     tags: ["üzleti weboldal", "márka", "bemutatkozás"],
     desktopImage: "CodeNest media web/googee-desktop.png",
     mobileImage: "CodeNest media web/googee-mobile.png",
@@ -174,7 +174,7 @@ export const projects = [
     category: "Közösség / platform",
     status: "live",
     shortDescription:
-      "Közösségi fókuszú weboldal, amely egy célzott ajánlatot és márkavilágot rendez áttekinthető formába.",
+      "Közösségi fókuszú weboldal, amely egy célzott ajánlatot, hangulatot és márkavilágot rendez áttekinthető online jelenlétté.",
     tags: ["közösség", "platform", "közösségi oldal"],
     desktopImage: "CodeNest media web/bossclub-desktop.png",
     mobileImage: "CodeNest media web/bossclub-mobile.png",
@@ -276,7 +276,7 @@ export const projects = [
     category: "Márka / termék",
     status: "live",
     shortDescription:
-      "Termék- és márkafókuszú weboldal, amely egyszerűen mutatja be az ajánlatot és a kapcsolódó tartalmakat.",
+      "Termék- és márkafókuszú weboldal, amely gyorsan érthetővé teszi az ajánlatot és a kapcsolódó tartalmakat.",
     tags: ["márka", "termék", "landing"],
     desktopImage: "CodeNest media web/greengoo-desktop.png",
     mobileImage: "CodeNest media web/greengoo-mobile.png",

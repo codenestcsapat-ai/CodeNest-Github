@@ -40,6 +40,21 @@ const createElement = (tag, className, text) => {
   return element;
 };
 
+const createLanguageFlag = (language) => {
+  const src = fallback(language.flagSrc, "");
+  const flag = src ? createElement("img", "language-flag", "") : createElement("span", "language-flag language-flag-fallback", "");
+
+  if (src) {
+    flag.src = src;
+    flag.alt = "";
+    flag.loading = "lazy";
+    flag.decoding = "async";
+  }
+
+  flag.setAttribute("aria-hidden", "true");
+  return flag;
+};
+
 const clearAndAppend = (selector, children) => {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -86,8 +101,9 @@ const createLanguageOption = (language) => {
   button.setAttribute("aria-pressed", String(isActive));
   button.classList.toggle("is-active", isActive);
   button.append(
-    createElement("span", "language-check", isActive ? "✓" : ""),
-    createElement("span", "language-name", language.name)
+    createLanguageFlag(language),
+    createElement("span", "language-name", language.name),
+    createElement("span", "language-check", isActive ? "✓" : "")
   );
   return button;
 };
@@ -127,7 +143,7 @@ const renderLanguageSwitchers = () => {
     trigger.setAttribute("aria-expanded", "false");
     trigger.setAttribute("aria-label", `${ui.languageLabel}: ${current.name}`);
     trigger.append(
-      createElement("span", "language-globe", ""),
+      createLanguageFlag(current),
       createElement("span", "language-current", current.label),
       createElement("span", "language-chevron", "⌄")
     );

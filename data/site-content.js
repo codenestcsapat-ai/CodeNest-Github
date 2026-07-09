@@ -13,7 +13,7 @@ export const siteContent = {
   hero: {
     headline: "Webes rendszerek, amiket nem csak nézni lehet, hanem használni is.",
     subheadline:
-      "Szerkeszthető weboldalakat, adminfelületeket és egyedi digitális megoldásokat építünk önkormányzatoknak, intézményeknek és kisvállalkozásoknak.",
+      "Szerkeszthető weboldalakat, adminfelületeket és egyedi webes eszközöket építünk önkormányzatoknak, intézményeknek és kisvállalkozásoknak.",
     primaryCta: "Beszéljünk a projektről",
     secondaryCta: "Megnézem, mit építünk",
     primaryCtaHref: "#kapcsolat",
@@ -67,7 +67,7 @@ export const siteContent = {
       },
       {
         title: "Megtervezzük",
-        text: "Felépítjük az oldalstruktúrát, a tartalomtípusokat, az adminlogikát és a szükséges funkciókat.",
+        text: "Felépítjük az oldalstruktúrát, a tartalomtípusokat, az admin működését és a szükséges funkciókat.",
       },
       {
         title: "Megépítjük",
@@ -91,7 +91,7 @@ export const siteContent = {
     items: [
       {
         title: "Közvetlen kommunikáció",
-        text: "Nem account manageren keresztül dolgozol. Azokkal beszélsz, akik ténylegesen értik és építik a rendszert.",
+        text: "Nem átadott üzeneteken keresztül dolgozunk. Azokkal beszélsz, akik ténylegesen értik, tervezik és építik a rendszert.",
       },
       {
         title: "Szerkeszthető admin",
@@ -105,9 +105,9 @@ export const siteContent = {
   },
 
   scope: {
-    title: "Minden projekt scope alapján indul.",
+    title: "Minden projekt tiszta feladatkörrel indul.",
     text:
-      "Nincsenek publikus, fix csomagáraink. Először megértjük, mire kell használni a webes rendszert, majd ehhez igazítjuk a feladat méretét, technikai alapját és az átadás utáni működést.",
+      "Nem kész csomagokból indulunk. Először megértjük, mire kell használni a webes rendszert, majd ebből rajzoljuk meg a feladatkört, a technikai alapot és az átadás utáni működést.",
     summaryPoints: [
       "Az ajánlat a szükséges weboldalra, adminfelületre, tartalmi szerkezetre és munkafolyamatokra épül.",
       "Nem kell mindent egyszerre megépíteni: különválasztjuk az induláshoz fontos részeket és a későbbi bővítéseket.",
@@ -129,7 +129,7 @@ export const siteContent = {
   contact: {
     title: "Beszéljünk a projektedről.",
     text:
-      "Nem kell kész specifikáció. Írd le röviden, min dolgoztok, mire lenne szükség, mi pedig segítünk kitalálni a jó következő lépést.",
+      "Nem kell kész brief. Írd le röviden, min dolgoztok, mi nem működik most, vagy mire lenne szükség. Segítünk kitalálni a jó következő lépést.",
     emailLabel: "E-mail",
     email: "info.codenest.hu@gmail.com",
     formLabels: {
