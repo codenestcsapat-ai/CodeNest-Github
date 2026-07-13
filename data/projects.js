@@ -1,372 +1,468 @@
 export const projects = [
   {
-    title: "Gárdony Platform",
-    slug: "gardony-platform",
-    url: "https://gardony-platform.vercel.app/",
-    liveUrl: "https://gardony-platform.vercel.app/",
-    caseStudyHref: "case-study.html?project=gardony-platform",
-    category: "Önkormányzat / intézmény",
-    status: "highlighted / in progress",
-    shortDescription:
-      "Önkormányzati portál hírekkel, dokumentumtárral, eseményekkel és szerkeszthető admin működéssel.",
-    tags: ["önkormányzat", "portál", "admin", "dokumentumtár"],
-    desktopImage: "CodeNest media web/gardony-hero-desktop.png",
-    mobileImage: "CodeNest media web/gardony-mobile-home.png",
-    highlighted: true,
-    caseStudy: {
-      eyebrow: "Kiemelt munka",
-      headline: "Önkormányzati portál, ahol a publikus oldal és a szerkesztői admin együtt működik.",
-      summary:
-        "A Gárdony Platform szerkeszthető intézményi portál hírekhez, dokumentumokhoz, eseményekhez és helyi tartalmakhoz. A hangsúly azon van, hogy a publikus oldal mögött hosszú távon kezelhető admin és rendezett tartalmi szerkezet álljon.",
-      overview: [
-        { label: "Típus", value: "Önkormányzati / intézményi portál" },
-        { label: "Fókusz", value: "publikus portál + szerkesztői admin" },
-        { label: "Állapot", value: "kiemelt, folyamatban" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "Egy települési vagy intézményi oldalnál sokféle tartalmat kell rendben tartani: híreket, dokumentumokat, eseményeket és praktikus információkat.",
-        "A tartalomkezelésnek olyan emberek számára is átláthatónak kell maradnia, akik nem fejlesztők.",
-        "A mobilnézetnek és a publikus információszerkezetnek ugyanúgy működnie kell, mint az adminfelületnek.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "G?rdony Platform",
+    "slug": "gardony-platform",
+    "url": "https://gardony-platform.vercel.app/",
+    "liveUrl": "https://gardony-platform.vercel.app/",
+    "caseStudyHref": "case-study.html?project=gardony-platform",
+    "category": "?nkorm?nyzat / int?zm?ny",
+    "status": "highlighted / in progress",
+    "shortDescription": "?nkorm?nyzati oldal h?rekkel, dokumentumokkal, esem?nyekkel ?s k?s?bb is friss?thet? tartalmakkal.",
+    "tags": [
+      "?nkorm?nyzat",
+      "h?rek",
+      "dokumentumok",
+      "friss?thet?"
+    ],
+    "desktopImage": "CodeNest media web/gardony-hero-desktop.png",
+    "mobileImage": "CodeNest media web/gardony-mobile-home.png",
+    "highlighted": true,
+    "caseStudy": {
+      "eyebrow": "Kiemelt munka",
+      "headline": "Telep?l?si weboldal, ahol a lakosok gyorsan megtal?lj?k a fontos inform?ci?kat.",
+      "summary": "A G?rdony Platform ir?nya egy olyan ?nkorm?nyzati oldal, ahol h?rek, dokumentumok, esem?nyek ?s helyi inform?ci?k rendezett form?ban jelennek meg. A c?l, hogy a l?togat? k?nnyen eligazodjon, az ?gyf?l pedig k?s?bb is tudja friss?teni a fontos tartalmakat.",
+      "overview": [
         {
-          title: "Szerkeszthető tartalmak",
-          text: "A hírek, dokumentumok és helyi információk olyan szerkezetet kapnak, amely adminból kezelhető és később bővíthető.",
+          "label": "T?pus",
+          "value": "?nkorm?nyzati / int?zm?nyi oldal"
         },
         {
-          title: "Portál logika",
-          text: "A publikus oldal nem külön díszlet, hanem a tartalmi rendszer kimenete: a látogató azt látja, amit a szerkesztői adminban rendben lehet tartani.",
+          "label": "F?kusz",
+          "value": "h?rek, dokumentumok, helyi inform?ci?k"
         },
         {
-          title: "Átadható működés",
-          text: "A rendszer célja, hogy indulás után is érthető legyen, ki mit kezel, hol frissül a tartalom és hogyan marad üzemben az oldal.",
+          "label": "?llapot",
+          "value": "kiemelt, folyamatban"
+        }
+      ],
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "Egy telep?l?si oldalon sokf?le inform?ci?t kell ?rthet?en elrendezni.",
+        "A h?reknek, dokumentumoknak ?s el?rhet?s?geknek telefonr?l is gyorsan megtal?lhat?nak kell lenni?k.",
+        "Fontos, hogy az oldal ne csak elk?sz?lj?n, hanem k?s?bb is friss?thet? maradjon."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Rendezett tartalom",
+          "text": "A h?rek, dokumentumok ?s helyi inform?ci?k j?l elk?l?n?thet? helyre ker?lnek."
         },
+        {
+          "title": "K?nyelmes publikus oldal",
+          "text": "A l?togat?k telefonr?l ?s g?pr?l is k?nnyebben megtal?lj?k, amit keresnek."
+        },
+        {
+          "title": "Egyszer?bb friss?t?s",
+          "text": "A gyakran v?ltoz? tartalmak k?s?bb is kezelhet?k maradnak."
+        }
       ],
-      visualTitle: "Publikus portál és adminnézet",
-      visualText:
-        "A képernyőképek azt mutatják, hogy a Gárdony Platform egyszerre kezel publikus tartalmakat és belső szerkesztési folyamatokat.",
-      modulesTitle: "Fő modulok",
-      modules: [
-        "hírek és közlemények",
-        "dokumentumtár",
-        "események",
-        "látnivalók és helyi tartalmak",
-        "Directus-alapú szerkesztés",
-        "reszponzív publikus felület",
+      "visualTitle": "Telep?l?si oldal desktop ?s mobil n?zetben",
+      "visualText": "A k?perny?k?pek azt mutatj?k, hogyan jelenhet meg egy ?nkorm?nyzati oldal a l?togat?k sz?m?ra.",
+      "modulesTitle": "F? tartalmi r?szek",
+      "modules": [
+        "h?rek ?s k?zlem?nyek",
+        "dokumentumok",
+        "esem?nyek",
+        "helyi inform?ci?k",
+        "kapcsolati pontok",
+        "telefonr?l is k?nyelmes n?zet"
       ],
-      resultTitle: "Mit ad ez az alap?",
-      resultText:
-        "Egy olyan portálalapot, ahol a tartalom nem ragad a fejlesztőnél: a szerkesztés, a struktúra és a publikus megjelenés ugyanannak a rendszernek a része.",
-      takeaway:
-        "Ez az irány mutatja legjobban, mit értünk CodeNest alatt: webes rendszert építünk, nem csak egy kirakatoldalt.",
-    },
+      "resultTitle": "Mit ad ez az alap?",
+      "resultText": "Egy ?tl?that?bb telep?l?si weboldalt, ahol a fontos inform?ci?k nem vesznek el, ?s a tartalom k?s?bb is friss?thet? marad.",
+      "takeaway": "Az ?nkorm?nyzati oldal akkor m?k?dik j?l, ha a lakosok gyorsan megtal?lj?k rajta, ami?rt megnyitott?k."
+    }
   },
   {
-    title: "Ildiko Fonad",
-    slug: "ildiko-fonad",
-    url: "https://www.ildiko-fonad.com/",
-    liveUrl: "https://www.ildiko-fonad.com/",
-    caseStudyHref: "case-study.html?project=ildiko-fonad",
-    category: "Szakértői / szolgáltatói weboldal",
-    status: "published",
-    shortDescription:
-      "Többnyelvű szakértői weboldal, amely a szolgáltatásokat, a bemutatkozást, a galériát és a kapcsolatfelvételt rendezi tiszta útvonalba.",
-    tags: ["szakértői oldal", "szolgáltatások", "galéria", "többnyelvűség", "kapcsolat"],
-    desktopImage: "CodeNest media web/ildiko-fonad-desktop.png",
-    mobileImage: "CodeNest media web/ildiko-fonad-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Szakértői weboldal",
-      headline: "Többnyelvű bemutatkozó oldal szolgáltatói fókuszú tartalommal.",
-      summary:
-        "Az Ildiko Fonad oldal célja, hogy a látogató gyorsan megértse a szolgáltatásokat, a szakmai hátteret és a kapcsolatfelvétel következő lépését.",
-      overview: [
-        { label: "Típus", value: "szakértői / szolgáltatói weboldal" },
-        { label: "Fókusz", value: "szolgáltatások, bemutatkozás, galéria" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "A szolgáltatásoknak több nyelven is érthetően kellett megjelenniük.",
-        "A bemutatkozás, a vizuális anyagok és a kapcsolatfelvétel nem versenyezhetnek egymással a figyelemért.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "Ildiko Fonad",
+    "slug": "ildiko-fonad",
+    "url": "https://www.ildiko-fonad.com/",
+    "liveUrl": "https://www.ildiko-fonad.com/",
+    "caseStudyHref": "case-study.html?project=ildiko-fonad",
+    "category": "Szak?rt?i / szolg?ltat?i weboldal",
+    "status": "published",
+    "shortDescription": "T?bbnyelv? szolg?ltat?i weboldal bemutatkoz?ssal, szolg?ltat?sokkal, gal?ri?val ?s kapcsolatfelv?tellel.",
+    "tags": [
+      "szak?rt?i oldal",
+      "szolg?ltat?sok",
+      "gal?ria",
+      "t?bbnyelv?s?g",
+      "kapcsolat"
+    ],
+    "desktopImage": "CodeNest media web/ildiko-fonad-desktop.png",
+    "mobileImage": "CodeNest media web/ildiko-fonad-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "Szolg?ltat?i weboldal",
+      "headline": "T?bbnyelv? bemutatkoz? oldal, ahol a szolg?ltat?sok ?s a kapcsolat k?nnyen megtal?lhat?k.",
+      "summary": "Az Ildiko Fonad oldal c?lja, hogy a l?togat? gyorsan meg?rtse, milyen szolg?ltat?sokr?l van sz?, ki ?ll m?g?tte, ?s hogyan tud kapcsolatba l?pni.",
+      "overview": [
         {
-          title: "Tiszta szolgáltatásstruktúra",
-          text: "Az oldal a legfontosabb információkat áttekinthető egységekben rendezi, hogy a látogató könnyen tovább tudjon lépni.",
+          "label": "T?pus",
+          "value": "szolg?ltat?i weboldal"
         },
         {
-          title: "Többnyelvű jelenlét",
-          text: "A tartalmi felépítés támogatja, hogy a szakértői üzenet több nyelven is következetes maradjon.",
+          "label": "F?kusz",
+          "value": "bemutatkoz?s, szolg?ltat?sok, gal?ria"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Desktop és mobil nézet",
-      visualText: "A képernyőképek a szakértői oldal publikus megjelenését mutatják.",
-      modulesTitle: "Fő tartalmi egységek",
-      modules: ["szolgáltatások", "bemutatkozás", "galéria", "többnyelvű tartalom", "kapcsolat"],
-      resultTitle: "Miért jó alap?",
-      resultText:
-        "A weboldal a szakértői bizalmat és a szolgáltatói tájékozódást támogatja, túlmagyarázott marketingnyelv nélkül.",
-      takeaway:
-        "Kisebb szakértői oldalaknál is fontos, hogy a tartalom szerkezete tényleg segítse a döntést és a kapcsolatfelvételt.",
-    },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "A szolg?ltat?sokat t?bb nyelven is ?rthet?en kellett bemutatni.",
+        "A k?peknek, bemutatkoz?snak ?s kapcsolatfelv?telnek egy oldalritmusba kellett rendez?dni?k."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Tiszta szolg?ltat?sbemutat?s",
+          "text": "A fontos inform?ci?k r?vid, k?nnyen olvashat? egys?gekbe ker?ltek."
+        },
+        {
+          "title": "Egyszer? kapcsolatfelv?tel",
+          "text": "A l?togat? k?nnyebben eljut a k?vetkez? l?p?sig."
+        }
+      ],
+      "visualTitle": "Desktop ?s mobil n?zet",
+      "visualText": "A k?perny?k?pek a publikus szolg?ltat?i oldalt mutatj?k.",
+      "modulesTitle": "F? tartalmi r?szek",
+      "modules": [
+        "szolg?ltat?sok",
+        "bemutatkoz?s",
+        "gal?ria",
+        "t?bbnyelv? tartalom",
+        "kapcsolat"
+      ],
+      "resultTitle": "Mi?rt j? alap?",
+      "resultText": "Az oldal seg?t abban, hogy a l?togat? gyorsan meg?rtse a szolg?ltat?st ?s bizalommal tov?bb tudjon l?pni.",
+      "takeaway": "Egy szak?rt?i oldaln?l a tiszta bemutat?s sokszor t?bbet ?r, mint a t?lmagyar?zott marketing."
+    }
   },
   {
-    title: "Googee",
-    slug: "googee",
-    url: "https://googee.hu/",
-    liveUrl: "https://googee.hu/",
-    caseStudyHref: "case-study.html?project=googee",
-    category: "Üzleti weboldal",
-    status: "live",
-    shortDescription:
-      "Üzleti weboldal, amely a márka üzenetét, a fő információkat és a kapcsolatfelvételi irányt teszi átláthatóvá.",
-    tags: ["üzleti weboldal", "márka", "bemutatkozás"],
-    desktopImage: "CodeNest media web/googee-desktop.png",
-    mobileImage: "CodeNest media web/googee-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Üzleti weboldal",
-      headline: "Márkabemutató üzleti weboldal tiszta tartalmi útvonallal.",
-      summary:
-        "A Googee esetében a cél egy rendezett, márkát támogató üzleti oldal volt, ahol a látogató gyorsan megtalálja a legfontosabb információkat.",
-      overview: [
-        { label: "Típus", value: "üzleti weboldal" },
-        { label: "Fókusz", value: "márka és tájékozódás" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "Az üzleti bemutatkozásnak egyszerre kellett letisztultnak és informatívnak maradnia.",
-        "A látogatói útvonalat úgy kellett rendezni, hogy ne csak szép oldal, hanem használható információs felület legyen.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "Googee",
+    "slug": "googee",
+    "url": "https://googee.hu/",
+    "liveUrl": "https://googee.hu/",
+    "caseStudyHref": "case-study.html?project=googee",
+    "category": "?zleti weboldal",
+    "status": "live",
+    "shortDescription": "?zleti bemutatkoz? oldal, amely a f? ?zenetet, a szolg?ltat?st ?s a kapcsolatfelv?telt teszi ?rthet?bb?.",
+    "tags": [
+      "?zleti weboldal",
+      "m?rka",
+      "bemutatkoz?s"
+    ],
+    "desktopImage": "CodeNest media web/googee-desktop.png",
+    "mobileImage": "CodeNest media web/googee-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "?zleti weboldal",
+      "headline": "Bemutatkoz? ?zleti weboldal, ahol a l?togat? gyorsabban meg?rti a l?nyeget.",
+      "summary": "A Googee eset?ben a c?l egy rendezett ?zleti oldal volt, amely nem terheli t?l a l?togat?t, hanem a legfontosabb inform?ci?k fel? vezeti.",
+      "overview": [
         {
-          title: "Rendezett tartalmi szerkezet",
-          text: "A kulcsüzenetek, bemutatkozó blokkok és kapcsolatfelvételi pontok egymásra épülő sorrendben jelennek meg.",
+          "label": "T?pus",
+          "value": "?zleti weboldal"
         },
         {
-          title: "Reszponzív megjelenés",
-          text: "A desktop és mobil nézet ugyanazt a tájékozódási logikát követi, csak a képernyőmérethez igazítva.",
+          "label": "F?kusz",
+          "value": "bemutatkoz?s ?s kapcsolat"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Márkaoldal több nézetben",
-      visualText: "A screenshotok a publikus üzleti weboldal megjelenését mutatják.",
-      modulesTitle: "Fő elemek",
-      modules: ["márkabemutatás", "információs blokkok", "kapcsolati irány", "mobilnézet"],
-      resultTitle: "Mit ad ez az oldal?",
-      resultText:
-        "Egy átlátható online alapot, amely nem próbál túl sokat mondani egyszerre, hanem a márka és a látogató közötti első tájékozódást segíti.",
-      takeaway:
-        "Egy üzleti weboldal akkor működik jól, ha nem csak látványt ad, hanem rendet is tesz az információk között.",
-    },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "Az ?zleti ?zenetet vil?gosan kellett megfogalmazni.",
+        "Az oldalnak telefonr?l is gyorsan ?ttekinthet?nek kellett maradnia."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Rendezett bemutatkoz?s",
+          "text": "A f? inform?ci?k egym?sra ?p?l? sorrendben jelennek meg."
+        },
+        {
+          "title": "K?nnyebb ?rdekl?d?s",
+          "text": "A kapcsolatfelv?teli ir?ny egyszer?bben megtal?lhat?."
+        }
+      ],
+      "visualTitle": "?zleti oldal t?bb n?zetben",
+      "visualText": "A screenshotok a publikus weboldal megjelen?s?t mutatj?k.",
+      "modulesTitle": "F? elemek",
+      "modules": [
+        "bemutatkoz?s",
+        "fontos inform?ci?k",
+        "kapcsolat",
+        "mobiln?zet"
+      ],
+      "resultTitle": "Mit ad ez az oldal?",
+      "resultText": "Egy ?tl?that? online bemutatkoz?st, ahol a l?togat? k?nnyebben meg?rti, mivel foglalkozik a v?llalkoz?s.",
+      "takeaway": "Egy ?zleti weboldal akkor j?, ha a l?togat? nem keresg?l, hanem gyorsan k?pet kap a szolg?ltat?sr?l."
+    }
   },
   {
-    title: "BossClub",
-    slug: "bossclub",
-    url: "https://bossclub.hu/",
-    liveUrl: "https://bossclub.hu/",
-    caseStudyHref: "case-study.html?project=bossclub",
-    category: "Közösség / platform",
-    status: "live",
-    shortDescription:
-      "Közösségi fókuszú weboldal, amely egy célzott ajánlatot, hangulatot és márkavilágot rendez áttekinthető online jelenlétté.",
-    tags: ["közösség", "platform", "közösségi oldal"],
-    desktopImage: "CodeNest media web/bossclub-desktop.png",
-    mobileImage: "CodeNest media web/bossclub-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Közösségi platform",
-      headline: "Közösségi fókuszú weboldal strukturált bemutatkozással.",
-      summary:
-        "A BossClub olyan publikus felületként jelenik meg, amely érthetően mutatja be a közösségi ajánlatot, a hangulatot és a kapcsolódó tartalmakat.",
-      overview: [
-        { label: "Típus", value: "közösség / platform" },
-        { label: "Fókusz", value: "közösség, ajánlat, pozicionálás" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "A közösségi üzenetet úgy kellett online formába rendezni, hogy ne váljon túlzsúfolt bemutatkozássá.",
-        "A közösségi jellegnek már az első néhány képernyőn érthetőnek kellett lennie.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "BossClub",
+    "slug": "bossclub",
+    "url": "https://bossclub.hu/",
+    "liveUrl": "https://bossclub.hu/",
+    "caseStudyHref": "case-study.html?project=bossclub",
+    "category": "K?z?ss?gi weboldal",
+    "status": "live",
+    "shortDescription": "K?z?ss?gi f?kusz? weboldal, amely ?rthet?en mutatja be az aj?nlatot, a hangulatot ?s a kapcsol?d? tartalmakat.",
+    "tags": [
+      "k?z?ss?g",
+      "weboldal",
+      "bemutatkoz?s"
+    ],
+    "desktopImage": "CodeNest media web/bossclub-desktop.png",
+    "mobileImage": "CodeNest media web/bossclub-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "K?z?ss?gi weboldal",
+      "headline": "K?z?ss?gi f?kusz? oldal, ahol az aj?nlat ?s a hangulat gyorsan ?rthet?.",
+      "summary": "A BossClub oldaln?l fontos volt, hogy a l?togat? hamar meg?rezze a k?z?ss?gi ir?nyt, de k?zben az oldal ne v?ljon zs?foltt?.",
+      "overview": [
         {
-          title: "Platform-szemléletű felépítés",
-          text: "A tartalom nem egyszerű aloldalakból áll, hanem egy közösségi ajánlat köré szerveződik.",
+          "label": "T?pus",
+          "value": "k?z?ss?gi weboldal"
         },
         {
-          title: "Erős első benyomás",
-          text: "A vizuális és szöveges elemek célja, hogy gyorsan megmutassák, milyen közösségi ajánlat köré épül az oldal.",
+          "label": "F?kusz",
+          "value": "aj?nlat, hangulat, kapcsolat"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Közösségi jelenlét képernyőképei",
-      visualText: "A desktop és mobil nézet a publikus platform-jellegű oldalt mutatja.",
-      modulesTitle: "Fő elemek",
-      modules: ["közösségi pozicionálás", "ajánlati üzenet", "bemutatkozó blokkok", "mobilnézet"],
-      resultTitle: "Mit ad ez az alap?",
-      resultText:
-        "Egy karakteres, mégis rendezett weboldalt, ahol a látogató gyorsan megérti a közösségi irányt.",
-      takeaway:
-        "Közösségi projektnél a weboldal akkor működik jól, ha karaktert ad, de közben nem nehezíti meg a tájékozódást.",
-    },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "A k?z?ss?gi hangulatot online is ?t kellett adni.",
+        "Az oldalnak k?zben ?rthet?nek ?s bej?rhat?nak kellett maradnia."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Karakteres els? benyom?s",
+          "text": "A vizu?lis ?s sz?veges elemek gyorsan megmutatj?k az oldal ir?ny?t."
+        },
+        {
+          "title": "?tl?that? fel?p?t?s",
+          "text": "A tartalom nem folyik ?ssze, a l?togat? k?nnyebben tov?bb tud menni."
+        }
+      ],
+      "visualTitle": "K?z?ss?gi oldal k?perny?k?pei",
+      "visualText": "A desktop ?s mobil n?zet a publikus oldalt mutatja.",
+      "modulesTitle": "F? elemek",
+      "modules": [
+        "k?z?ss?gi bemutatkoz?s",
+        "aj?nlati ?zenet",
+        "tartalmi blokkok",
+        "mobiln?zet"
+      ],
+      "resultTitle": "Mit ad ez az oldal?",
+      "resultText": "Egy karakteres, de m?gis ?rthet? weboldalt, ahol a l?togat? gyorsan k?pet kap a k?z?ss?gi aj?nlatr?l.",
+      "takeaway": "A karakter akkor m?k?dik j?l, ha k?zben nem nehez?ti meg a t?j?koz?d?st."
+    }
   },
   {
-    title: "RockVibe",
-    slug: "rockvibe",
-    url: "https://rockvibe.neocities.org/",
-    liveUrl: "https://rockvibe.neocities.org/",
-    caseStudyHref: "case-study.html?project=rockvibe",
-    category: "Zene / esemény",
-    status: "live",
-    shortDescription:
-      "Zenei és eseményalapú weboldal karakteres vizuális világgal és könnyen bejárható tartalmi szerkezettel.",
-    tags: ["zene", "esemény", "kampányoldal"],
-    desktopImage: "CodeNest media web/rockvibe-desktop.png",
-    mobileImage: "CodeNest media web/rockvibe-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Zenei / eseményoldal",
-      headline: "Karakteres eseményoldal, ahol a vizuális hangulat és a tartalom együtt dolgozik.",
-      summary:
-        "A RockVibe egy zenei témájú oldal, ahol fontos volt a hangulat, de ugyanennyire fontos maradt, hogy a tartalom gyorsan bejárható legyen.",
-      overview: [
-        { label: "Típus", value: "zene / esemény" },
-        { label: "Fókusz", value: "hangulat, tartalom, mobilnézet" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "A vizuális karakter nem takarhatta el a fontos tartalmi elemeket.",
-        "Az eseményjelleg miatt a látogatónak gyorsan kellett érzékelnie a témát és a következő lépést.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "RockVibe",
+    "slug": "rockvibe",
+    "url": "https://rockvibe.neocities.org/",
+    "liveUrl": "https://rockvibe.neocities.org/",
+    "caseStudyHref": "case-study.html?project=rockvibe",
+    "category": "Zene / esem?ny",
+    "status": "live",
+    "shortDescription": "Zenei ?s esem?nyoldal er?s hangulattal, de k?nnyen bej?rhat? tartalommal.",
+    "tags": [
+      "zene",
+      "esem?ny",
+      "weboldal"
+    ],
+    "desktopImage": "CodeNest media web/rockvibe-desktop.png",
+    "mobileImage": "CodeNest media web/rockvibe-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "Zenei / esem?nyoldal",
+      "headline": "Esem?nyoldal, ahol a hangulat mellett a tartalom is k?nnyen k?vethet?.",
+      "summary": "A RockVibe eset?ben fontos volt a karakteres megjelen?s, de az oldalnak tov?bbra is gyorsan olvashat?nak ?s haszn?lhat?nak kellett maradnia.",
+      "overview": [
         {
-          title: "Hangulatos vizuális rendszer",
-          text: "A zenei karakter megjelenik a felületen, de a szerkezet továbbra is olvasható és követhető marad.",
+          "label": "T?pus",
+          "value": "zenei / esem?nyoldal"
         },
         {
-          title: "Egyszerű bejárás",
-          text: "A tartalmi blokkok úgy épülnek egymásra, hogy az oldal ne váljon plakáttá: használható webes felület marad.",
+          "label": "F?kusz",
+          "value": "hangulat ?s tartalom"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Eseményoldal képernyőképei",
-      visualText: "A képernyőképek a RockVibe publikus desktop és mobil megjelenését mutatják.",
-      modulesTitle: "Fő elemek",
-      modules: ["zenei vizuális világ", "eseményfókusz", "tartalmi blokkok", "mobilnézet"],
-      resultTitle: "Mit ad ez az oldal?",
-      resultText:
-        "Egy karakteres, mégis átlátható webes felületet, amelyben a hangulat nem megy a használhatóság rovására.",
-      takeaway:
-        "Erős vizuális világ mellett is kell tiszta információs ritmus, különben az oldal gyorsan csak dekoráció lesz.",
-    },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "A l?tv?ny nem takarhatta el a l?nyeget.",
+        "A l?togat?nak gyorsan kellett ?rz?kelnie, mir?l sz?l az oldal."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Hangulatos, de olvashat? oldal",
+          "text": "A vizu?lis vil?g er?s marad, mik?zben a tartalom k?vethet?."
+        },
+        {
+          "title": "Egyszer? bej?r?s",
+          "text": "A blokkok sorrendje seg?t, hogy az oldal ne csak l?tv?ny legyen."
+        }
+      ],
+      "visualTitle": "Esem?nyoldal k?perny?k?pei",
+      "visualText": "A k?perny?k?pek a RockVibe desktop ?s mobil megjelen?s?t mutatj?k.",
+      "modulesTitle": "F? elemek",
+      "modules": [
+        "zenei hangulat",
+        "esem?nyf?kusz",
+        "tartalmi blokkok",
+        "mobiln?zet"
+      ],
+      "resultTitle": "Mit ad ez az oldal?",
+      "resultText": "Egy karakteres, m?gis k?nnyebben befogadhat? weboldalt.",
+      "takeaway": "Er?s hangulat mellett is fontos, hogy a l?togat? tudja, mit n?z ?s merre menjen tov?bb."
+    }
   },
   {
-    title: "GreenGoo",
-    slug: "greengoo",
-    url: "https://greengoo.neocities.org/",
-    liveUrl: "https://greengoo.neocities.org/",
-    caseStudyHref: "case-study.html?project=greengoo",
-    category: "Márka / termék",
-    status: "live",
-    shortDescription:
-      "Termék- és márkafókuszú weboldal, amely gyorsan érthetővé teszi az ajánlatot és a kapcsolódó tartalmakat.",
-    tags: ["márka", "termék", "landing"],
-    desktopImage: "CodeNest media web/greengoo-desktop.png",
-    mobileImage: "CodeNest media web/greengoo-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Márka / termék",
-      headline: "Termékfókuszú landing oldal egyszerű ajánlatbemutatással.",
-      summary:
-        "A GreenGoo egy márka- és termékhangulatú oldal, ahol az ajánlatot, a vizuális világot és a kapcsolódó információkat kellett közös ritmusba rendezni.",
-      overview: [
-        { label: "Típus", value: "márka / termék" },
-        { label: "Fókusz", value: "termékkommunikáció" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "A termékes hangulatnak gyorsan érthetőnek kellett lennie, de nem válhatott túlzsúfolt kampányfelületté.",
-        "Az ajánlatot röviden, vizuálisan és mobilon is fogyasztható módon kellett bemutatni.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "GreenGoo",
+    "slug": "greengoo",
+    "url": "https://greengoo.neocities.org/",
+    "liveUrl": "https://greengoo.neocities.org/",
+    "caseStudyHref": "case-study.html?project=greengoo",
+    "category": "M?rka / term?k",
+    "status": "live",
+    "shortDescription": "Term?kf?kusz? weboldal, amely gyorsan ?rthet?v? teszi az aj?nlatot ?s a f? inform?ci?kat.",
+    "tags": [
+      "m?rka",
+      "term?k",
+      "weboldal"
+    ],
+    "desktopImage": "CodeNest media web/greengoo-desktop.png",
+    "mobileImage": "CodeNest media web/greengoo-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "M?rka / term?k",
+      "headline": "Term?koldal, ahol gyorsan l?tszik, mit k?n?l a m?rka.",
+      "summary": "A GreenGoo oldaln?l az volt a c?l, hogy a l?togat? r?vid id? alatt meg?rtse az aj?nlatot, a hangulatot ?s a kapcsol?d? inform?ci?kat.",
+      "overview": [
         {
-          title: "Termékközpontú felépítés",
-          text: "A vizuális részletek és a tartalmi blokkok az ajánlat megértését támogatják.",
+          "label": "T?pus",
+          "value": "m?rka / term?koldal"
         },
         {
-          title: "Könnyű mobil olvasás",
-          text: "A mobil nézetben a legfontosabb tartalmak egymás után, tiszta ritmusban jelennek meg.",
+          "label": "F?kusz",
+          "value": "aj?nlat ?s meg?rt?s"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Márkaoldal képernyőképei",
-      visualText: "A screenshotok a desktop és mobil termékoldal megjelenését mutatják.",
-      modulesTitle: "Fő elemek",
-      modules: ["termékbemutatás", "márkahangulat", "ajánlati blokkok", "mobilnézet"],
-      resultTitle: "Mit ad ez az oldal?",
-      resultText:
-        "Egy egyszerű, vizuális márkaalapot, amely nem bonyolítja túl az ajánlatot, de segíti a látogatói megértést.",
-      takeaway:
-        "A termékoldal akkor jó, ha gyorsan látszik, mit kínál, és a vizuális világ nem nyomja el az üzenetet.",
-    },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "A term?kes hangulatnak gyorsan ?rthet?nek kellett lennie.",
+        "Az oldal nem v?lhatott t?lzs?folt kamp?nyfel?lett?."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Egyszer? aj?nlatbemutat?s",
+          "text": "A tartalom a f? aj?nlat meg?rt?s?t t?mogatja."
+        },
+        {
+          "title": "K?nny? mobil olvas?s",
+          "text": "A legfontosabb r?szek telefonon is k?vethet? sorrendben jelennek meg."
+        }
+      ],
+      "visualTitle": "M?rkaoldal k?perny?k?pei",
+      "visualText": "A screenshotok a desktop ?s mobil term?koldalt mutatj?k.",
+      "modulesTitle": "F? elemek",
+      "modules": [
+        "term?kbemutat?s",
+        "m?rkahangulat",
+        "aj?nlati blokkok",
+        "mobiln?zet"
+      ],
+      "resultTitle": "Mit ad ez az oldal?",
+      "resultText": "Egy egyszer? online alapot, ahol a l?togat? gyorsabban meg?rti, mit k?n?l a m?rka.",
+      "takeaway": "A j? term?koldal nem bonyol?tja t?l az aj?nlatot."
+    }
   },
   {
-    title: "SkillBridge Home",
-    slug: "skillbridge-home",
-    url: "https://skillbridge-home.neocities.org/",
-    liveUrl: "https://skillbridge-home.neocities.org/",
-    caseStudyHref: "case-study.html?project=skillbridge-home",
-    category: "Oktatás / jelentkezés",
-    status: "live",
-    shortDescription:
-      "Oktatási célú oldal jelentkezési fókuszú tartalommal és átlátható információs felépítéssel.",
-    tags: ["oktatás", "jelentkezés", "információs oldal"],
-    desktopImage: "CodeNest media web/skillbridge-home-desktop.png",
-    mobileImage: "CodeNest media web/skillbridge-home-mobile.png",
-    highlighted: false,
-    caseStudy: {
-      eyebrow: "Oktatás / jelentkezés",
-      headline: "Oktatási oldal, ahol az információszerkezet a jelentkezési útvonalat támogatja.",
-      summary:
-        "A SkillBridge Home esetében a cél az volt, hogy az érdeklődő gyorsan megértse a lehetőséget, a folyamatot és a jelentkezéshez szükséges következő lépést.",
-      overview: [
-        { label: "Típus", value: "oktatási / jelentkezési oldal" },
-        { label: "Fókusz", value: "információ és jelentkezés" },
-        { label: "Állapot", value: "éles oldal" },
-      ],
-      challengeTitle: "A kihívás",
-      challenge: [
-        "Az oktatási információknál könnyű túl sok szöveget egy oldalra zsúfolni.",
-        "A jelentkezési irányt úgy kellett megmutatni, hogy közben a látogató ne veszítse el a kontextust.",
-      ],
-      solutionTitle: "A megoldás",
-      solution: [
+    "title": "SkillBridge Home",
+    "slug": "skillbridge-home",
+    "url": "https://skillbridge-home.neocities.org/",
+    "liveUrl": "https://skillbridge-home.neocities.org/",
+    "caseStudyHref": "case-study.html?project=skillbridge-home",
+    "category": "Oktat?s / jelentkez?s",
+    "status": "live",
+    "shortDescription": "Oktat?si c?l? oldal, ahol az ?rdekl?d? k?nnyebben meg?rti a lehet?s?get ?s a jelentkez?s ir?ny?t.",
+    "tags": [
+      "oktat?s",
+      "jelentkez?s",
+      "inform?ci?s oldal"
+    ],
+    "desktopImage": "CodeNest media web/skillbridge-home-desktop.png",
+    "mobileImage": "CodeNest media web/skillbridge-home-mobile.png",
+    "highlighted": false,
+    "caseStudy": {
+      "eyebrow": "Oktat?s / jelentkez?s",
+      "headline": "Oktat?si oldal, ahol a fontos inform?ci?k ?s a jelentkez?si ir?ny k?nnyen k?vethet?k.",
+      "summary": "A SkillBridge Home eset?ben az volt a c?l, hogy az ?rdekl?d? gyorsan meg?rtse a lehet?s?get, a r?szleteket ?s a k?vetkez? l?p?st.",
+      "overview": [
         {
-          title: "Tiszta információs hierarchia",
-          text: "A tartalmak egymásra épülnek: először a lényeg, utána a részletek és a jelentkezési irány.",
+          "label": "T?pus",
+          "value": "oktat?si / jelentkez?si oldal"
         },
         {
-          title: "Jelentkezésközeli szerkezet",
-          text: "A CTA-k és tartalmi blokkok nem különálló elemek, hanem a döntési folyamat részei.",
+          "label": "F?kusz",
+          "value": "inform?ci? ?s jelentkez?s"
         },
+        {
+          "label": "?llapot",
+          "value": "?les oldal"
+        }
       ],
-      visualTitle: "Oktatási oldal nézetei",
-      visualText: "A desktop és mobil screenshotok az információs és jelentkezési fókuszú felépítést mutatják.",
-      modulesTitle: "Fő elemek",
-      modules: ["oktatási információk", "jelentkezési útvonal", "tartalmi hierarchia", "mobilnézet"],
-      resultTitle: "Mit ad ez az oldal?",
-      resultText:
-        "Egy olyan információs oldalt, ahol a látogató nem csak olvas, hanem könnyebben eljut a jelentkezéshez vagy érdeklődéshez.",
-      takeaway:
-        "Oktatási oldalaknál a jó szerkezet legalább olyan fontos, mint a design: a döntést és a tájékozódást egyszerre kell támogatni.",
-    },
-  },
+      "challengeTitle": "A kih?v?s",
+      "challenge": [
+        "Az oktat?si inform?ci?kn?l k?nny? t?l sok sz?veget egy oldalra zs?folni.",
+        "A jelentkez?si ir?nynak l?that?nak kellett maradnia."
+      ],
+      "solutionTitle": "A megold?s",
+      "solution": [
+        {
+          "title": "Tiszta sorrend",
+          "text": "El?sz?r a l?nyeg jelenik meg, ut?na a r?szletek ?s a jelentkez?s ir?nya."
+        },
+        {
+          "title": "K?nnyebb tov?bbhalad?s",
+          "text": "A l?togat? egyszer?bben ?rti meg, mit ?rdemes tennie k?vetkez? l?p?sk?nt."
+        }
+      ],
+      "visualTitle": "Oktat?si oldal n?zetei",
+      "visualText": "A desktop ?s mobil screenshotok az inform?ci?s oldalt mutatj?k.",
+      "modulesTitle": "F? elemek",
+      "modules": [
+        "oktat?si inform?ci?k",
+        "jelentkez?si ir?ny",
+        "tartalmi sorrend",
+        "mobiln?zet"
+      ],
+      "resultTitle": "Mit ad ez az oldal?",
+      "resultText": "Egy k?nnyebben ?rthet? inform?ci?s oldalt, amely t?mogatja az ?rdekl?d?st ?s a jelentkez?st.",
+      "takeaway": "Oktat?si oldalon a j? sorrend sokat seg?t abban, hogy a l?togat? ne vesszen el a r?szletekben."
+    }
+  }
 ];

@@ -1,26 +1,23 @@
 export const teamIntro = {
-  title: "Ketten visszük végig a projektet.",
-  text:
-    "A CodeNest mögött Bors és Dávid áll. Kis, fókuszált stúdióként dolgozunk: kevesebb projektet vállalunk egyszerre, de azoknál végig jelen vagyunk az első beszélgetéstől az éles indulásig.",
-  trustNotes: [
-    "Közvetlen egyeztetés",
-    "Gyorsabb döntések",
-    "Kevesebb félreértés",
-    "Személyesebb együttműködés",
-  ],
+  "title": "Ketten dolgozunk veled k?zvetlen?l.",
+  "text": "A CodeNest m?g?tt Bors ?s D?vid ?ll. Fiatal magyar v?llalkoz?sk?nt dolgozunk: nem nagy csapatnak akarunk l?tszani, hanem ?rthet?en egyeztetni, j?l ?sszerakni az oldalt, ?s ?tadni ?gy, hogy k?s?bb is haszn?lhat? legyen.",
+  "trustNotes": [
+    "K?zvetlen egyeztet?s",
+    "?rthet? feladatok",
+    "Gyakorlati hozz??ll?s",
+    "?tadhat? m?k?d?s"
+  ]
 };
 
 export const team = [
   {
-    name: "Bors",
-    role: "Rendszerlogika, backend, adminfelületek",
-    shortText:
-      "A rendszerlogikát, adatstruktúrákat, adminfelületeket és a technikai működés alapjait tartja kézben.",
+    "name": "Bors",
+    "role": "Fel?p?t?s, fejleszt?s, szerkeszthet? m?k?d?s",
+    "shortText": "A weboldal szerkezet?t, a fejleszt?si r?szeket ?s a szerkeszthet? fel?letek m?k?d?s?t tartja k?zben."
   },
   {
-    name: "Dávid",
-    role: "Frontend, UX, projektkommunikáció",
-    shortText:
-      "A felhasználói élményt, a vizuális megvalósítást és a közös projektmunkát tartja egyben.",
-  },
+    "name": "D?vid",
+    "role": "Frontend, megval?s?t?s, k?z?s egyeztet?s",
+    "shortText": "A fel?let ?ssze?ll?t?s?n, a HTML/CSS/JS megval?s?t?son ?s a gyakorlati projektkommunik?ci?n dolgozik."
+  }
 ];

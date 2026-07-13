@@ -1,50 +1,59 @@
 export const services = [
   {
-    title: "Önkormányzati és intézményi portálok",
-    slug: "onkormanyzati-es-intezmenyi-portalok",
-    shortDescription:
-      "Szerkeszthető portálok hírekhez, dokumentumokhoz, eseményekhez és közérdekű információkhoz.",
-    supportingText:
-      "Olyan portálokat építünk, ahol a publikus oldal és a szerkesztői admin ugyanarra a rendezett tartalmi alapra épül. A cél nem egy látványos kezdőlap, hanem egy rendszer, amit az intézmény munkatársai később is magabiztosan tudnak kezelni.",
-    features: [
-      "Hírek, események és közlemények kezelése",
-      "Dokumentumtár és letölthető anyagok",
-      "Szerkeszthető oldalak és menüstruktúra",
-      "Űrlapok, bejelentések és alap munkafolyamatok",
+    "title": "?nkorm?nyzatok ?s int?zm?nyek",
+    "slug": "onkormanyzati-es-intezmenyi-portalok",
+    "shortDescription": "?tl?that?, k?nnyen friss?thet? oldalak h?rekhez, dokumentumokhoz, esem?nyekhez ?s el?rhet?s?gekhez.",
+    "supportingText": "Kisebb telep?l?seknek ?s int?zm?nyeknek olyan weboldalt k?sz?t?nk, ahol a lakosok vagy ?rdekl?d?k gyorsan megtal?lj?k a fontos inform?ci?kat, a munkat?rsak pedig k?s?bb is tudj?k friss?teni a tartalmat.",
+    "features": [
+      "H?rek, esem?nyek ?s k?zlem?nyek",
+      "Dokumentumok ?s let?lthet? anyagok",
+      "El?rhet?s?gek, nyitvatart?s, ?gyint?z?si inform?ci?k",
+      "Szerkeszthet? fel?let a gyakran v?ltoz? tartalmakhoz"
     ],
-    chips: ["portál", "admin", "dokumentumtár", "űrlapok"],
-    ctaLabel: "Beszéljünk a projektről",
+    "chips": [
+      "h?rek",
+      "dokumentumok",
+      "el?rhet?s?gek",
+      "friss?thet? oldal"
+    ],
+    "ctaLabel": "K?rj r?vid ?tbesz?l?st"
   },
   {
-    title: "Adminos üzleti weboldalak",
-    slug: "adminos-uzleti-weboldalak",
-    shortDescription:
-      "Üzleti weboldalak, ahol a szolgáltatások, referenciák, ajánlatkérések és tartalmi blokkok házon belül is frissíthetők.",
-    supportingText:
-      "Kisvállalkozásoknak és szolgáltatóknak készítünk olyan oldalakat, amelyek mögött érthető adminfelület áll. Így a weboldal nem egyszeri kirakat, hanem naprakészen tartható üzleti felület.",
-    features: [
-      "Szerkeszthető szolgáltatások és aloldalak",
-      "Referenciák, képek és tartalmi blokkok kezelése",
-      "Kapcsolati és ajánlatkérő űrlapok",
-      "Hosting, mentés és karbantartási támogatás",
+    "title": "Helyi v?llalkoz?sok ?s szakemberek",
+    "slug": "adminos-uzleti-weboldalak",
+    "shortDescription": "Bemutatkoz? ?s szolg?ltat?i weboldalak, ahol a l?togat? gyorsan meg?rti, mivel foglalkozol ?s hogyan tud kapcsolatba l?pni.",
+    "supportingText": "Olyan oldalt ?p?t?nk, ami nem t?lbesz?li a v?llalkoz?st, hanem ?rthet?en megmutatja a szolg?ltat?sokat, k?peket, referenci?kat, ?r- vagy aj?nlatk?r?si ir?nyt, ?s telefonr?l is k?nyelmes.",
+    "features": [
+      "Szolg?ltat?sok ?s bemutatkoz?s rendez?se",
+      "K?pek, referenci?k ?s gyakori k?rd?sek",
+      "Kapcsolatfelv?tel vagy aj?nlatk?r?s egyszer?en",
+      "K?s?bb friss?thet? sz?vegek ?s k?pek"
     ],
-    chips: ["üzleti weboldal", "admin", "ajánlatkérés", "támogatás"],
-    ctaLabel: "Beszéljünk a projektről",
+    "chips": [
+      "bemutatkoz? oldal",
+      "szolg?ltat?sok",
+      "kapcsolat",
+      "mobilbar?t"
+    ],
+    "ctaLabel": "K?rj r?vid ?tbesz?l?st"
   },
   {
-    title: "Egyedi webes eszközök",
-    slug: "egyedi-webes-eszkozok",
-    shortDescription:
-      "Kisebb belső rendszerek, kalkulátorok, adatkezelők és munkafolyamat-eszközök konkrét működési problémákra.",
-    supportingText:
-      "Ha a feladat túl egyedi egy kész sablonhoz, de nem igényel nagyvállalati rendszert, célzott webes eszközt építünk hozzá. A hangsúly a használhatóságon, az adatstruktúrán és azon van, hogy az eszköz beleférjen a napi munkába.",
-    features: [
-      "Egyedi űrlapok és adatkezelés",
-      "Belső admin- vagy dashboard felületek",
-      "Egyszerű jogosultsági logika",
-      "Exportok, értesítések és folyamatlépések",
+    "title": "Sz?ll?shelyek ?s turisztikai oldalak",
+    "slug": "egyedi-webes-eszkozok",
+    "shortDescription": "K?pekben er?s, k?nnyen haszn?lhat? oldalak vend?geknek, programoknak, sz?ll?shelyeknek ?s helyi l?tnival?knak.",
+    "supportingText": "A vend?g ?ltal?ban gyorsan szeretne k?peket, inform?ci?kat, ?rakat vagy kapcsolatfelv?teli lehet?s?get tal?lni. Ebben seg?t?nk: tiszta fel?p?t?ssel, k?nyelmes mobiln?zettel ?s friss?thet? tartalommal.",
+    "features": [
+      "Gal?ria, bemutatkoz?s ?s fontos inform?ci?k",
+      "Kapcsolat, foglal?si vagy ?rdekl?d?si ir?ny",
+      "Programok, l?tnival?k vagy szolg?ltat?sok bemutat?sa",
+      "Friss?thet? k?pek, sz?vegek ?s szezon?lis inform?ci?k"
     ],
-    chips: ["webes eszköz", "workflow", "dashboard", "adatkezelés"],
-    ctaLabel: "Beszéljünk a projektről",
-  },
+    "chips": [
+      "sz?ll?s",
+      "turizmus",
+      "gal?ria",
+      "?rdekl?d?s"
+    ],
+    "ctaLabel": "K?rj r?vid ?tbesz?l?st"
+  }
 ];
