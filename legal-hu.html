@@ -4,154 +4,192 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jogi információk – CodeNest</title>
+  <title>Jogi inform&aacute;ci&oacute;k &ndash; CodeNest</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #102033;
+      --green: #4f7a63;
+      --warm: #f7f1e8;
+      --paper: #fffdf7;
+      --border: #e4d8c7;
+      --text: #263238;
+      --muted: #60727a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--warm);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      width: min(880px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      color: var(--green);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    header {
+      margin-bottom: 22px;
+    }
+
+    nav, section {
+      border-top: 1px solid var(--border);
+      padding: 22px 0;
+    }
+
+    h1, h2, h3 {
+      color: var(--navy);
+      line-height: 1.25;
+    }
+
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 4vw, 2.8rem); }
+    h2 { margin: 0 0 12px; font-size: clamp(1.3rem, 3vw, 1.75rem); }
+    h3 { margin: 20px 0 8px; font-size: 1.06rem; }
+
+    a { color: var(--green); }
+    ul, ol { padding-left: 1.2rem; }
+    li + li { margin-top: 0.25rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+      font-size: 0.95rem;
+      background: var(--paper);
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { width: 34%; color: var(--navy); background: #fffaf0; }
+    .muted { color: var(--muted); }
+  </style>
 </head>
 
 <body>
-  <!-- Vissza gomb -->
-  <p>
-    <a href="index.html"
-      style="display:inline-block; padding:10px 16px; background:#e5e5e5; text-decoration:none; border-radius:6px;">
-      ← Vissza a főoldalra
-    </a>
-  </p>
-  <header>
-    <h1>Jogi információk</h1>
-    <p><small>Utolsó frissítés: 2025.12.05.</small></p>
-  </header>
+  <main>
+    <a class="back-link" href="v2-preview.html#hero">&larr; Vissza a CodeNest oldalra</a>
 
-  <nav>
-    <ul>
-      <li><a href="#impresszum">Impresszum</a></li>
-      <li><a href="#adatkezeles">Adatkezelési Tájékoztató</a></li>
-      <li><a href="#cookie">Cookie Tájékoztató</a></li>
-    </ul>
-  </nav>
+    <header>
+      <h1>Jogi inform&aacute;ci&oacute;k</h1>
+      <p class="muted"><small>Utols&oacute; friss&iacute;t&eacute;s: 2026.07.14.</small></p>
+    </header>
 
-  <hr>
+    <nav aria-label="Jogi oldalon bel&uuml;li navig&aacute;ci&oacute;">
+      <ol>
+        <li><a href="#uzemelteto">Adatkezel&#337; &eacute;s weboldal &uuml;zemeltet&#337;je</a></li>
+        <li><a href="#szolgaltatok">T&aacute;rhely &eacute;s technikai szolg&aacute;ltat&oacute;k</a></li>
+        <li><a href="#kapcsolatfelvetel">Kapcsolatfelv&eacute;tel</a></li>
+        <li><a href="#email-kommunikacio">E-mail kommunik&aacute;ci&oacute;</a></li>
+        <li><a href="#technikai-mukodes">Technikai m&#369;k&ouml;d&eacute;s &eacute;s s&uuml;tik</a></li>
+        <li><a href="#adatfeldolgozok">Adatfeldolgoz&oacute;k</a></li>
+        <li><a href="#eu-tovabbitas">EU-n k&iacute;v&uuml;li adattov&aacute;bb&iacute;t&aacute;s</a></li>
+        <li><a href="#erintetti-jogok">&Eacute;rintetti jogok</a></li>
+        <li><a href="#panasztetel">Panaszt&eacute;tel</a></li>
+        <li><a href="#automatizalt-donteshozatal">Automatiz&aacute;lt d&ouml;nt&eacute;shozatal</a></li>
+      </ol>
+    </nav>
 
-  <!-- IMPRESSZUM -->
-  <section id="impresszum">
-    <h2>Impresszum</h2>
+    <section id="uzemelteto">
+      <h2>1. Adatkezel&#337; &eacute;s weboldal &uuml;zemeltet&#337;je</h2>
+      <table>
+        <tbody>
+          <tr><th>Szolg&aacute;ltat&oacute; neve</th><td>Gugi Bors egy&eacute;ni v&aacute;llalkoz&oacute;</td></tr>
+          <tr><th>M&aacute;rkan&eacute;v</th><td>CodeNest</td></tr>
+          <tr><th>Sz&eacute;khely / levelez&eacute;si c&iacute;m</th><td>MAGYARORSZ&Aacute;G, 8096 SUKOR&Oacute;, KIL&Aacute;T&Oacute; UTCA 12</td></tr>
+          <tr><th>E-mail</th><td><a href="mailto:info.codenest.hu@gmail.com">info.codenest.hu@gmail.com</a></td></tr>
+          <tr><th>Ad&oacute;sz&aacute;m</th><td>91201155-1-27</td></tr>
+          <tr><th>Nyilv&aacute;ntart&aacute;si sz&aacute;m</th><td>60658939</td></tr>
+          <tr><th>Domain</th><td>codenest.hu</td></tr>
+        </tbody>
+      </table>
+    </section>
 
-    <p>
-      A <strong>codenest.hu</strong> weboldalt a <strong>CodeNest</strong> márka üzemelteti.
-      A weboldal bemutató jellegű platform, amely digitális projekteket, kreatív munkát és a csapatot mutatja be.
-    </p>
+    <section id="szolgaltatok">
+      <h2>2. T&aacute;rhely &eacute;s technikai szolg&aacute;ltat&oacute;k</h2>
+      <table>
+        <tbody>
+          <tr><th>T&aacute;rhelyszolg&aacute;ltat&oacute;</th><td>GitHub Pages / GitHub, Inc.</td></tr>
+          <tr><th>DNS / CDN / &aacute;tir&aacute;ny&iacute;t&aacute;si szolg&aacute;ltat&oacute;</th><td>Cloudflare, Inc.</td></tr>
+          <tr><th>E-mail szolg&aacute;ltat&oacute;</th><td>Google / Gmail</td></tr>
+        </tbody>
+      </table>
+    </section>
 
-    <p>
-      A weboldal használata nem minősül kereskedelmi szolgáltatásnak. A CodeNest márkanév nem bejegyzett vállalkozási
-      forma,
-      így a magyar jog alapján nem vonatkozik rá kötelező cég- vagy egyéb azonosító adatközlési kötelezettség.
-    </p>
+    <section id="kapcsolatfelvetel">
+      <h2>3. Kapcsolatfelv&eacute;tel</h2>
+      <p>A weboldalon vagy e-mailben t&ouml;rt&eacute;n&#337; kapcsolatfelv&eacute;tel sor&aacute;n kezelt adatok: n&eacute;v, e-mail c&iacute;m, c&eacute;g / int&eacute;zm&eacute;ny neve, projekt t&iacute;pusa, &uuml;zenet tartalma, bek&uuml;ld&eacute;s id&#337;pontja &eacute;s a m&#369;k&ouml;d&eacute;shez sz&uuml;ks&eacute;ges technikai adatok.</p>
+      <p>Az adatkezel&eacute;s c&eacute;lja a megkeres&eacute;sek megv&aacute;laszol&aacute;sa, aj&aacute;nlatad&aacute;s el&#337;k&eacute;sz&iacute;t&eacute;se &eacute;s kapcsolattart&aacute;s.</p>
+      <p>Jogalap: szerz&#337;d&eacute;sk&ouml;t&eacute;st megel&#337;z&#337; l&eacute;p&eacute;sek megt&eacute;tele, illetve az adatkezel&#337; jogos &eacute;rdeke.</p>
+      <p>Meg&#337;rz&eacute;si id&#337;: az utols&oacute; kapcsolatfelv&eacute;telt&#337;l sz&aacute;m&iacute;tott legfeljebb 12 h&oacute;nap, kiv&eacute;ve ha jogi, szerz&#337;d&eacute;ses vagy sz&aacute;mviteli okb&oacute;l hosszabb meg&#337;rz&eacute;s sz&uuml;ks&eacute;ges.</p>
+    </section>
 
-    <p>
-      A weboldalon található kapcsolatfelvételi űrlap kizárólag kommunikációs célokat szolgál.
-    </p>
-  </section>
+    <section id="email-kommunikacio">
+      <h2>4. E-mail kommunik&aacute;ci&oacute;</h2>
+      <p>Az e-mailes kommunik&aacute;ci&oacute; sor&aacute;n a n&eacute;v, e-mail c&iacute;m, &uuml;zenettartalom, csatolm&aacute;nyok &eacute;s a kommunik&aacute;ci&oacute; id&#337;pontja kezelhet&#337;.</p>
+      <p>Meg&#337;rz&eacute;si id&#337;: az utols&oacute; kommunik&aacute;ci&oacute;t&oacute;l sz&aacute;m&iacute;tott legfeljebb 24 h&oacute;nap, kiv&eacute;ve ha jogi, szerz&#337;d&eacute;ses vagy sz&aacute;mviteli okb&oacute;l hosszabb meg&#337;rz&eacute;s sz&uuml;ks&eacute;ges.</p>
+    </section>
 
-  <hr>
+    <section id="technikai-mukodes">
+      <h2>5. Technikai m&#369;k&ouml;d&eacute;s &eacute;s s&uuml;tik</h2>
+      <p>A weboldal jelenleg nem haszn&aacute;l nem sz&uuml;ks&eacute;ges s&uuml;tiket vagy marketing c&eacute;l&uacute; nyomk&ouml;vet&eacute;st.</p>
+      <p>A weboldal a m&#369;k&ouml;d&eacute;shez sz&uuml;ks&eacute;ges technikai be&aacute;ll&iacute;t&aacute;sokat haszn&aacute;lhat a biztons&aacute;gos m&#369;k&ouml;d&eacute;shez &eacute;s a felhaszn&aacute;l&oacute;i be&aacute;ll&iacute;t&aacute;sok megjegyz&eacute;s&eacute;hez. Ezek nem szolg&aacute;lnak marketing vagy profilalkot&aacute;si c&eacute;lokat.</p>
+      <p>A technikai szolg&aacute;ltat&oacute;k a weboldal m&#369;k&ouml;dtet&eacute;se, hibakeres&eacute;s &eacute;s vissza&eacute;l&eacute;sek megel&#337;z&eacute;se c&eacute;lj&aacute;b&oacute;l kezelhetnek technikai adatokat, p&eacute;ld&aacute;ul IP-c&iacute;met, b&ouml;ng&eacute;sz&#337;- &eacute;s eszk&ouml;zadatokat, l&aacute;togat&aacute;si id&#337;pontot &eacute;s k&eacute;rt oldal c&iacute;m&eacute;t.</p>
+    </section>
 
-  <!-- GDPR / Adatkezelés -->
-  <section id="adatkezeles">
-    <h2>Adatkezelési Tájékoztató (GDPR)</h2>
+    <section id="adatfeldolgozok">
+      <h2>6. Adatfeldolgoz&oacute;k</h2>
+      <p>Az adatokhoz az adatkezel&#337;n k&iacute;v&uuml;l a weboldal &eacute;s az e-mailes kommunik&aacute;ci&oacute; m&#369;k&ouml;dtet&eacute;s&eacute;hez sz&uuml;ks&eacute;ges technikai szolg&aacute;ltat&oacute;k f&eacute;rhetnek hozz&aacute;:</p>
+      <ul>
+        <li>GitHub Pages / GitHub, Inc.</li>
+        <li>Cloudflare, Inc.</li>
+        <li>Google / Gmail</li>
+      </ul>
+    </section>
 
-    <p>
-      A jelen adatkezelési tájékoztató a <strong>codenest.hu</strong> weboldalon keresztül megvalósuló adatkezelésekre
-      vonatkozik.
-      Az adatkezelést a <strong>CodeNest</strong> márka végzi.
-    </p>
+    <section id="eu-tovabbitas">
+      <h2>7. EU-n k&iacute;v&uuml;li adattov&aacute;bb&iacute;t&aacute;s</h2>
+      <p>A weboldal m&#369;k&ouml;dtet&eacute;s&eacute;hez haszn&aacute;lt egyes technikai szolg&aacute;ltat&oacute;k az Eur&oacute;pai Uni&oacute;n k&iacute;v&uuml;l is kezelhetnek adatokat. Ilyen esetben az adattov&aacute;bb&iacute;t&aacute;s a szolg&aacute;ltat&oacute;k &aacute;ltal alkalmazott megfelel&#337; garanci&aacute;k alapj&aacute;n t&ouml;rt&eacute;nik.</p>
+    </section>
 
-    <h3>1. Az adatkezelő megnevezése</h3>
-    <p>
-      Adatkezelő: <strong>CodeNest márka</strong><br>
-      A weboldal működtetése nem gazdasági tevékenység keretében történik.
-    </p>
+    <section id="erintetti-jogok">
+      <h2>8. &Eacute;rintetti jogok</h2>
+      <p>Az &eacute;rintett jogosult t&aacute;j&eacute;koztat&aacute;st k&eacute;rni az adatkezel&eacute;sr&#337;l, hozz&aacute;f&eacute;rni a szem&eacute;lyes adataihoz, k&eacute;rni azok helyesb&iacute;t&eacute;s&eacute;t, t&ouml;rl&eacute;s&eacute;t vagy az adatkezel&eacute;s korl&aacute;toz&aacute;s&aacute;t, valamint tiltakozni a jogos &eacute;rdeken alapul&oacute; adatkezel&eacute;s ellen.</p>
+      <p>Az &eacute;rintett jogosult tov&aacute;bb&aacute; az adathordozhat&oacute;s&aacute;ghoz val&oacute; jog gyakorl&aacute;s&aacute;ra, ha annak jogszab&aacute;lyi felt&eacute;telei fenn&aacute;llnak.</p>
+      <p>Az &eacute;rintetti k&eacute;relmeket erre az e-mail c&iacute;mre lehet elk&uuml;ldeni: <a href="mailto:info.codenest.hu@gmail.com">info.codenest.hu@gmail.com</a></p>
+    </section>
 
-    <h3>2. Kezelt adatok köre</h3>
-    <h4>Kapcsolatfelvételi űrlap</h4>
-    <ul>
-      <li>Név (opcionális)</li>
-      <li>E-mail cím (kötelező)</li>
-      <li>Üzenet tartalma</li>
-      <li>IP-cím és technikai metaadatok (automatikusan)</li>
-    </ul>
+    <section id="panasztetel">
+      <h2>9. Panaszt&eacute;tel</h2>
+      <p>Az &eacute;rintett panasszal fordulhat a Nemzeti Adatv&eacute;delmi &eacute;s Inform&aacute;ci&oacute;szabads&aacute;g Hat&oacute;s&aacute;ghoz.</p>
+      <p>
+        Nemzeti Adatv&eacute;delmi &eacute;s Inform&aacute;ci&oacute;szabads&aacute;g Hat&oacute;s&aacute;g<br>
+        Weboldal: <a href="https://www.naih.hu" rel="noopener noreferrer">https://www.naih.hu</a>
+      </p>
+    </section>
 
-    <h4>Technikai adatok</h4>
-    <ul>
-      <li>IP-cím</li>
-      <li>Böngésző típusa és verziója</li>
-      <li>Eszköz- és operációs rendszer adatok</li>
-      <li>Látogatási időpontok</li>
-    </ul>
-
-    <h3>3. Az adatkezelés célja</h3>
-    <ul>
-      <li>Felhasználói megkeresések megválaszolása</li>
-      <li>Kommunikáció fenntartása</li>
-      <li>A weboldal működésének technikai biztosítása</li>
-      <li>Alapvető statisztikai adatok gyűjtése</li>
-    </ul>
-
-    <h3>4. Az adatkezelés jogalapja</h3>
-    <ul>
-      <li><strong>Önkéntes hozzájárulás</strong> (kapcsolatfelvétel esetén)</li>
-      <li><strong>Jogos érdek</strong> (weboldal technikai működtetése)</li>
-    </ul>
-
-    <h3>5. Adatok megőrzési ideje</h3>
-    <ul>
-      <li>Kapcsolatfelvételi üzenetek: legfeljebb 180 nap</li>
-      <li>Technikai naplófájlok: legfeljebb 30 nap</li>
-    </ul>
-
-    <h3>6. Adatok továbbítása</h3>
-    <p>
-      Az adatok harmadik fél részére nem kerülnek továbbításra, kivéve a tárhelyszolgáltató technikai működéséhez
-      szükséges eseteket.
-    </p>
-
-    <h3>7. Érintetti jogok</h3>
-    <ul>
-      <li>hozzáférési jog</li>
-      <li>helyesbítéshez való jog</li>
-      <li>törléshez való jog („elfeledtetéshez való jog”)</li>
-      <li>adatkezelés korlátozásának joga</li>
-      <li>tiltakozás joga</li>
-    </ul>
-
-    <p>
-      Az érintetti kérelmek a kapcsolatfelvételi űrlapon keresztül kezdeményezhetők.
-    </p>
-  </section>
-
-  <hr>
-
-  <!-- COOKIE -->
-  <section id="cookie">
-    <h2>Cookie (Süti) Tájékoztató</h2>
-
-    <p>
-      A <strong>codenest.hu</strong> weboldal cookie-kat használ a működéshez és a látogatottság méréséhez.
-      A nem szükséges cookie-k használatához a látogató hozzájárulása szükséges.
-    </p>
-
-    <h3>1. Szükséges sütik</h3>
-    <p>Ezek a weboldal technikai működéséhez elengedhetetlenek. Letiltásuk esetén a weboldal nem működik megfelelően.
-    </p>
-
-    <h3>2. Statisztikai sütik</h3>
-    <p>
-      Anonimizált látogatószám és oldalműködési adatok mérésére szolgálnak (pl. böngésző, eszköz, időbélyeg).
-    </p>
-
-    <h3>3. Hozzájárulás kezelése</h3>
-    <p>
-      A látogató a sütikhez való hozzájárulását az oldal betöltésekor megjelenő süti-ablakban adhatja meg vagy vonhatja
-      vissza.
-    </p>
-  </section>
-
+    <section id="automatizalt-donteshozatal">
+      <h2>10. Automatiz&aacute;lt d&ouml;nt&eacute;shozatal</h2>
+      <p>A weboldal haszn&aacute;lata sor&aacute;n nem t&ouml;rt&eacute;nik automatiz&aacute;lt d&ouml;nt&eacute;shozatal vagy profilalkot&aacute;s.</p>
+    </section>
+  </main>
 </body>
 
-  </html>
+</html>

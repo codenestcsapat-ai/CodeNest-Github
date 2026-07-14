@@ -63,6 +63,10 @@ const clearAndAppend = (selector, children) => {
 
 const getArray = (value) => (Array.isArray(value) ? value : []);
 
+const legalFooterLinks = [
+  { label: "Jogi információk", href: "legal-hu.html" },
+];
+
 const createNavigationLinks = (items) =>
   items.map((item) => {
     const link = createElement("a", "", fallback(item.label, "Menü"));
@@ -822,11 +826,18 @@ const renderContact = () => {
 
   actionRow.append(cta, email);
 
+  const legalNotice = createElement("p", "contact-legal-notice", "");
+  const legalNoticeIntro = document.createTextNode("Az üzenet elküldésével tudomásul veszem a ");
+  const legalNoticeLink = createElement("a", "", "Jogi információkban");
+  const legalNoticeEnd = document.createTextNode(" foglalt adatkezelési tájékoztatót.");
+  legalNoticeLink.href = "legal-hu.html";
+  legalNotice.append(legalNoticeIntro, legalNoticeLink, legalNoticeEnd);
+
   getArray(ui.contactTrustNotes).forEach((item) => {
     trustList.append(createElement("li", "", item));
   });
 
-  side.append(eyebrow, title, copy, actionRow);
+  side.append(eyebrow, title, copy, actionRow, legalNotice);
   if (note.textContent) side.append(note);
   if (trustList.childElementCount) side.append(trustList);
 
@@ -876,7 +887,7 @@ const renderFooter = () => {
   const brandMark = createElement("img", "footer-brand-mark");
   const brandText = createElement("span", "", fallback(footer.brandName, "CodeNest"));
   const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest V2"));
-  const copyright = createElement("p", "footer-copyright", fallback(footer.copyright, ""));
+  const copyrightText = fallback(footer.copyright, "© 2026 CodeNest");
 
   brandMark.src = "logo_footer-modified.png";
   brandMark.alt = "";
@@ -885,11 +896,9 @@ const renderFooter = () => {
   brand.append(brandMark, brandText);
   brand.href = "#hero";
   brandArea.append(brand, tagline);
-  if (copyright.textContent) brandArea.append(copyright);
 
   const groups = createElement("div", "footer-groups");
   const navGroup = createFooterLinkGroup(ui.footerPages, footer.links);
-  const legalGroup = createFooterLinkGroup(ui.footerLegal, footer.legalLinks);
   const contactGroup = createElement("div", "footer-group");
   const contactTitle = createElement("h3", "", ui.footerContact);
   const contactEmail = createElement("a", "", fallback(siteContent.contact?.email, ""));
@@ -900,10 +909,30 @@ const renderFooter = () => {
   }
 
   if (navGroup) groups.append(navGroup);
-  if (legalGroup) groups.append(legalGroup);
   if (contactEmail.textContent) groups.append(contactGroup);
 
-  container.replaceChildren(brandArea, groups);
+  const legalRow = createFooterLegalRow(copyrightText, legalFooterLinks);
+  const footerChildren = [brandArea];
+  if (groups.childElementCount) footerChildren.push(groups);
+  footerChildren.push(legalRow);
+
+  container.replaceChildren(...footerChildren);
+};
+
+const createFooterLegalRow = (copyrightText, links) => {
+  const row = createElement("div", "footer-legal-row");
+  const copyright = createElement("span", "footer-legal-copyright", fallback(copyrightText, "© 2026 CodeNest"));
+  row.append(copyright);
+
+  getArray(links).forEach((item) => {
+    const separator = createElement("span", "footer-legal-separator", "·");
+    const link = createElement("a", "", fallback(item.label, "Link"));
+    separator.setAttribute("aria-hidden", "true");
+    link.href = fallback(item.href, "legal-hu.html");
+    row.append(separator, link);
+  });
+
+  return row;
 };
 
 const createFooterLinkGroup = (title, links) => {

@@ -7855,3 +7855,66 @@ html {
     transform: translate(14%, -5%) rotate(3deg);
   }
 }
+
+
+.contact-legal-notice {
+  margin: 0.72rem 0 0;
+  color: var(--muted-text);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.contact-legal-notice a {
+  color: var(--forest);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-legal-notice a:hover {
+  text-decoration: underline;
+}
+
+
+/* V2 legal footer refinement: subtle inline links, full details stay on legal-hu.html. */
+.footer-legal-row {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.28rem 0.58rem;
+  margin-top: 0.15rem;
+  color: rgba(242, 237, 226, 0.66);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.footer-legal-row a {
+  color: rgba(242, 237, 226, 0.72);
+  font-weight: 600;
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+}
+
+.footer-legal-row a:hover,
+.footer-legal-row a:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-legal-separator {
+  color: rgba(242, 237, 226, 0.42);
+}
+
+.contact-legal-notice {
+  max-width: 34rem;
+  color: var(--muted-text);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .footer-legal-row {
+    justify-content: flex-start;
+    gap: 0.22rem 0.48rem;
+    font-size: 0.8rem;
+  }
+}
