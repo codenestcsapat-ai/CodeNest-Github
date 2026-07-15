@@ -1,4 +1,4 @@
-# CodeNest Agency - robots.txt
+# CodeNest - robots.txt
 # Allows search engines to crawl and index the website
 
 User-agent: *
