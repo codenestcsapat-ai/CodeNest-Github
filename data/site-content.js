@@ -9,26 +9,33 @@ export const siteContent = {
     ],
     languages: ["HU", "EN", "DE"],
   },
+  seo: {
+    title: "CodeNest – Weboldalak, amiket használni is lehet",
+    description: "Érthető, szerkeszthető weboldalakat készítünk kisebb önkormányzatoknak, intézményeknek, szálláshelyeknek és helyi vállalkozásoknak.",
+    ogTitle: "CodeNest – Weboldalak, amiket használni is lehet",
+    ogDescription: "Ketten építünk átlátható, frissíthető weboldalakat és online alapokat kisebb szervezeteknek.",
+    canonicalUrl: "https://codenest.hu/",
+  },
   hero: {
-    headline: "Érthető weboldalak, amiket később is könnyű frissíteni.",
-    subheadline: "Fiatal magyar vállalkozásként segítünk kisebb településeknek, intézményeknek és vállalkozásoknak olyan weboldalakat készíteni, ahol a látogató gyorsan megtalálja, amit keres, az ügyfél pedig később is tudja frissíteni a tartalmat.",
-    primaryCta: "Kérj rövid átbeszélést",
+    headline: "Weboldalak, amiket nem csak nézni lehet, hanem használni is.",
+    subheadline: "Kisebb önkormányzatoknak, intézményeknek, szálláshelyeknek és helyi vállalkozásoknak építünk érthető, szerkeszthető weboldalakat: olyan online alapot, amit átadás után is könnyű frissíteni.",
+    primaryCta: "20 perces ingyenes átbeszélés",
     secondaryCta: "Megnézem, miben segítünk",
     primaryCtaHref: "#kapcsolat",
     secondaryCtaHref: "#mit-epitunk",
   },
   problem: {
-    title: "Egy weboldal akkor hasznos, ha könnyű rajta eligazodni.",
-    text: "Nem elég, ha egy oldal jól néz ki. A látogatónak gyorsan meg kell találnia a híreket, dokumentumokat, árakat, képeket, elérhetőségeket vagy a foglaláshoz szükséges információkat. A tulajdonosnak pedig később is tudnia kell frissíteni a fontos tartalmakat.",
+    title: "A jó weboldal nem csak elkészül. Utána is használható marad.",
+    text: "Sok oldal az indulás napján még rendben van, pár hónappal később viszont már nehéz hozzányúlni. Elavulnak a hírek, szétszóródnak a dokumentumok, a látogató nem találja a lényeget, az ügyfél pedig nem tudja, mit hol lehet frissíteni.",
     painPoints: [
-      { title: "Elavul a tartalom", text: "A szövegek, képek, események vagy dokumentumok nem frissülnek, mert túl körülményes hozzányúlni az oldalhoz." },
-      { title: "Nehéz megtalálni a lényeget", text: "A látogató nem találja gyorsan az elérhetőséget, a nyitvatartást, a dokumentumot vagy azt, hogyan tud érdeklődni." },
-      { title: "Telefonon kényelmetlen", text: "Sokan mobilról nézik meg az oldalt, de a tartalom nem mindig olvasható vagy könnyen használható." },
-      { title: "Nincs tiszta átadás", text: "Az oldal elkészül, de nem egyértelmű, mit lehet frissíteni, hol vannak a hozzáférések és mi a következő lépés." },
+      { title: "Elavul a tartalom", text: "A hírek, képek, események vagy dokumentumok nem frissülnek, mert túl körülményes hozzányúlni az oldalhoz." },
+      { title: "Nehéz megtalálni a lényeget", text: "A látogató nem találja gyorsan az elérhetőséget, a nyitvatartást, a dokumentumot vagy az érdeklődés következő lépését." },
+      { title: "Telefonon kényelmetlen", text: "A legtöbben mobilról érkeznek, de a tartalom sokszor apró, zsúfolt vagy rossz sorrendben jelenik meg." },
+      { title: "Nincs tiszta átadás", text: "Az oldal elkészül, de nem egyértelmű, hol vannak a hozzáférések, mit lehet szerkeszteni és ki segít, ha később változtatni kell." },
     ],
     beforeAfter: {
-      before: ["Elavuló tartalom", "Nehezen megtalálható információk", "Kényelmetlen mobilnézet"],
-      after: ["Egyszerű frissítés", "Átlátható oldalak", "Telefonról is kényelmes használat"],
+      before: ["Elavuló tartalom", "Fejlesztőfüggő apró módosítások", "Kényelmetlen mobilnézet"],
+      after: ["Egyszerű frissítés", "Átlátható tartalmi szerkezet", "Telefonról is kényelmes használat"],
     },
     points: [
       "A látogató találja meg gyorsan, amit keres.",
@@ -36,7 +43,7 @@ export const siteContent = {
       "Az oldal telefonról is legyen kényelmesen használható.",
       "Az átadás legyen érthető: hozzáférések, frissítés, élesítés és következő lépések.",
     ],
-    solution: "Olyan weboldalakat készítünk, amelyek nem csak első ránézésre szépek, hanem a mindennapi használatban is segítenek: a látogatónak eligazodni, az ügyfélnek pedig frissíteni és működtetni.",
+    solution: "Olyan weboldalakat készítünk, amelyek nem csak első ránézésre szépek, hanem a mindennapi használatban is segítenek: a látogatónak eligazodni, az ügyfélnek pedig frissíteni, átadni és hosszabb távon működtetni.",
   },
   process: {
     title: "Egyszerű folyamat, érthető lépésekkel.",
@@ -51,7 +58,7 @@ export const siteContent = {
   },
   whyCodeNest: {
     title: "Miért CodeNest?",
-    intro: "Nem nagy ügynökségként beszélünk magunkról. Ketten dolgozunk rajta, közvetlenül egyeztetünk, és olyan oldalakat készítünk, amelyeket az ügyfél is érteni és használni tud.",
+    intro: "Ketten dolgozunk, ezért a projekt nem vész el egy nagy ügynökségi folyamatban. Közvetlenül egyeztetünk, érthetően építünk, és arra figyelünk, hogy az oldal átadás után se legyen zárt doboz.",
     items: [
       { title: "Közvetlenül velünk beszélsz", text: "Nem több közvetítőn keresztül megy az egyeztetés. Azokkal beszélsz, akik az oldalt ténylegesen összerakják." },
       { title: "Nem bonyolítjuk túl", text: "A cél nem az, hogy minél nagyobbnak hangozzon a projekt, hanem hogy az oldal érthető, használható és fenntartható legyen." },
@@ -75,12 +82,12 @@ export const siteContent = {
       "Domain, DNS, SSL és deploy beállítások támogatása",
       "Külső szolgáltatói fiókok beállítása vagy átadása",
     ],
-    ctaLabel: "Kérj rövid átbeszélést",
+    ctaLabel: "20 perces ingyenes átbeszélés",
     ctaHref: "#kapcsolat",
   },
   contact: {
-    title: "Beszéljünk róla röviden.",
-    text: "Nem kell kész brief. Írj pár mondatot arról, milyen oldalt szeretnél, mi nem működik most, vagy mit kellene könnyebben frissíteni. Első körben egy rövid, gyakorlati átbeszélés is elég.",
+    title: "Kérj 20 perces ingyenes weboldal-átbeszélést.",
+    text: "Nem kell kész brief vagy hosszú specifikáció. Írj pár mondatot arról, milyen oldalt szeretnél, mi nem működik most, vagy mit kellene könnyebben frissíteni. Mi segítünk megtalálni a jó következő lépést.",
     emailLabel: "E-mail",
     email: "info.codenest.hu@gmail.com",
     formLabels: {
@@ -88,7 +95,7 @@ export const siteContent = {
       email: "E-mail",
       projectType: "Mire lenne szükség?",
       message: "Üzenet",
-      submit: "Kérek rövid átbeszélést",
+      submit: "Kérem az átbeszélést",
     },
     projectTypes: [
       "Önkormányzati vagy intézményi oldal",
@@ -100,7 +107,7 @@ export const siteContent = {
   },
   footer: {
     brandName: "CodeNest",
-    tagline: "Érthető, frissíthető weboldalak.",
+    tagline: "Weboldalak, amiket használni is lehet.",
     links: [
       { label: "Mit építünk", href: "#mit-epitunk" },
       { label: "Munkák", href: "#munkak" },

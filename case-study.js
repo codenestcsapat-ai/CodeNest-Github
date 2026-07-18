@@ -1,4 +1,4 @@
-﻿import {
+import {
   getLocalizedData,
   getUiTranslations,
   normalizeLanguage,
@@ -35,6 +35,53 @@ const createElement = (tag, className, text) => {
   return element;
 };
 
+const setMetaContent = (attribute, key, content) => {
+  const value = fallback(content, "");
+  if (!value) return;
+
+  let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute(attribute, key);
+    document.head.append(element);
+  }
+  element.setAttribute("content", value);
+};
+
+const setCanonicalHref = (href) => {
+  const value = fallback(href, "");
+  if (!value) return;
+
+  let element = document.head.querySelector('link[rel="canonical"]');
+  if (!element) {
+    element = document.createElement("link");
+    element.rel = "canonical";
+    document.head.append(element);
+  }
+  element.href = value;
+};
+
+const createCaseCanonicalUrl = (project) => {
+  const slug = fallback(project?.slug, "");
+  const suffix = slug ? `?project=${encodeURIComponent(slug)}` : "";
+  return `https://codenest.hu/case-study.html${suffix}`;
+};
+
+const renderCaseSeoMeta = (project, data) => {
+  const title = fallback(project?.title, "CodeNest projekt") + " | " + ui.case.title;
+  const description = fallback(data?.summary, fallback(project?.shortDescription, "CodeNest projektbemutató."));
+  const canonicalUrl = createCaseCanonicalUrl(project);
+
+  document.title = title;
+  setMetaContent("name", "description", description);
+  setMetaContent("property", "og:type", "article");
+  setMetaContent("property", "og:title", title);
+  setMetaContent("property", "og:description", description);
+  setMetaContent("property", "og:url", canonicalUrl);
+  setMetaContent("name", "twitter:card", "summary");
+  setCanonicalHref(canonicalUrl);
+};
+
 const createLanguageFlag = (language) => {
   const src = fallback(language.flagSrc, "");
   const flag = src ? createElement("img", "language-flag", "") : createElement("span", "language-flag language-flag-fallback", "");
@@ -49,6 +96,10 @@ const createLanguageFlag = (language) => {
   flag.setAttribute("aria-hidden", "true");
   return flag;
 };
+
+const legalFooterLinks = [
+  { label: "Jogi információk", href: "legal-hu.html" },
+];
 
 const createButton = (href, label, variant = "secondary", external = false) => {
   const link = createElement("a", "button button-" + variant, label);
@@ -296,6 +347,7 @@ const createBottomCta = (project) => {
 
 const renderNotFound = (mount) => {
   document.title = ui.case.notFoundTitle + " | CodeNest";
+  setMetaContent("name", "description", ui.case.notFoundText);
   const section = createElement("section", "case-section case-not-found");
   const container = createElement("div", "container case-panel");
   container.append(
@@ -319,7 +371,7 @@ const renderCaseStudy = () => {
   }
 
   const data = project.caseStudy || {};
-  document.title = fallback(project.title, "Project") + " | " + ui.case.title;
+  renderCaseSeoMeta(project, data);
 
   mount.replaceChildren(
     createHero(project, data),
@@ -450,8 +502,7 @@ const renderCaseFooter = () => {
   brand.href = withLanguageParam("v2-preview.html#hero", currentLanguage);
   brandArea.append(
     brand,
-    createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest")),
-    createElement("p", "footer-copyright", fallback(footer.copyright, ""))
+    createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest"))
   );
 
   const groups = createElement("div", "footer-groups");
@@ -477,7 +528,28 @@ const renderCaseFooter = () => {
   }
 
   groups.append(navGroup, contactGroup);
-  container.replaceChildren(brandArea, groups);
+
+  const legalRow = createFooterLegalRow(
+    fallback(footer.copyright, "© 2026 CodeNest. Minden jog fenntartva."),
+    legalFooterLinks
+  );
+  container.replaceChildren(brandArea, groups, legalRow);
+};
+
+const createFooterLegalRow = (copyrightText, links) => {
+  const row = createElement("div", "footer-legal-row");
+  const copyright = createElement("span", "footer-legal-copyright", fallback(copyrightText, "© 2026 CodeNest"));
+  row.append(copyright);
+
+  getArray(links).forEach((item) => {
+    const separator = createElement("span", "footer-legal-separator", "·");
+    const link = createElement("a", "", fallback(item.label, "Link"));
+    separator.setAttribute("aria-hidden", "true");
+    link.href = fallback(item.href, "legal-hu.html");
+    row.append(separator, link);
+  });
+
+  return row;
 };
 
 const getMobileMenuElements = () => ({

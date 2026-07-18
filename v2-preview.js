@@ -40,6 +40,50 @@ const createElement = (tag, className, text) => {
   return element;
 };
 
+const setMetaContent = (attribute, key, content) => {
+  const value = fallback(content, "");
+  if (!value) return;
+
+  let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute(attribute, key);
+    document.head.append(element);
+  }
+  element.setAttribute("content", value);
+};
+
+const setCanonicalHref = (href) => {
+  const value = fallback(href, "");
+  if (!value) return;
+
+  let element = document.head.querySelector('link[rel="canonical"]');
+  if (!element) {
+    element = document.createElement("link");
+    element.rel = "canonical";
+    document.head.append(element);
+  }
+  element.href = value;
+};
+
+const renderSeoMeta = () => {
+  const seo = siteContent.seo || {};
+  const title = fallback(seo.title, "CodeNest");
+  const description = fallback(seo.description, siteContent.hero?.subheadline);
+  const ogTitle = fallback(seo.ogTitle, title);
+  const ogDescription = fallback(seo.ogDescription, description);
+  const canonicalUrl = fallback(seo.canonicalUrl, "https://codenest.hu/");
+
+  document.title = title;
+  setMetaContent("name", "description", description);
+  setMetaContent("property", "og:type", "website");
+  setMetaContent("property", "og:title", ogTitle);
+  setMetaContent("property", "og:description", ogDescription);
+  setMetaContent("property", "og:url", canonicalUrl);
+  setMetaContent("name", "twitter:card", "summary");
+  setCanonicalHref(canonicalUrl);
+};
+
 const createLanguageFlag = (language) => {
   const src = fallback(language.flagSrc, "");
   const flag = src ? createElement("img", "language-flag", "") : createElement("span", "language-flag language-flag-fallback", "");
@@ -178,8 +222,8 @@ const renderLanguageSwitchers = () => {
 const renderHero = () => {
   const hero = siteContent.hero || {};
 
-  setText('[data-render="hero-headline"]', hero.headline, "CodeNest V2");
-  setText('[data-render="hero-subheadline"]', hero.subheadline, "V2 preview tartalom.");
+  setText('[data-render="hero-headline"]', hero.headline, "CodeNest");
+  setText('[data-render="hero-subheadline"]', hero.subheadline, "Érthető, szerkeszthető weboldalak.");
   setText('[data-render="hero-primary-cta"]', hero.primaryCta, "Kapcsolat");
   setText('[data-render="hero-secondary-cta"]', hero.secondaryCta, "Mit építünk");
 
@@ -878,7 +922,7 @@ const renderFooter = () => {
   const footer = siteContent.footer || {};
   const container = document.querySelector('[data-render="footer"]');
   if (!container) {
-    setText('[data-render="footer-tagline"]', footer.tagline, "CodeNest V2");
+    setText('[data-render="footer-tagline"]', footer.tagline, "CodeNest");
     return;
   }
 
@@ -886,7 +930,7 @@ const renderFooter = () => {
   const brand = createElement("a", "footer-brand");
   const brandMark = createElement("img", "footer-brand-mark");
   const brandText = createElement("span", "", fallback(footer.brandName, "CodeNest"));
-  const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest V2"));
+  const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest"));
   const copyrightText = fallback(footer.copyright, "© 2026 CodeNest");
 
   brandMark.src = "logo_footer-modified.png";
@@ -1153,6 +1197,7 @@ const renderStaticSectionLabels = () => {
   setText('#kapcsolat .section-kicker', labels.contact, labels.contact);
 };
 const renderPage = () => {
+  renderSeoMeta();
   renderNavigation();
   renderLanguageSwitchers();
   renderStaticSectionLabels();
