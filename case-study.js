@@ -35,6 +35,12 @@ const createElement = (tag, className, text) => {
   return element;
 };
 
+const resolveRootAssetPath = (assetPath) => {
+  const value = fallback(assetPath, "");
+  if (!value || value.startsWith("/") || value.startsWith("#") || (value.startsWith("http://") || value.startsWith("https://")) || value.startsWith("mailto:")) return value;
+  return new URL(value, import.meta.url).href;
+};
+
 const setMetaContent = (attribute, key, content) => {
   const value = fallback(content, "");
   if (!value) return;
@@ -87,7 +93,7 @@ const createLanguageFlag = (language) => {
   const flag = src ? createElement("img", "language-flag", "") : createElement("span", "language-flag language-flag-fallback", "");
 
   if (src) {
-    flag.src = src;
+    flag.src = resolveRootAssetPath(src);
     flag.alt = "";
     flag.loading = "lazy";
     flag.decoding = "async";
@@ -98,7 +104,7 @@ const createLanguageFlag = (language) => {
 };
 
 const legalFooterLinks = [
-  { label: "Jogi információk", href: "legal-hu.html" },
+  { label: "Jogi információk", href: "/legal-hu.html" },
 ];
 
 const createButton = (href, label, variant = "secondary", external = false) => {
@@ -123,7 +129,7 @@ const getProjectFromUrl = () => {
 const normalizeProjectImagePath = (path) => {
   const value = fallback(path, "");
   if (!value) return "";
-  return value.includes("/") ? value : "CodeNest media web/" + value;
+  return resolveRootAssetPath(value.includes("/") ? value : "CodeNest media web/" + value);
 };
 
 const getProjectImageSrc = (project, type) => {
@@ -495,7 +501,7 @@ const renderCaseFooter = () => {
   const brandArea = createElement("div", "footer-brand-area");
   const brand = createElement("a", "footer-brand");
   const brandMark = createElement("img", "footer-brand-mark");
-  brandMark.src = "logo_footer-modified.png";
+  brandMark.src = resolveRootAssetPath("logo_footer-modified.png");
   brandMark.alt = "";
   brandMark.setAttribute("aria-hidden", "true");
   brand.append(brandMark, createElement("span", "", fallback(footer.brandName, "CodeNest")));
@@ -545,7 +551,7 @@ const createFooterLegalRow = (copyrightText, links) => {
     const separator = createElement("span", "footer-legal-separator", "·");
     const link = createElement("a", "", fallback(item.label, "Link"));
     separator.setAttribute("aria-hidden", "true");
-    link.href = fallback(item.href, "legal-hu.html");
+    link.href = fallback(item.href, "/legal-hu.html");
     row.append(separator, link);
   });
 

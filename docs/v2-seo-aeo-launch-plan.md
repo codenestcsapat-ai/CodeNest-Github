@@ -6,6 +6,15 @@ A V2 jelenleg működő statikus HTML/CSS/JS preview, de a fő tartalom nagy ré
 
 Ez a dokumentum nem UI design terv. A cél az, hogy a CodeNest V2 tartalma és technikai alapja ne csak böngészőben működjön, hanem keresők, megosztási előnézetek és későbbi szolgáltatásoldalak szempontjából is tisztább legyen.
 
+
+## Többnyelvű URL-döntés
+
+A jelenlegi döntés szerint az éles V2 struktúra három nyelvi belépőt kap: magyar tartalom a gyökérben, angol tartalom a `/en/` útvonalon, német tartalom a `/de/` útvonalon. A `v2-preview.html` továbbra is preview/build oldal marad, nem ez lesz a végleges publikus URL.
+
+A nyelvváltó a preview és case-study oldalakon még `?lang=...` paraméterrel dolgozhat, mert ezek fejlesztési és dinamikus oldalak. Az éles főoldali belépőknél viszont a path lesz a nyelvi jel: `/`, `/en/`, `/de/`.
+
+SEO/AEO szempontból ez tisztább, mert minden fő nyelv saját canonical URL-t, saját title/description alapot és később saját statikus HTML tartalmat kaphat. A `noindex, nofollow` továbbra is marad mindaddig, amíg a V2 nincs ténylegesen élesítve.
+
 ## Jelenlegi helyzet
 
 - A V2 preview külön oldalon fut: `v2-preview.html`.
@@ -23,9 +32,9 @@ A valódi kérdés az, hogy élesítéskor a kereső és az AI alapú válaszren
 
 ## Ajánlott irány
 
-A legjobb kompromisszum most: **HU-first statikus főoldal HTML**, a meglévő data fájlok megtartásával.
+A legjobb kompromisszum most: **HU root + külön /en/ és /de/ statikus belépőoldalak**, a meglévő data fájlok megtartásával.
 
-Ez azt jelenti, hogy élesítés előtt a magyar főoldal fő szövegei, címsorai és fontos linkjei bekerülnek a HTML-be is. A JavaScript továbbra is használható nyelvváltásra, kártyák renderelésére és case-study interakciókra, de az elsődleges magyar tartalom nem csak futás után létezik.
+Ez azt jelenti, hogy élesítés előtt a magyar, angol és német főoldali belépők fő szövegei, címsorai és fontos linkjei bekerülnek a saját HTML-jükbe is. A JavaScript továbbra is használható nyelvváltásra, kártyák renderelésére és case-study interakciókra, de az elsődleges magyar tartalom nem csak futás után létezik.
 
 ## Mit érdemes statikusan láthatóvá tenni?
 
@@ -88,7 +97,7 @@ Ezekre nem külön FAQ blokk kell első körben, hanem tiszta szekciószövegek.
 4. Legal/footer linkek ellenőrzése.
 5. Favicon és share preview ellenőrzése.
 6. Magyar tartalom végigolvasása egyben.
-7. EN/DE döntés: maradnak-e láthatóak élesítéskor, vagy ideiglenesen csak HU indul.
+7. EN/DE route-ok ellenőrzése: a `/en/` és `/de/` belépők saját canonical, hreflang és olvasható fallback tartalommal induljanak.
 8. Projekt screenshotok optimalizálása és fájlméret ellenőrzése.
 9. Mobil böngészős ellenőrzés.
 10. GitHub Pages / CNAME / Cloudflare élesítési ellenőrzés.

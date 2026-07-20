@@ -11,6 +11,8 @@ export const supportedLanguages = [
 
 const codes = supportedLanguages.map((item) => item.code);
 const storageKey = "codenest-v2-language";
+const languageRoutes = { hu: "/", en: "/en/", de: "/de/" };
+const previewPagePattern = /(?:^|\/)(?:v2-preview|case-study)\.html$/i;
 
 export const uiTranslations = {
   hu: {
@@ -219,6 +221,13 @@ export const uiTranslations = {
 const translations = {
   en: {
     siteContent: {
+      seo: {
+        title: "CodeNest – Websites that are easy to use and update",
+        description: "We build clear, editable websites for smaller municipalities, institutions, accommodation providers and local businesses.",
+        ogTitle: "CodeNest – Websites that are easy to use and update",
+        ogDescription: "A small Hungarian studio building clear, maintainable websites and online foundations.",
+        canonicalUrl: "https://codenest.hu/en/",
+      },
       navigation: { items: [
         { label: "What we build", href: "#mit-epitunk" },
         { label: "Work", href: "#munkak" },
@@ -529,6 +538,13 @@ const translations = {
   },
   de: {
     siteContent: {
+      seo: {
+        title: "CodeNest – Websites, die nutzbar und pflegbar bleiben",
+        description: "Wir erstellen verständliche, pflegbare Websites für kleinere Gemeinden, Institutionen, Unterkünfte und lokale Unternehmen.",
+        ogTitle: "CodeNest – Websites, die nutzbar und pflegbar bleiben",
+        ogDescription: "Ein kleines ungarisches Studio für klare, pflegbare Websites und digitale Grundlagen.",
+        canonicalUrl: "https://codenest.hu/de/",
+      },
       navigation: { items: [
         { label: "Was wir bauen", href: "#mit-epitunk" }, { label: "Arbeiten", href: "#munkak" }, { label: "Prozess", href: "#folyamat" }, { label: "Über uns", href: "#bors-david" }, { label: "Kontakt", href: "#kapcsolat" },
       ] },
@@ -787,6 +803,11 @@ export const getUrlLanguage = (search = "") => {
   try { return normalizeLanguage(new URLSearchParams(search).get("lang")); } catch (_error) { return ""; }
 };
 
+export const getPathLanguage = (pathname = "") => {
+  const firstSegment = String(pathname || "").split("/").filter(Boolean)[0];
+  return normalizeLanguage(firstSegment);
+};
+
 export const getStoredLanguage = () => {
   try { return normalizeLanguage(window.localStorage.getItem(storageKey)); } catch (_error) { return ""; }
 };
@@ -799,7 +820,8 @@ export const getBrowserLanguage = () => {
 
 export const resolveInitialLanguage = () => {
   const fromUrl = typeof window !== "undefined" ? getUrlLanguage(window.location.search) : "";
-  return fromUrl || getStoredLanguage() || getBrowserLanguage() || "hu";
+  const fromPath = typeof window !== "undefined" ? getPathLanguage(window.location.pathname) : "";
+  return fromUrl || fromPath || getStoredLanguage() || getBrowserLanguage() || "hu";
 };
 
 export const storeLanguage = (language) => {
@@ -808,9 +830,16 @@ export const storeLanguage = (language) => {
 
 export const updateUrlLanguage = (language) => {
   if (typeof window === "undefined" || !window.history?.replaceState) return;
+  const lang = normalizeLanguage(language) || "hu";
   const url = new URL(window.location.href);
-  url.searchParams.set("lang", normalizeLanguage(language) || "hu");
-  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+
+  if (previewPagePattern.test(url.pathname)) {
+    url.searchParams.set("lang", lang);
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    return;
+  }
+
+  window.history.replaceState({}, "", `${languageRoutes[lang] || "/"}${url.hash}`);
 };
 
 export const setDocumentLanguage = (language) => {
@@ -834,11 +863,18 @@ export const getLocalizedData = (language) => {
 };
 
 export const withLanguageParam = (href, language) => {
-  if (!href || href.startsWith("#") || href.startsWith("mailto:") || /^https?:\/\//i.test(href)) return href;
+  if (!href || href.startsWith("#") || href.startsWith("mailto:") || (href.startsWith("http://") || href.startsWith("https://"))) return href;
   try {
+    const lang = normalizeLanguage(language) || "hu";
     const url = new URL(href, window.location.href);
-    url.searchParams.set("lang", normalizeLanguage(language) || "hu");
-    return `${url.pathname.split("/").pop()}${url.search}${url.hash}`;
+    url.searchParams.set("lang", lang);
+    const fileName = url.pathname.split("/").filter(Boolean).pop() || "";
+
+    if (previewPagePattern.test(url.pathname)) {
+      return `/${fileName}${url.search}${url.hash}`;
+    }
+
+    return `${fileName}${url.search}${url.hash}`;
   } catch (_error) {
     return href;
   }

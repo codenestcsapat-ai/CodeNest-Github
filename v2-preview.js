@@ -40,6 +40,19 @@ const createElement = (tag, className, text) => {
   return element;
 };
 
+const alternateLanguageUrls = {
+  hu: "https://codenest.hu/",
+  en: "https://codenest.hu/en/",
+  de: "https://codenest.hu/de/",
+  "x-default": "https://codenest.hu/",
+};
+
+const resolveRootAssetPath = (assetPath) => {
+  const value = fallback(assetPath, "");
+  if (!value || value.startsWith("/") || value.startsWith("#") || (value.startsWith("http://") || value.startsWith("https://")) || value.startsWith("mailto:")) return value;
+  return new URL(value, import.meta.url).href;
+};
+
 const setMetaContent = (attribute, key, content) => {
   const value = fallback(content, "");
   if (!value) return;
@@ -66,6 +79,17 @@ const setCanonicalHref = (href) => {
   element.href = value;
 };
 
+const setAlternateLanguageLinks = () => {
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((element) => element.remove());
+  Object.entries(alternateLanguageUrls).forEach(([language, href]) => {
+    const element = document.createElement("link");
+    element.rel = "alternate";
+    element.hreflang = language;
+    element.href = href;
+    document.head.append(element);
+  });
+};
+
 const renderSeoMeta = () => {
   const seo = siteContent.seo || {};
   const title = fallback(seo.title, "CodeNest");
@@ -82,6 +106,7 @@ const renderSeoMeta = () => {
   setMetaContent("property", "og:url", canonicalUrl);
   setMetaContent("name", "twitter:card", "summary");
   setCanonicalHref(canonicalUrl);
+  setAlternateLanguageLinks();
 };
 
 const createLanguageFlag = (language) => {
@@ -89,7 +114,7 @@ const createLanguageFlag = (language) => {
   const flag = src ? createElement("img", "language-flag", "") : createElement("span", "language-flag language-flag-fallback", "");
 
   if (src) {
-    flag.src = src;
+    flag.src = resolveRootAssetPath(src);
     flag.alt = "";
     flag.loading = "lazy";
     flag.decoding = "async";
@@ -108,7 +133,7 @@ const clearAndAppend = (selector, children) => {
 const getArray = (value) => (Array.isArray(value) ? value : []);
 
 const legalFooterLinks = [
-  { label: "Jogi információk", href: "legal-hu.html" },
+  { label: "Jogi információk", href: "/legal-hu.html" },
 ];
 
 const createNavigationLinks = (items) =>
@@ -611,7 +636,7 @@ const getProjectImageSrc = (project, type) => {
 const normalizeProjectImagePath = (path) => {
   const value = fallback(path, "");
   if (!value) return "";
-  return value.includes("/") ? value : `CodeNest media web/${value}`;
+  return resolveRootAssetPath(value.includes("/") ? value : `CodeNest media web/${value}`);
 };
 
 const getProjectStatusLabel = (status) => {
@@ -874,7 +899,7 @@ const renderContact = () => {
   const legalNoticeIntro = document.createTextNode("Az üzenet elküldésével tudomásul veszem a ");
   const legalNoticeLink = createElement("a", "", "Jogi információkban");
   const legalNoticeEnd = document.createTextNode(" foglalt adatkezelési tájékoztatót.");
-  legalNoticeLink.href = "legal-hu.html";
+  legalNoticeLink.href = "/legal-hu.html";
   legalNotice.append(legalNoticeIntro, legalNoticeLink, legalNoticeEnd);
 
   getArray(ui.contactTrustNotes).forEach((item) => {
@@ -933,7 +958,7 @@ const renderFooter = () => {
   const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest"));
   const copyrightText = fallback(footer.copyright, "© 2026 CodeNest");
 
-  brandMark.src = "logo_footer-modified.png";
+  brandMark.src = resolveRootAssetPath("logo_footer-modified.png");
   brandMark.alt = "";
   brandMark.setAttribute("aria-hidden", "true");
   brandMark.loading = "eager";
@@ -972,7 +997,7 @@ const createFooterLegalRow = (copyrightText, links) => {
     const separator = createElement("span", "footer-legal-separator", "·");
     const link = createElement("a", "", fallback(item.label, "Link"));
     separator.setAttribute("aria-hidden", "true");
-    link.href = fallback(item.href, "legal-hu.html");
+    link.href = fallback(item.href, "/legal-hu.html");
     row.append(separator, link);
   });
 
