@@ -244,6 +244,71 @@ const renderLanguageSwitchers = () => {
   }
 };
 
+const getHeroMockupFallback = () => {
+  const fallbacks = {
+    hu: {
+      publicSite: "Publikus oldal",
+      newsTitle: "H\u00edrek \u00e9s inform\u00e1ci\u00f3k",
+      adminArea: "Adminfel\u00fclet",
+      documents: "Dokumentumok",
+      newPost: "\u00daj h\u00edr",
+      mobileView: "Mobil n\u00e9zet",
+      rows: [
+        { label: "Test\u00fcleti jegyz\u0151k\u00f6nyv", status: "K\u00f6zz\u00e9t\u00e9ve" },
+        { label: "Ny\u00e1ri nyitvatart\u00e1s", status: "V\u00e1zlat" },
+        { label: "Rendezv\u00e9ny megh\u00edv\u00f3", status: "K\u00f6zz\u00e9t\u00e9ve" },
+      ],
+    },
+    en: {
+      publicSite: "Public page",
+      newsTitle: "News and information",
+      adminArea: "Admin area",
+      documents: "Documents",
+      newPost: "New post",
+      mobileView: "Mobile view",
+      rows: [
+        { label: "Council minutes", status: "Published" },
+        { label: "Summer opening hours", status: "Draft" },
+        { label: "Event invitation", status: "Published" },
+      ],
+    },
+    de: {
+      publicSite: "\u00d6ffentliche Seite",
+      newsTitle: "Nachrichten und Informationen",
+      adminArea: "Adminbereich",
+      documents: "Dokumente",
+      newPost: "Neue Nachricht",
+      mobileView: "Mobilansicht",
+      rows: [
+        { label: "Sitzungsprotokoll", status: "Ver\u00f6ffentlicht" },
+        { label: "Sommer\u00f6ffnungszeiten", status: "Entwurf" },
+        { label: "Einladung zur Veranstaltung", status: "Ver\u00f6ffentlicht" },
+      ],
+    },
+  };
+  return fallbacks[currentLanguage] || fallbacks.hu;
+};
+
+const renderHeroMockup = () => {
+  const mockup = ui.heroMockup || getHeroMockupFallback();
+  const rows = getArray(mockup.rows);
+
+  setText(".mockup-public .mockup-label", mockup.publicSite, getHeroMockupFallback().publicSite);
+  setText(".mockup-public h2", mockup.newsTitle, getHeroMockupFallback().newsTitle);
+  setText(".mockup-admin .mockup-label", mockup.adminArea, getHeroMockupFallback().adminArea);
+  setText(".mockup-admin h3", mockup.documents, getHeroMockupFallback().documents);
+  setText(".mockup-action", mockup.newPost, getHeroMockupFallback().newPost);
+  setText(".mockup-mobile .mockup-label", mockup.mobileView, getHeroMockupFallback().mobileView);
+
+  document.querySelectorAll(".mockup-admin .admin-row").forEach((row, index) => {
+    const item = rows[index] || getHeroMockupFallback().rows[index] || {};
+    const label = row.querySelector("span");
+    const status = row.querySelector("strong");
+    if (label) label.textContent = fallback(item.label, label.textContent);
+    if (status) status.textContent = fallback(item.status, status.textContent);
+  });
+};
+
 const renderHero = () => {
   const hero = siteContent.hero || {};
 
@@ -263,6 +328,7 @@ const renderHero = () => {
     .slice(0, 3);
   const supportChips = supportItems.map((item) => createElement("span", "hero-chip", item));
   if (supportChips.length) clearAndAppend('[data-render="hero-support-chips"]', supportChips);
+  renderHeroMockup();
 };
 
 const renderProblem = () => {

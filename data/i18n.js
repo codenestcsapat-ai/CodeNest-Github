@@ -49,6 +49,19 @@ export const uiTranslations = {
     contactTopicTitle: "Lehetséges irányok",
     contactNextTitle: "Mi történik utána?",
     contactNextSteps: ["Visszaírunk, ha valamit pontosítani kell.", "Megnézzük, milyen rendszer lenne reális első körben.", "Ha van értelme, kapsz egy érthető következő lépést."],
+    heroMockup: {
+      publicSite: "Publikus oldal",
+      newsTitle: "H\u00edrek \u00e9s inform\u00e1ci\u00f3k",
+      adminArea: "Adminfel\u00fclet",
+      documents: "Dokumentumok",
+      newPost: "\u00daj h\u00edr",
+      mobileView: "Mobil n\u00e9zet",
+      rows: [
+        { label: "Test\u00fcleti jegyz\u0151k\u00f6nyv", status: "K\u00f6zz\u00e9t\u00e9ve" },
+        { label: "Ny\u00e1ri nyitvatart\u00e1s", status: "V\u00e1zlat" },
+        { label: "Rendezv\u00e9ny megh\u00edv\u00f3", status: "K\u00f6zz\u00e9t\u00e9ve" },
+      ],
+    },
     case: {
       title: "CodeNest esettanulmány",
       navigationLabel: "Esettanulmány navigáció",
@@ -116,6 +129,19 @@ export const uiTranslations = {
     contactTopicTitle: "Possible directions",
     contactNextTitle: "What happens next?",
     contactNextSteps: ["We reply if something needs clarifying.", "We look at what would make sense as a first version.", "If the project fits, you get a clear next step."],
+    heroMockup: {
+      publicSite: "Public page",
+      newsTitle: "News and information",
+      adminArea: "Admin area",
+      documents: "Documents",
+      newPost: "New post",
+      mobileView: "Mobile view",
+      rows: [
+        { label: "Council minutes", status: "Published" },
+        { label: "Summer opening hours", status: "Draft" },
+        { label: "Event invitation", status: "Published" },
+      ],
+    },
     case: {
       title: "CodeNest case study",
       navigationLabel: "Case study navigation",
@@ -183,6 +209,19 @@ export const uiTranslations = {
     contactTopicTitle: "Mögliche Richtungen",
     contactNextTitle: "Was passiert danach?",
     contactNextSteps: ["Wir melden uns, wenn etwas geklärt werden sollte.", "Wir schauen, welche erste Version sinnvoll wäre.", "Wenn das Projekt passt, bekommst du einen klaren nächsten Schritt."],
+    heroMockup: {
+      publicSite: "\u00d6ffentliche Seite",
+      newsTitle: "Nachrichten und Informationen",
+      adminArea: "Adminbereich",
+      documents: "Dokumente",
+      newPost: "Neue Nachricht",
+      mobileView: "Mobilansicht",
+      rows: [
+        { label: "Sitzungsprotokoll", status: "Ver\u00f6ffentlicht" },
+        { label: "Sommer\u00f6ffnungszeiten", status: "Entwurf" },
+        { label: "Einladung zur Veranstaltung", status: "Ver\u00f6ffentlicht" },
+      ],
+    },
     case: {
       title: "CodeNest Fallstudie",
       navigationLabel: "Fallstudien-Navigation",
