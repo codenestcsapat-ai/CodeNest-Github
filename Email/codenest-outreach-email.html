@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>CodeNest – Könnyen használható és frissíthető weboldalak</title>
+  <!--
+    SABLONVÁLTOZÓK
+    {{ORGANIZATION_NAME}} – a címzett szervezet neve
+    {{LOGO_URL}}, {{HERO_PHOTO_URL}}, {{BORS_PHOTO_URL}}, {{DAVID_PHOTO_URL}} – felülírható kép-URL-ek;
+      a sablonban jelenleg a projekt publikálható CodeNest assetjei szerepelnek alapértékként
+    {{ICON_WEBSITE_URL}}, {{ICON_CHAT_URL}}, {{ICON_EDIT_URL}}, {{ICON_PEOPLE_URL}},
+    {{ICON_LIGHTNING_URL}}, {{ICON_HEART_URL}}, {{ICON_STORE_URL}}, {{ICON_CALENDAR_URL}} – HTTPS PNG ikon-URL-ek
+    {{WEBSITE_URL}} – teljes HTTPS webcím (például https://codenest.hu/)
+    {{CONTACT_EMAIL}} – e-mail-cím (például info.codenest.hu@gmail.com)
+  -->
+  <!--[if mso]>
+  <xml>
+    <o:OfficeDocumentSettings>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+  </xml>
+  <![endif]-->
+  <style>
+    html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 100% !important; }
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { border-collapse: collapse !important; border-spacing: 0 !important; mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; display: block; }
+    a { text-decoration: none; }
+    p { margin: 0; }
+    #outlook a { padding: 0; }
+    .ExternalClass { width: 100%; }
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
+
+    @media only screen and (max-width: 680px) {
+      .outer-pad { padding: 8px !important; }
+      .main-shell { width: 100% !important; }
+      .content-pad { padding-left: 18px !important; padding-right: 18px !important; }
+      .header-pad { padding: 22px 20px 18px !important; }
+      .stack, .stack-cell { display: block !important; width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+      .hide-mobile { display: none !important; max-height: 0 !important; overflow: hidden !important; }
+      .hero-copy { padding: 22px !important; border-radius: 13px 13px 0 0 !important; }
+      .hero-photo { width: 100% !important; height: auto !important; max-height: 260px !important; object-fit: cover !important; border-radius: 0 0 13px 13px !important; }
+      .hero-title { font-size: 24px !important; line-height: 1.2 !important; }
+      .card-gap { height: 12px !important; line-height: 12px !important; }
+      .service-card { height: auto !important; }
+      .benefit { border-right: 0 !important; border-bottom: 1px solid #e2d6c7 !important; padding: 16px 4px !important; }
+      .benefit-last { border-bottom: 0 !important; }
+      .profile-gap { height: 12px !important; line-height: 12px !important; }
+      .cta-icon-cell { width: 100% !important; padding: 0 0 14px !important; }
+      .cta-copy-cell { width: 100% !important; }
+      .bullet-col { display: block !important; width: 100% !important; box-sizing: border-box !important; padding: 0 !important; }
+      .bullet-col-second { padding-top: 5px !important; }
+      .footer-piece { display: block !important; width: 100% !important; padding: 3px 0 !important; }
+      .footer-separator { display: none !important; }
+      .dark-text, .green-text, .navy-text, h1, h2, h3, p, a { overflow-wrap: anywhere !important; word-break: normal !important; }
+    }
+
+    @media only screen and (max-width: 480px) {
+      .content-pad { padding-left: 16px !important; padding-right: 16px !important; }
+      .header-logo { width: 224px !important; max-width: 100% !important; }
+      .profile-photo-cell, .profile-copy-cell { display: block !important; width: 100% !important; }
+      .profile-photo-cell { padding: 0 0 12px !important; }
+      .profile-photo { width: 104px !important; height: 104px !important; }
+      .section-title { font-size: 18px !important; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body, .email-bg { background: #faf6ef !important; }
+      .main-shell, .white-bg, .service-card, .profile-card { background: #ffffff !important; }
+      .beige-bg, .hero-copy, .benefits-panel, .cta-panel { background: #f8f2e8 !important; }
+      .dark-text { color: #292c35 !important; }
+      .navy-text { color: #14283d !important; }
+      .green-text, a { color: #174532 !important; }
+    }
+  </style>
+</head>
+<body class="email-bg" style="margin:0; padding:0; background-color:#faf6ef; color:#292c35; font-family:'Trebuchet MS','Segoe UI',Arial,Helvetica,sans-serif;">
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent; mso-hide:all; font-size:1px; line-height:1px;">
+    Átlátható, könnyen használható és frissíthető weboldalak a CodeNesttől.
+  </div>
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-bg" style="width:100%; background-color:#faf6ef; border-collapse:collapse; border-spacing:0; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+    <tr>
+      <td align="center" class="outer-pad" style="padding:14px 16px 18px;">
+        <!--[if mso]><table role="presentation" width="870" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="main-shell white-bg" style="width:100%; max-width:870px; background-color:#ffffff; border:1px solid #e8d9c5; border-radius:15px; box-shadow:0 4px 16px rgba(71,50,27,0.10); overflow:hidden; border-collapse:collapse; border-spacing:0; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+          <tr>
+            <td class="header-pad" style="padding:25px 34px 20px; border-bottom:1px solid #eee4d7;">
+              <img src="assets/codenest-logo-email.png" width="286" class="header-logo" alt="CodeNest – Könnyen használható és frissíthető weboldalak" style="display:block; width:286px; max-width:100%; height:auto; border:0;">
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad" style="padding:18px 32px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; border:1px solid #e8d9c5; border-radius:14px; overflow:hidden; background-color:#f8f2e8; border-collapse:separate !important; border-spacing:0; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr class="stack">
+                  <td width="51%" valign="middle" class="stack-cell hero-copy beige-bg" style="width:51%; padding:24px 28px; background-color:#f8f2e8;">
+                    <img src="assets/leaf-decoration.png" width="58" alt="" style="display:block; width:58px; height:auto; margin:0 0 7px; border:0;">
+                    <h1 class="hero-title navy-text" style="margin:0 0 12px; color:#14283d; font-family:'Trebuchet MS','Segoe UI',Arial,Helvetica,sans-serif; font-size:29px; line-height:1.18; font-weight:700;">Bors vagyok a CodeNesttől</h1>
+                    <p class="dark-text" style="margin:0; color:#292c35; font-size:15px; line-height:1.55;">Dáviddal közösen építjük a CodeNestet — egy fiatal magyar vállalkozást, ahol átlátható, könnyen használható weboldalakon és egyszerű webes rendszereken dolgozunk.</p>
+                  </td>
+                  <td width="49%" valign="middle" class="stack-cell" style="width:49%; padding:0; background-color:#e7efe7;">
+                    <img src="../team.jpg" width="395" height="232" class="hero-photo" alt="Bors és Dávid, a CodeNest csapata" style="display:block; width:100%; max-width:395px; height:232px; object-fit:cover; border:0; border-radius:0 13px 13px 0;">
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad dark-text" style="padding:22px 38px 0; color:#292c35; font-size:14px; line-height:1.55;">
+              <p style="margin:0 0 7px; font-weight:700;">Tisztelt {{ORGANIZATION_NAME}}!</p>
+              <p style="margin:0 0 10px;">A CodeNestnél hiszünk abban, hogy egy jó weboldal segít az embereknek gyorsan megtalálni, amit keresnek — legyen szó szolgáltatásokról, hírekről, dokumentumokról, képekről vagy kapcsolati információkról.</p>
+              <p style="margin:0;">Kisebb csapatként <strong>közvetlenül velünk</strong> lehet egyeztetni: <strong>gyors a kommunikáció</strong>, <strong>rugalmasan alkalmazkodunk</strong>, és <strong>lelkesedéssel</strong> dolgozunk azon, hogy valódi értéket adjunk.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad" style="padding:21px 32px 0;">
+              <h2 class="section-title green-text" style="margin:0 0 7px 25px; color:#174532; font-size:19px; line-height:1.3; font-weight:700;">Miben tudunk segíteni?</h2>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; border-spacing:0; mso-table-lspace:0pt; mso-table-rspace:0pt;">
+                <tr class="stack">
+                  <td width="32.4%" valign="top" class="stack-cell service-card white-bg" style="width:32.4%; height:137px; padding:17px 16px 14px; background:#ffffff; border:1px solid #e8d9c5; border-radius:13px; box-sizing:border-box;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                      <td width="54" valign="top" style="width:54px; padding-right:10px;"><table role="presentation" width="52" cellpadding="0" cellspacing="0" border="0" style="width:52px; background:#e7efe7; border-radius:50%;"><tr><td align="center" valign="middle" height="52" style="height:52px;"><img src="assets/icon-website.png" width="48" alt="Weboldal ikon" style="display:block; width:48px; height:48px;"></td></tr></table></td>
+                      <td valign="top"><h3 class="green-text" style="margin:0 0 6px; color:#174532; font-size:15px; line-height:1.28; font-weight:700;">Átláthatóbb<br>online jelenlét</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:11.5px; line-height:1.5;">Modern, letisztult oldalak, amelyeken könnyű eligazodni és jó benyomást kelteni.</p><p style="margin:11px 0 0; width:22px; border-top:2px solid #2f6a4e; font-size:0; line-height:0;">&nbsp;</p></td>
+                    </tr></table>
+                  </td>
+                  <td width="1.4%" class="stack-cell card-gap" style="width:1.4%; font-size:0; line-height:0;">&nbsp;</td>
+                  <td width="32.4%" valign="top" class="stack-cell service-card white-bg" style="width:32.4%; height:137px; padding:17px 16px 14px; background:#ffffff; border:1px solid #e8d9c5; border-radius:13px; box-sizing:border-box;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                      <td width="54" valign="top" style="width:54px; padding-right:10px;"><table role="presentation" width="52" cellpadding="0" cellspacing="0" border="0" style="width:52px; background:#e7efe7; border-radius:50%;"><tr><td align="center" valign="middle" height="52" style="height:52px;"><img src="assets/icon-chat.png" width="48" alt="Beszélgetés ikon" style="display:block; width:48px; height:48px;"></td></tr></table></td>
+                      <td valign="top"><h3 class="green-text" style="margin:0 0 6px; color:#174532; font-size:15px; line-height:1.28; font-weight:700;">Közvetlenebb<br>kapcsolat</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:11.5px; line-height:1.5;">Fontos információk és elérhetőségek egy helyen, hogy az ügyfelek gyorsan kapcsolatba léphessenek.</p><p style="margin:11px 0 0; width:22px; border-top:2px solid #2f6a4e; font-size:0; line-height:0;">&nbsp;</p></td>
+                    </tr></table>
+                  </td>
+                  <td width="1.4%" class="stack-cell card-gap" style="width:1.4%; font-size:0; line-height:0;">&nbsp;</td>
+                  <td width="32.4%" valign="top" class="stack-cell service-card white-bg" style="width:32.4%; height:137px; padding:17px 16px 14px; background:#ffffff; border:1px solid #e8d9c5; border-radius:13px; box-sizing:border-box;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                      <td width="54" valign="top" style="width:54px; padding-right:10px;"><table role="presentation" width="52" cellpadding="0" cellspacing="0" border="0" style="width:52px; background:#e7efe7; border-radius:50%;"><tr><td align="center" valign="middle" height="52" style="height:52px;"><img src="assets/icon-edit.png" width="48" alt="Szerkesztés ikon" style="display:block; width:48px; height:48px;"></td></tr></table></td>
+                      <td valign="top"><h3 class="green-text" style="margin:0 0 6px; color:#174532; font-size:15px; line-height:1.28; font-weight:700;">Frissíthető,<br>használható rendszer</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:11.5px; line-height:1.5;">Könnyen kezelhető felület, amellyel saját tartalmaikat is egyszerűen frissíthetik.</p><p style="margin:11px 0 0; width:22px; border-top:2px solid #2f6a4e; font-size:0; line-height:0;">&nbsp;</p></td>
+                    </tr></table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad" style="padding:13px 32px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="benefits-panel beige-bg" style="width:100%; background:#f8f2e8; border:1px solid #eee4d7; border-radius:13px; border-collapse:separate !important; border-spacing:0; overflow:hidden;">
+                <tr><td colspan="4" style="padding:12px 24px 5px;"><h2 class="section-title green-text" style="margin:0; color:#174532; font-size:18px; line-height:1.3; font-weight:700;">Miért jó velünk dolgozni?</h2></td></tr>
+                <tr class="stack">
+                  <td width="25%" valign="top" class="stack-cell benefit" style="width:25%; padding:10px 18px 17px; border-right:1px solid #e2d6c7; box-sizing:border-box;"><img src="assets/icon-people.png" width="32" alt="Emberek ikon" style="display:block; width:32px; height:auto; margin-bottom:7px;"><h3 class="green-text" style="margin:0 0 7px; color:#174532; font-size:13px; line-height:1.4;">Közvetlenül<br>velünk beszél</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.5;">Nincs köztes réteg — azt beszéljük meg, ami valóban számít.</p></td>
+                  <td width="25%" valign="top" class="stack-cell benefit" style="width:25%; padding:10px 18px 17px; border-right:1px solid #e2d6c7; box-sizing:border-box;"><img src="assets/icon-lightning.png" width="25" alt="Villám ikon" style="display:block; width:25px; height:auto; margin-bottom:7px;"><h3 class="green-text" style="margin:0 0 7px; color:#174532; font-size:13px; line-height:1.4;">Gyorsabb és<br>rugalmasabb munka</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.5;">Kisebb csapatként gyorsan hozunk döntéseket, és rugalmasan igazodunk az igényeikhez.</p></td>
+                  <td width="25%" valign="top" class="stack-cell benefit" style="width:25%; padding:10px 18px 17px; border-right:1px solid #e2d6c7; box-sizing:border-box;"><img src="assets/icon-heart.png" width="32" alt="Szív ikon" style="display:block; width:32px; height:auto; margin-bottom:7px;"><h3 class="green-text" style="margin:0 0 7px; color:#174532; font-size:13px; line-height:1.4;">Lelkes, motivált<br>csapat</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.5;">Szeretünk jó megoldásokat készíteni, és személyes figyelmet fordítunk minden projektre.</p></td>
+                  <td width="25%" valign="top" class="stack-cell benefit benefit-last" style="width:25%; padding:10px 18px 17px; box-sizing:border-box;"><img src="assets/icon-store.png" width="32" alt="Üzlet ikon" style="display:block; width:32px; height:auto; margin-bottom:7px;"><h3 class="green-text" style="margin:0 0 7px; color:#174532; font-size:13px; line-height:1.4;">Átlátható és<br>elérhető megoldások</h3><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.5;">Kisebb csapatként sokszor hatékonyabban tudunk segíteni, átláthatóbb keretek között.</p></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad" style="padding:14px 52px 0;">
+              <h2 class="section-title green-text" style="margin:0 0 7px 5px; color:#174532; font-size:18px; line-height:1.3; font-weight:700;">Kik vagyunk röviden?</h2>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr class="stack">
+                <td width="49.3%" valign="top" class="stack-cell profile-card white-bg" style="width:49.3%; padding:10px; border:1px solid #e8d9c5; border-radius:13px; background:#ffffff; box-sizing:border-box;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                    <td width="108" valign="top" class="profile-photo-cell" style="width:108px; padding-right:14px;"><img src="../GB_profil.jpg" width="108" height="108" class="profile-photo" alt="Bors, a CodeNest projektvezetője" style="display:block; width:108px; height:108px; object-fit:cover; border-radius:9px;"></td>
+                    <td valign="top" class="profile-copy-cell"><h3 class="green-text" style="margin:0 0 2px; color:#2f6a4e; font-size:17px; line-height:1.2;">Bors</h3><p class="dark-text" style="margin:0 0 5px; color:#292c35; font-size:11px; line-height:1.28; font-weight:700;">Projektvezetés, webes rendszerek, ügyfélkommunikáció</p><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.42;">Borsként főleg a projekt átlátásával, a struktúrával és az összetettebb webes működéssel foglalkozom.</p></td>
+                  </tr></table>
+                </td>
+                <td width="1.4%" class="stack-cell profile-gap" style="width:1.4%; font-size:0;">&nbsp;</td>
+                <td width="49.3%" valign="top" class="stack-cell profile-card white-bg" style="width:49.3%; padding:10px; border:1px solid #e8d9c5; border-radius:13px; background:#ffffff; box-sizing:border-box;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                    <td width="108" valign="top" class="profile-photo-cell" style="width:108px; padding-right:14px;"><img src="../DF.jpg" width="108" height="108" class="profile-photo" alt="Dávid, a CodeNest frontend fejlesztője" style="display:block; width:108px; height:108px; object-fit:cover; border-radius:9px;"></td>
+                    <td valign="top" class="profile-copy-cell"><h3 class="green-text" style="margin:0 0 2px; color:#2f6a4e; font-size:17px; line-height:1.2;">Dávid</h3><p class="dark-text" style="margin:0 0 5px; color:#292c35; font-size:11px; line-height:1.28; font-weight:700;">Frontend, felületépítés,<br>HTML / CSS / JavaScript</p><p class="dark-text" style="margin:0; color:#292c35; font-size:10.5px; line-height:1.42;">Dávid főleg az oldalak felületének elkészítésében, valamint HTML, CSS és JavaScript alapú megoldásokban erős.</p></td>
+                  </tr></table>
+                </td>
+              </tr></table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad" style="padding:13px 36px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="cta-panel beige-bg" style="width:100%; background:#f8f2e8; border:1px solid #e8d9c5; border-radius:13px; border-collapse:separate !important; border-spacing:0;">
+                <tr class="stack">
+                  <td width="92" valign="top" class="stack-cell cta-icon-cell" style="width:92px; padding:16px 0 10px 22px;">
+                    <table role="presentation" width="58" cellpadding="0" cellspacing="0" border="0" style="width:58px; background:#2f6a4e; border-radius:50%;"><tr><td align="center" valign="middle" height="58" style="height:58px;"><img src="{{ICON_CALENDAR_URL}}" width="32" alt="Naptár ikon" style="display:block; width:32px; height:32px;"></td></tr></table>
+                  </td>
+                  <td valign="top" class="stack-cell cta-copy-cell" style="padding:13px 22px 8px 0;">
+                    <h2 class="section-title green-text" style="margin:0 0 3px; color:#174532; font-size:18px; line-height:1.3; font-weight:700;">Egy rövid, 20 perces átbeszélésre gondoltam</h2>
+                    <p class="dark-text" style="margin:0 0 9px; color:#292c35; font-size:12.5px; line-height:1.42;">Itt nem hibákat szeretnénk sorolni, hanem közösen megnézni, hogyan lehetne az online megjelenést érthetőbbé, átláthatóbbá és könnyebben használhatóvá tenni.</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr class="stack">
+                      <td width="50%" valign="top" class="bullet-col" style="width:50%; padding-right:12px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td valign="top" style="padding:1px 7px 4px 0;"><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2f6a4e; color:#ffffff; font-size:8px; line-height:12px; text-align:center;">✓</span></td><td class="dark-text" style="padding:0 0 4px; color:#292c35; font-size:11.5px; line-height:1.35;">mit lát elsőre egy látogató</td></tr><tr><td valign="top" style="padding:1px 7px 4px 0;"><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2f6a4e; color:#ffffff; font-size:8px; line-height:12px; text-align:center;">✓</span></td><td class="dark-text" style="padding:0 0 4px; color:#292c35; font-size:11.5px; line-height:1.35;">könnyen megtalálható-e a kapcsolatfelvétel</td></tr><tr><td valign="top" style="padding:1px 7px 0 0;"><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2f6a4e; color:#ffffff; font-size:8px; line-height:12px; text-align:center;">✓</span></td><td class="dark-text" style="padding:0; color:#292c35; font-size:11.5px; line-height:1.35;">telefonról mennyire kényelmes az oldal</td></tr></table>
+                      </td>
+                      <td width="50%" valign="top" class="bullet-col bullet-col-second" style="width:50%; padding-left:12px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td valign="top" style="padding:1px 7px 4px 0;"><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2f6a4e; color:#ffffff; font-size:8px; line-height:12px; text-align:center;">✓</span></td><td class="dark-text" style="padding:0 0 4px; color:#292c35; font-size:11.5px; line-height:1.35;">mi lehetne egyszerűbb vagy frissebb</td></tr><tr><td valign="top" style="padding:1px 7px 0 0;"><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2f6a4e; color:#ffffff; font-size:8px; line-height:12px; text-align:center;">✓</span></td><td class="dark-text" style="padding:0; color:#292c35; font-size:11.5px; line-height:1.35;">milyen következő lépés lenne reális</td></tr></table>
+                      </td>
+                    </tr></table>
+                  </td>
+                </tr>
+                <tr><td colspan="2" style="padding:4px 22px 11px 52px;"><p class="green-text" style="margin:0; padding-right:42px; color:#2f6a4e; font-size:13.5px; line-height:1.35; font-weight:700;">Ha nyitottak rá, szívesen küldök 2–3 lehetséges időpontot egy rövid online beszélgetésre.</p><img src="assets/leaf-decoration.png" width="54" align="right" alt="" style="display:block; width:54px; height:auto; margin-top:-28px; border:0;"></td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content-pad dark-text" style="padding:9px 42px 15px; color:#292c35; font-size:12.5px; line-height:1.25;">
+              <p style="margin:0 0 6px;">Üdv,<br><strong>Bors</strong><br><strong>CodeNest</strong></p>
+              <p style="margin:0 0 8px;">Weboldalak és egyszerű webes rendszerek kisebb vállalkozásoknak, intézményeknek és településeknek</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; border-spacing:0;"><tr class="stack">
+                <td class="footer-piece" style="padding-right:9px; color:#2f6a4e; font-size:13px;">●&nbsp;&nbsp;<a href="{{WEBSITE_URL}}" class="green-text" style="color:#2f6a4e; text-decoration:none; font-weight:700;">codenest.hu</a></td>
+                <td class="footer-separator" style="padding:0 12px; border-left:1px solid #cbbda9; font-size:0;">&nbsp;</td>
+                <td class="footer-piece" style="padding-left:9px; color:#2f6a4e; font-size:13px;">✉&nbsp;&nbsp;<a href="mailto:{{CONTACT_EMAIL}}" class="green-text" style="color:#2f6a4e; text-decoration:none; font-weight:700; word-break:break-word;">info.codenest.hu@gmail.com</a></td>
+              </tr></table>
+            </td>
+          </tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
