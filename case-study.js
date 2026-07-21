@@ -103,8 +103,8 @@ const createLanguageFlag = (language) => {
   return flag;
 };
 
-const legalFooterLinks = [
-  { label: "Jogi információk", href: "/legal-hu.html" },
+const getLegalFooterLinks = () => [
+  { label: fallback(ui.legalInfoLabel, "Jogi inform\u00e1ci\u00f3k"), href: "/legal-hu.html" },
 ];
 
 const createButton = (href, label, variant = "secondary", external = false) => {
@@ -395,6 +395,14 @@ const createNavigationLink = (href, label) => {
   return link;
 };
 
+const renderCaseHeaderLinks = () => {
+  const brand = document.querySelector(".case-header .brand");
+  if (brand) {
+    brand.href = withLanguageParam("v2-preview.html#hero", currentLanguage);
+    brand.setAttribute("aria-label", fallback(ui.homeLabel, "CodeNest f\u0151oldal"));
+  }
+};
+
 const renderCaseNavigation = () => {
   const desktopNav = document.querySelector('[data-render="case-navigation"]');
   const mobileNav = document.querySelector('[data-render="mobile-navigation"]');
@@ -537,7 +545,7 @@ const renderCaseFooter = () => {
 
   const legalRow = createFooterLegalRow(
     fallback(footer.copyright, "© 2026 CodeNest. Minden jog fenntartva."),
-    legalFooterLinks
+    getLegalFooterLinks()
   );
   container.replaceChildren(brandArea, groups, legalRow);
 };
@@ -638,6 +646,7 @@ const initLanguageControls = () => {
 };
 
 const renderPage = () => {
+  renderCaseHeaderLinks();
   renderCaseNavigation();
   renderLanguageSwitchers();
   renderCaseFooter();

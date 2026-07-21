@@ -132,13 +132,13 @@ const clearAndAppend = (selector, children) => {
 
 const getArray = (value) => (Array.isArray(value) ? value : []);
 
-const legalFooterLinks = [
-  { label: "Jogi információk", href: "/legal-hu.html" },
+const getLegalFooterLinks = () => [
+  { label: fallback(ui.legalInfoLabel, "Jogi inform\u00e1ci\u00f3k"), href: "/legal-hu.html" },
 ];
 
 const createNavigationLinks = (items) =>
   items.map((item) => {
-    const link = createElement("a", "", fallback(item.label, "Menü"));
+    const link = createElement("a", "", fallback(item.label, "Men?"));
     link.href = fallback(item.href, "#hero");
     return link;
   });
@@ -163,6 +163,9 @@ const renderNavigation = () => {
   }
 
   if (menu) menu.setAttribute("aria-label", ui.mobileMenuLabel);
+
+  const brand = document.querySelector(".site-header .brand");
+  if (brand) brand.setAttribute("aria-label", fallback(ui.homeLabel, "CodeNest f\u0151oldal"));
 };
 
 const createLanguageOption = (language) => {
@@ -416,12 +419,13 @@ const renderServices = () => {
 
 const createServiceModule = (index) => {
   const module = createElement("div", "service-module");
+  const label = fallback(ui.serviceModuleLabels?.[index], ["Dokumentumt?r", "Szerkeszthet?", "Workflow"][index] || "Workflow");
 
   if (index === 0) {
     module.append(
       createElement("span", "module-line wide"),
       createElement("span", "module-line"),
-      createElement("span", "module-pill", "Dokumentumtár")
+      createElement("span", "module-pill", label)
     );
     return module;
   }
@@ -430,7 +434,7 @@ const createServiceModule = (index) => {
     module.append(
       createElement("span", "module-block"),
       createElement("span", "module-block small"),
-      createElement("span", "module-pill", "Szerkeszthető")
+      createElement("span", "module-pill", label)
     );
     return module;
   }
@@ -438,7 +442,7 @@ const createServiceModule = (index) => {
   module.append(
     createElement("span", "module-step"),
     createElement("span", "module-step"),
-    createElement("span", "module-pill", "Workflow")
+    createElement("span", "module-pill", label)
   );
   return module;
 };
@@ -717,26 +721,25 @@ const createProjectMockup = () => {
   const portal = createElement("div", "project-mockup-panel portal-panel");
   const admin = createElement("div", "project-mockup-panel admin-panel");
   const statusHint = createElement("div", "project-status-hint");
+  const heroMockup = ui.heroMockup || getHeroMockupFallback();
+  const rows = getArray(ui.projectMockupRows);
+  const hints = rows.length ? rows : getHeroMockupFallback().rows;
 
   portal.append(
-    createElement("p", "mockup-label", "Publikus portál"),
-    createElement("h4", "", "Hírek és információk"),
+    createElement("p", "mockup-label", fallback(heroMockup.publicSite, getHeroMockupFallback().publicSite)),
+    createElement("h4", "", fallback(heroMockup.newsTitle, getHeroMockupFallback().newsTitle)),
     createElement("span", "project-line wide"),
     createElement("span", "project-line"),
     createElement("span", "project-line short")
   );
 
   admin.append(
-    createElement("p", "mockup-label", "Admin"),
-    createProjectMockupRow("Hír közzététele", "Közzétéve"),
-    createProjectMockupRow("Dokumentumtár", "Frissítve"),
-    createProjectMockupRow("Esemény", "Vázlat")
+    createElement("p", "mockup-label", fallback(heroMockup.adminArea, "Admin")),
+    ...hints.slice(0, 3).map((row) => createProjectMockupRow(row.label, row.status))
   );
 
   statusHint.append(
-    createElement("span", "", "szerkeszthető tartalom"),
-    createElement("span", "", "rendezett dokumentumok"),
-    createElement("span", "", "átlátható működés")
+    ...getArray(siteContent.whyCodeNest?.items).slice(0, 3).map((item) => createElement("span", "", fallback(item.title, "CodeNest")))
   );
 
   mockup.append(portal, admin, statusHint);
@@ -961,10 +964,11 @@ const renderContact = () => {
 
   actionRow.append(cta, email);
 
+  const privacy = ui.contactPrivacy || {};
   const legalNotice = createElement("p", "contact-legal-notice", "");
-  const legalNoticeIntro = document.createTextNode("Az üzenet elküldésével tudomásul veszem a ");
-  const legalNoticeLink = createElement("a", "", "Jogi információkban");
-  const legalNoticeEnd = document.createTextNode(" foglalt adatkezelési tájékoztatót.");
+  const legalNoticeIntro = document.createTextNode(fallback(privacy.intro, "Az ?zenet elk?ld?s?vel tudom?sul veszem a "));
+  const legalNoticeLink = createElement("a", "", fallback(privacy.linkLabel, "Jogi inform\u00e1ci\u00f3kban"));
+  const legalNoticeEnd = document.createTextNode(fallback(privacy.end, " foglalt adatkezel?si t?j?koztat?t."));
   legalNoticeLink.href = "/legal-hu.html";
   legalNotice.append(legalNoticeIntro, legalNoticeLink, legalNoticeEnd);
 
@@ -1046,7 +1050,7 @@ const renderFooter = () => {
   if (navGroup) groups.append(navGroup);
   if (contactEmail.textContent) groups.append(contactGroup);
 
-  const legalRow = createFooterLegalRow(copyrightText, legalFooterLinks);
+  const legalRow = createFooterLegalRow(copyrightText, getLegalFooterLinks());
   const footerChildren = [brandArea];
   if (groups.childElementCount) footerChildren.push(groups);
   footerChildren.push(legalRow);
