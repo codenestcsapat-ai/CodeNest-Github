@@ -132,9 +132,49 @@ const clearAndAppend = (selector, children) => {
 
 const getArray = (value) => (Array.isArray(value) ? value : []);
 
-const getLegalFooterLinks = () => [
-  { label: fallback(ui.legalInfoLabel, "Jogi inform\u00e1ci\u00f3k"), href: "/legal-hu.html" },
-];
+const getFooterCopy = () => {
+  const copy = {
+    hu: {
+      statement: "Haszn\u00e1lhat\u00f3, szerkeszthet\u0151 weboldalak v\u00e1llalkoz\u00e1soknak, int\u00e9zm\u00e9nyeknek \u00e9s helyi szervezeteknek.",
+      note: "K\u00e9t fiatal fejleszt\u0151k\u00e9nt olyan webes alapokat \u00e9p\u00edt\u00fcnk, amelyeket nem csak \u00e1tadni, hanem k\u00e9s\u0151bb haszn\u00e1lni, friss\u00edteni \u00e9s tov\u00e1bbfejleszteni is k\u00f6nny\u0171.",
+      pagesTitle: "Gyors utak",
+      contactTitle: "Kapcsolat",
+      siteLabel: "codenest.hu",
+      legalLinks: [
+        { label: "Impresszum", href: "legal-hu.html#impresszum" },
+        { label: "Adatkezel\u00e9s", href: "legal-hu.html#adatkezeles" },
+      ],
+    },
+    en: {
+      statement: "Usable, editable websites for businesses, institutions and local organizations.",
+      note: "As two young developers, we build web foundations that are not only handed over, but remain easy to use, update and improve later.",
+      pagesTitle: "Quick links",
+      contactTitle: "Contact",
+      siteLabel: "codenest.hu",
+      legalLinks: [
+        { label: "Impressum", href: "legal-hu.html#impresszum" },
+        { label: "Privacy", href: "legal-hu.html#adatkezeles" },
+      ],
+    },
+    de: {
+      statement: "Nutzbare, editierbare Websites f\u00fcr Unternehmen, Institutionen und lokale Organisationen.",
+      note: "Als zwei junge Entwickler bauen wir Web-Grundlagen, die nicht nur \u00fcbergeben werden, sondern sp\u00e4ter leicht nutzbar, aktualisierbar und erweiterbar bleiben.",
+      pagesTitle: "Schnelle Wege",
+      contactTitle: "Kontakt",
+      siteLabel: "codenest.hu",
+      legalLinks: [
+        { label: "Impressum", href: "legal-hu.html#impresszum" },
+        { label: "Datenschutz", href: "legal-hu.html#adatkezeles" },
+      ],
+    },
+  };
+  return copy[currentLanguage] || copy.hu;
+};
+
+const getFooterNavigationLinks = () => {
+  const wantedHrefs = new Set(["#munkak", "#folyamat", "#kapcsolat"]);
+  return getArray(siteContent.footer?.links).filter((item) => wantedHrefs.has(fallback(item.href, "")));
+};
 
 const createNavigationLinks = (items) =>
   items.map((item) => {
@@ -295,6 +335,60 @@ const getHeroMockupFallback = () => {
   return fallbacks[currentLanguage] || fallbacks.hu;
 };
 
+const getHeroEnhancementCopy = () => {
+  const copy = {
+    hu: {
+      editableTitle: "Szerkeszthet\u0151 tartalom",
+      editableText: "H\u00edrek, dokumentumok, oldalak",
+      saved: "V\u00e1ltoz\u00e1s mentve",
+      flow: ["Tartalom", "Admin", "\u00c1tad\u00e1s"],
+    },
+    en: {
+      editableTitle: "Editable content",
+      editableText: "News, documents, pages",
+      saved: "Changes saved",
+      flow: ["Content", "Admin", "Handover"],
+    },
+    de: {
+      editableTitle: "Editierbare Inhalte",
+      editableText: "News, Dokumente, Seiten",
+      saved: "\u00c4nderung gespeichert",
+      flow: ["Inhalt", "Admin", "\u00dcbergabe"],
+    },
+  };
+  return copy[currentLanguage] || copy.hu;
+};
+
+const renderHeroVisualEnhancements = (heroVisual) => {
+  if (!heroVisual) return;
+
+  const copy = getHeroEnhancementCopy();
+  heroVisual.querySelectorAll("[data-hero-enhancement]").forEach((element) => element.remove());
+
+  const systemStrip = createElement("div", "hero-system-strip");
+  systemStrip.dataset.heroEnhancement = "true";
+  getArray(copy.flow).forEach((label) => {
+    systemStrip.append(createElement("span", "", label));
+  });
+
+  const editableBadge = createElement("div", "hero-editable-badge");
+  editableBadge.dataset.heroEnhancement = "true";
+  const badgeIcon = createElement("span", "hero-editable-icon");
+  badgeIcon.setAttribute("aria-hidden", "true");
+  const badgeText = createElement("span", "hero-editable-text");
+  badgeText.append(
+    createElement("strong", "", copy.editableTitle),
+    createElement("small", "", copy.editableText)
+  );
+  editableBadge.append(badgeIcon, badgeText);
+
+  const saveHint = createElement("div", "hero-save-hint");
+  saveHint.dataset.heroEnhancement = "true";
+  saveHint.append(createElement("span", "", copy.saved));
+
+  heroVisual.append(systemStrip, editableBadge, saveHint);
+};
+
 const renderHeroMockup = () => {
   const fallbackMockup = getHeroMockupFallback();
   const mockup = ui.heroMockup || fallbackMockup;
@@ -303,6 +397,7 @@ const renderHeroMockup = () => {
 
   if (heroVisual) {
     heroVisual.setAttribute("aria-label", fallback(mockup.ariaLabel, fallbackMockup.ariaLabel));
+    renderHeroVisualEnhancements(heroVisual);
   }
 
   setText(".mockup-public .mockup-label", mockup.publicSite, fallbackMockup.publicSite);
@@ -1025,8 +1120,9 @@ const renderContact = () => {
 const renderFooter = () => {
   const footer = siteContent.footer || {};
   const container = document.querySelector('[data-render="footer"]');
+  const footerCopy = getFooterCopy();
   if (!container) {
-    setText('[data-render="footer-tagline"]', footer.tagline, "CodeNest");
+    setText('[data-render="footer-tagline"]', footerCopy.statement, "CodeNest");
     return;
   }
 
@@ -1034,8 +1130,9 @@ const renderFooter = () => {
   const brand = createElement("a", "footer-brand");
   const brandMark = createElement("img", "footer-brand-mark");
   const brandText = createElement("span", "", fallback(footer.brandName, "CodeNest"));
-  const tagline = createElement("p", "footer-tagline", fallback(footer.tagline, "CodeNest"));
-  const copyrightText = fallback(footer.copyright, "© 2026 CodeNest");
+  const statement = createElement("p", "footer-tagline footer-statement", footerCopy.statement);
+  const note = createElement("p", "footer-note", footerCopy.note);
+  const copyrightText = fallback(footer.copyright, "\u00a9 2026 CodeNest");
 
   brandMark.src = resolveRootAssetPath("logo_footer-modified.png");
   brandMark.alt = "";
@@ -1043,28 +1140,36 @@ const renderFooter = () => {
   brandMark.loading = "eager";
   brand.append(brandMark, brandText);
   brand.href = "#hero";
-  brandArea.append(brand, tagline);
+  brandArea.append(brand, statement, note);
+
+  const footerPanel = createElement("div", "footer-panel");
+  const motif = createElement("span", "footer-motif");
+  motif.setAttribute("aria-hidden", "true");
 
   const groups = createElement("div", "footer-groups");
-  const navGroup = createFooterLinkGroup(ui.footerPages, footer.links);
-  const contactGroup = createElement("div", "footer-group");
-  const contactTitle = createElement("h3", "", ui.footerContact);
+  const navGroup = createFooterLinkGroup(footerCopy.pagesTitle, getFooterNavigationLinks());
+  const contactGroup = createElement("div", "footer-group footer-contact-group");
+  const contactTitle = createElement("h3", "", footerCopy.contactTitle);
   const contactEmail = createElement("a", "", fallback(siteContent.contact?.email, ""));
+  const siteLink = createElement("a", "", footerCopy.siteLabel);
+
+  siteLink.href = "https://codenest.hu/";
+  siteLink.target = "_blank";
+  siteLink.rel = "noopener noreferrer";
 
   if (contactEmail.textContent) {
-    contactEmail.href = `mailto:${contactEmail.textContent}`;
-    contactGroup.append(contactTitle, contactEmail);
+    contactEmail.href = "mailto:" + contactEmail.textContent;
+    contactGroup.append(contactTitle, contactEmail, siteLink);
+  } else {
+    contactGroup.append(contactTitle, siteLink);
   }
 
   if (navGroup) groups.append(navGroup);
-  if (contactEmail.textContent) groups.append(contactGroup);
+  groups.append(contactGroup);
+  footerPanel.append(motif, groups);
 
-  const legalRow = createFooterLegalRow(copyrightText, getLegalFooterLinks());
-  const footerChildren = [brandArea];
-  if (groups.childElementCount) footerChildren.push(groups);
-  footerChildren.push(legalRow);
-
-  container.replaceChildren(...footerChildren);
+  const legalRow = createFooterLegalRow(copyrightText, footerCopy.legalLinks);
+  container.replaceChildren(brandArea, footerPanel, legalRow);
 };
 
 const createFooterLegalRow = (copyrightText, links) => {
