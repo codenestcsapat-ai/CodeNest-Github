@@ -1116,80 +1116,151 @@ const createScopeChecklist = (items) => {
   return list;
 };
 
+const getContactUxCopy = () => {
+  const copy = {
+    hu: {
+      title: "\u00cdrd le, hol tartotok most.",
+      intro: "Nem kell pontos briefel \u00e9rkezni. El\u00e9g, ha le\u00edrod, milyen oldalad van most, mi zavar benne, vagy milyen \u00faj webes megold\u00e1sban gondolkodsz. Seg\u00edt\u00fcnk tiszt\u00e1zni, mi lenne a re\u00e1lis k\u00f6vetkez\u0151 l\u00e9p\u00e9s.",
+      eyebrow: "Besz\u00e9lget\u00e9sind\u00edt\u00f3",
+      cardTitle: "El\u00e9g p\u00e1r mondat.",
+      cardText: "Nem egy k\u00e9sz specifik\u00e1ci\u00f3t v\u00e1runk. Azt mondd el, mi van most, min akadtok el, \u00e9s mit szeretn\u00e9tek egyszer\u0171bben kezelni online.",
+      ctaLabel: "\u00cdrok p\u00e1r sort",
+      emailLabel: "K\u00f6zvetlen e-mail",
+      note: "Ha m\u00e9g nem tudod pontosan, mire van sz\u00fcks\u00e9g, az is teljesen rendben van.",
+      trustNotes: ["Nem kell k\u00e9sz brief", "K\u00f6zvetlen\u00fcl vel\u00fcnk besz\u00e9lsz", "Seg\u00edt\u00fcnk sorrendet rakni"],
+      starterTitle: "Mit \u00e9rdemes le\u00edrni?",
+      starterIntro: "Ezek csak kapaszkod\u00f3k. Nem baj, ha valamelyikre m\u00e9g nincs v\u00e1lasz.",
+      prompts: ["milyen oldal vagy rendszer van most", "mi zavar benne vagy mi lass\u00edt", "mit kellene k\u00f6nnyebben friss\u00edteni", "kik fogj\u00e1k haszn\u00e1lni", "mikor lenne j\u00f3 elindulni"],
+      topicTitle: "Miben gondolkodsz?",
+      topics: ["\u00daj bemutatkoz\u00f3 weboldal", "R\u00e9gi oldal \u00fajragondol\u00e1sa", "Szerkeszthet\u0151 / adminos oldal", "\u00d6nkorm\u00e1nyzati vagy int\u00e9zm\u00e9nyi fel\u00fclet", "Egyedi webes eszk\u00f6z", "M\u00e9g nem tudom pontosan"],
+      nextTitle: "Mi t\u00f6rt\u00e9nik ut\u00e1na?",
+      nextSteps: ["Vissza\u00edrunk, ha valamit pontos\u00edtani kell.", "Megn\u00e9zz\u00fck, mi lenne re\u00e1lis els\u0151 l\u00e9p\u00e9s.", "Ha passzol, kapsz egy \u00e9rthet\u0151 javaslatot."],
+      subject: "CodeNest projekt \u00e1tbesz\u00e9l\u00e9s",
+      privacyIntro: "Az \u00fczenet elk\u00fcld\u00e9s\u00e9vel tudom\u00e1sul veszem az ",
+      privacyLinkLabel: "Adatkezel\u00e9si t\u00e1j\u00e9koztat\u00f3ban",
+      privacyEnd: " foglaltakat.",
+    },
+    en: {
+      title: "Tell us where things stand now.",
+      intro: "You do not need a finished brief. A few sentences about your current website, what feels hard, or what kind of web solution you are thinking about are enough. We help clarify the realistic next step.",
+      eyebrow: "Conversation starter",
+      cardTitle: "A few sentences are enough.",
+      cardText: "We are not waiting for a finished specification. Tell us what exists now, where things get stuck, and what should be easier to manage online.",
+      ctaLabel: "Send a short note",
+      emailLabel: "Direct email",
+      note: "It is completely fine if you do not yet know exactly what you need.",
+      trustNotes: ["No finished brief needed", "You talk directly with us", "We help set the order"],
+      starterTitle: "What is useful to write?",
+      starterIntro: "These are only prompts. It is fine if you do not have every answer yet.",
+      prompts: ["what website or system exists now", "what feels annoying or slow", "what should be easier to update", "who will use it", "when launch would make sense"],
+      topicTitle: "What are you thinking about?",
+      topics: ["New introduction website", "Redesigning an old website", "Editable / admin-powered website", "Municipal or institutional portal", "Custom web tool", "I am not sure yet"],
+      nextTitle: "What happens next?",
+      nextSteps: ["We reply if something needs clarifying.", "We look at a realistic first step.", "If it fits, you get a clear suggestion."],
+      subject: "CodeNest project conversation",
+      privacyIntro: "By sending a message, I acknowledge the ",
+      privacyLinkLabel: "Privacy Notice",
+      privacyEnd: ".",
+    },
+    de: {
+      title: "Schreib kurz, wo ihr gerade steht.",
+      intro: "Du brauchst kein fertiges Briefing. Ein paar S\u00e4tze zu eurer aktuellen Website, was daran st\u00f6rt oder an welche neue Web-L\u00f6sung ihr denkt, reichen. Wir helfen, den realistischen n\u00e4chsten Schritt zu kl\u00e4ren.",
+      eyebrow: "Gespr\u00e4ch starten",
+      cardTitle: "Ein paar S\u00e4tze reichen.",
+      cardText: "Wir warten nicht auf eine fertige Spezifikation. Schreib, was es heute gibt, wo ihr h\u00e4ngen bleibt und was online einfacher zu pflegen sein sollte.",
+      ctaLabel: "Kurze Nachricht senden",
+      emailLabel: "Direkte E-Mail",
+      note: "Es ist v\u00f6llig in Ordnung, wenn du noch nicht genau wei\u00dft, was gebraucht wird.",
+      trustNotes: ["Kein fertiges Briefing n\u00f6tig", "Du sprichst direkt mit uns", "Wir helfen beim Sortieren"],
+      starterTitle: "Was solltest du schreiben?",
+      starterIntro: "Das sind nur Orientierungspunkte. Es ist in Ordnung, wenn noch nicht alles klar ist.",
+      prompts: ["welche Website oder welches System es heute gibt", "was st\u00f6rt oder verlangsamt", "was leichter aktualisiert werden sollte", "wer es nutzen wird", "wann ein Start sinnvoll w\u00e4re"],
+      topicTitle: "Woran denkst du?",
+      topics: ["Neue Vorstellungswebsite", "Alte Website neu denken", "Editierbare / adminbasierte Website", "Kommunales oder institutionelles Portal", "Individuelles Web-Tool", "Ich wei\u00df es noch nicht genau"],
+      nextTitle: "Was passiert danach?",
+      nextSteps: ["Wir melden uns, wenn etwas zu kl\u00e4ren ist.", "Wir schauen, was ein realistischer erster Schritt w\u00e4re.", "Wenn es passt, bekommst du einen klaren Vorschlag."],
+      subject: "CodeNest Projektgespr\u00e4ch",
+      privacyIntro: "Mit dem Senden der Nachricht nehme ich die ",
+      privacyLinkLabel: "Datenschutzhinweise",
+      privacyEnd: " zur Kenntnis.",
+    },
+  };
+  return copy[currentLanguage] || copy.hu;
+};
+
 const renderContact = () => {
   const contact = siteContent.contact || {};
+  const contactCopy = getContactUxCopy();
   const details = document.querySelector('[data-render="contact-details"]');
   if (!details) return;
 
-  setText('[data-render="contact-title"]', contact.title, "Kapcsolat");
-  setText('[data-render="contact-text"]', contact.text, "Kapcsolati szöveg később.");
+  setText('[data-render="contact-title"]', contactCopy.title, "Kapcsolat");
+  setText('[data-render="contact-text"]', contactCopy.intro, fallback(contact.text, ""));
 
   const emailAddress = fallback(contact.email, "info@codenest.hu");
-  const labels = contact.formLabels || {};
-  const ctaLabel = fallback(labels.submit, ui.talkProject);
-  const emailLabel = fallback(contact.emailLabel, "E-mail");
+  const ctaLabel = contactCopy.ctaLabel;
+  const emailLabel = contactCopy.emailLabel;
+  const mailSubject = encodeURIComponent(contactCopy.subject);
 
   const side = createElement("div", "contact-side contact-conversation-card");
-  const eyebrow = createElement("p", "contact-eyebrow", fallback(ui.contactEyebrow, "Kapcsolat"));
-  const title = createElement("h3", "contact-conversation-title", fallback(ui.contactConversationTitle, "Írhatsz röviden is."));
-  const copy = createElement("p", "contact-conversation-copy", fallback(ui.contactConversationText, fallback(contact.text, "")));
+  const eyebrow = createElement("p", "contact-eyebrow", contactCopy.eyebrow);
+  const title = createElement("h3", "contact-conversation-title", contactCopy.cardTitle);
+  const copy = createElement("p", "contact-conversation-copy", contactCopy.cardText);
   const actionRow = createElement("div", "contact-action-row");
   const cta = createElement("a", "button button-primary contact-primary-cta", ctaLabel);
   const email = createElement("a", "contact-email-card", "");
   const emailText = createElement("span", "contact-email-label", emailLabel);
   const emailValue = createElement("strong", "", emailAddress);
-  const note = createElement("p", "contact-brief-note", fallback(ui.contactCtaNote, fallback(ui.contactNote, "")));
+  const note = createElement("p", "contact-brief-note", contactCopy.note);
   const trustList = createElement("ul", "contact-trust-list");
 
-  cta.href = `mailto:${emailAddress}`;
+  cta.href = "mailto:" + emailAddress + "?subject=" + mailSubject;
   cta.dataset.linkType = "email";
   cta.setAttribute("aria-label", ctaLabel);
 
-  email.href = `mailto:${emailAddress}`;
+  email.href = "mailto:" + emailAddress;
   email.dataset.linkType = "email";
-  email.setAttribute("aria-label", `${emailLabel}: ${emailAddress}`);
+  email.setAttribute("aria-label", emailLabel + ": " + emailAddress);
   email.append(emailText, emailValue);
 
   actionRow.append(cta, email);
 
-  const privacy = ui.contactPrivacy || {};
   const legalNotice = createElement("p", "contact-legal-notice", "");
-  const legalNoticeIntro = document.createTextNode(fallback(privacy.intro, "Az ?zenet elk?ld?s?vel tudom?sul veszem a "));
-  const legalNoticeLink = createElement("a", "", fallback(privacy.linkLabel, "Jogi inform\u00e1ci\u00f3kban"));
-  const legalNoticeEnd = document.createTextNode(fallback(privacy.end, " foglalt adatkezel?si t?j?koztat?t."));
-  legalNoticeLink.href = "/legal-hu.html";
+  const legalNoticeIntro = document.createTextNode(contactCopy.privacyIntro);
+  const legalNoticeLink = createElement("a", "", contactCopy.privacyLinkLabel);
+  const legalNoticeEnd = document.createTextNode(contactCopy.privacyEnd);
+  legalNoticeLink.href = "legal-hu.html#adatkezeles";
   legalNotice.append(legalNoticeIntro, legalNoticeLink, legalNoticeEnd);
 
-  getArray(ui.contactTrustNotes).forEach((item) => {
+  getArray(contactCopy.trustNotes).forEach((item) => {
     trustList.append(createElement("li", "", item));
   });
 
-  side.append(eyebrow, title, copy, actionRow, legalNotice);
-  if (note.textContent) side.append(note);
+  side.append(eyebrow, title, copy, actionRow, legalNotice, note);
   if (trustList.childElementCount) side.append(trustList);
 
   const helper = createElement("div", "contact-helper-card");
   const helperHeader = createElement("div", "contact-helper-header");
   helperHeader.append(
-    createElement("h3", "", fallback(ui.contactStarterTitle, "Mit írj nekünk?")),
-    createElement("p", "contact-helper-note", fallback(ui.contactStarterIntro, fallback(ui.contactNote, "")))
+    createElement("h3", "", contactCopy.starterTitle),
+    createElement("p", "contact-helper-note", contactCopy.starterIntro)
   );
 
   const prompts = createElement("ul", "contact-starter-list");
-  getArray(ui.contactStarterPrompts).forEach((prompt) => {
+  getArray(contactCopy.prompts).forEach((prompt) => {
     prompts.append(createElement("li", "", prompt));
   });
 
   const topics = createElement("div", "contact-topic-block");
-  const topicTitle = createElement("p", "contact-mini-title", fallback(ui.contactTopicTitle, fallback(labels.projectType, "Projekt típusa")));
-  const topicList = createList(contact.projectTypes, "plain-list contact-option-list contact-topic-list");
+  const topicTitle = createElement("p", "contact-mini-title", contactCopy.topicTitle);
+  const topicList = createList(contactCopy.topics, "plain-list contact-option-list contact-topic-list");
   topics.append(topicTitle);
   if (topicList) topics.append(topicList);
 
   const next = createElement("div", "contact-next-card");
-  const nextTitle = createElement("h4", "", fallback(ui.contactNextTitle, "Mi történik utána?"));
+  const nextTitle = createElement("h4", "", contactCopy.nextTitle);
   const nextList = createElement("ul", "contact-next-list");
-  getArray(ui.contactNextSteps).forEach((step) => {
+  getArray(contactCopy.nextSteps).forEach((step) => {
     nextList.append(createElement("li", "", step));
   });
   next.append(nextTitle);
