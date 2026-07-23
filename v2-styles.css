@@ -7918,3 +7918,261 @@ html {
     font-size: 0.8rem;
   }
 }
+
+/* V2 interaction polish: smooth anchors, organic details and screenshot clarity */
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.section-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+#problema .section-shell::after,
+#kapcsolat .section-shell::before,
+#scope-arazas .section-shell::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("Email outrech/assets/leaf-decoration.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.16;
+  filter: saturate(0.82);
+}
+
+#problema .section-shell::after {
+  right: clamp(1.2rem, 5vw, 4.5rem);
+  top: clamp(1.1rem, 3vw, 2.5rem);
+  width: clamp(76px, 9vw, 132px);
+  height: clamp(76px, 9vw, 132px);
+  transform: rotate(8deg);
+}
+
+#kapcsolat .section-shell::before {
+  left: clamp(1rem, 4vw, 3.4rem);
+  bottom: clamp(1rem, 3vw, 2.4rem);
+  width: clamp(72px, 8vw, 118px);
+  height: clamp(72px, 8vw, 118px);
+  opacity: 0.13;
+  transform: rotate(-14deg);
+}
+
+#scope-arazas .section-shell::after {
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: clamp(0.9rem, 3vw, 2.2rem);
+  width: clamp(68px, 7vw, 108px);
+  height: clamp(68px, 7vw, 108px);
+  opacity: 0.12;
+  transform: rotate(20deg);
+}
+
+#problema .section-shell > *,
+#kapcsolat .section-shell > *,
+#scope-arazas .section-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-thumbnail,
+.screenshot-frame,
+.case-shot,
+.case-hero-shot {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.project-thumbnail {
+  aspect-ratio: 16 / 9;
+  padding: 0.3rem;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.98), rgba(241, 234, 222, 0.56));
+}
+
+.project-thumbnail-image,
+.project-screenshot-image,
+.case-shot img,
+.case-hero-shot img {
+  image-rendering: auto;
+  filter: none;
+}
+
+.project-thumbnail-image {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.project-card.has-project-image:hover .project-thumbnail-image,
+.project-thumbnail.is-external-preview:hover .project-thumbnail-image {
+  transform: none;
+}
+
+.project-featured-screenshot {
+  align-items: center;
+  justify-items: center;
+  overflow: visible;
+}
+
+.project-featured-screenshot .desktop-frame {
+  width: min(100%, 710px);
+  margin: 0 auto;
+}
+
+.project-featured-screenshot .mobile-frame {
+  top: clamp(0.45rem, 1.8vw, 1.15rem);
+  right: -0.28rem;
+  bottom: auto;
+  width: clamp(126px, 13.5vw, 162px);
+  transform: translate(18%, -14%) rotate(3deg);
+  transform-origin: center center;
+}
+
+.project-featured-screenshot .mobile-frame.is-external-preview:hover {
+  transform: translate(18%, -17%) rotate(3deg);
+}
+
+@media (max-width: 1180px) {
+  .project-featured-screenshot .desktop-frame {
+    width: min(100%, 660px);
+  }
+
+  .project-featured-screenshot .mobile-frame {
+    width: clamp(118px, 15vw, 146px);
+    transform: translate(16%, -12%) rotate(3deg);
+  }
+}
+
+@media (max-width: 780px) {
+  .project-featured-screenshot .mobile-frame {
+    top: 0.45rem;
+    right: 0.15rem;
+    width: clamp(104px, 22vw, 132px);
+    transform: translate(10%, -8%) rotate(2deg);
+  }
+}
+
+@media (max-width: 560px) {
+  #problema .section-shell::after,
+  #kapcsolat .section-shell::before,
+  #scope-arazas .section-shell::after {
+    opacity: 0.08;
+  }
+
+  .project-thumbnail {
+    aspect-ratio: 16 / 9.4;
+  }
+
+  .project-featured-screenshot {
+    min-height: 238px;
+  }
+
+  .project-featured-screenshot .mobile-frame {
+    top: 0.35rem;
+    right: 0.15rem;
+    width: min(34%, 104px);
+    margin: 0;
+    transform: translate(8%, -7%) rotate(2deg);
+  }
+}
+/* V2 featured project phone overlay final placement */
+.project-featured-screenshot {
+  position: relative;
+  display: block;
+  overflow: visible;
+  min-height: clamp(300px, 27vw, 390px);
+  padding: clamp(1rem, 2vw, 1.35rem) clamp(2.2rem, 4vw, 3.4rem) clamp(1.35rem, 2.4vw, 1.8rem) clamp(1rem, 2vw, 1.35rem);
+}
+
+.project-featured-screenshot .desktop-frame {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(88%, 720px);
+  margin: 0 clamp(1.5rem, 4vw, 3.4rem) 0 auto;
+}
+
+.project-featured-screenshot .mobile-frame {
+  position: absolute !important;
+  z-index: 4;
+  top: clamp(1.6rem, 3.1vw, 2.55rem) !important;
+  right: clamp(-0.55rem, -0.7vw, -0.18rem) !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: clamp(118px, 11.2vw, 152px);
+  margin: 0 !important;
+  transform: translate(-4%, -8%) rotate(3.5deg);
+  transform-origin: 70% 18%;
+}
+
+.project-featured-screenshot .mobile-frame.is-external-preview:hover {
+  transform: translate(-4%, -11%) rotate(3.5deg);
+}
+
+@media (max-width: 1180px) {
+  .project-featured-screenshot {
+    min-height: clamp(286px, 31vw, 360px);
+    padding-right: clamp(1.8rem, 3.6vw, 2.8rem);
+  }
+
+  .project-featured-screenshot .desktop-frame {
+    width: min(88%, 650px);
+    margin-right: clamp(1.35rem, 3.2vw, 2.65rem);
+  }
+
+  .project-featured-screenshot .mobile-frame {
+    top: clamp(1.35rem, 3.4vw, 2.2rem) !important;
+    right: clamp(-0.4rem, -0.5vw, -0.1rem) !important;
+    width: clamp(104px, 12.4vw, 136px);
+    transform: translate(-2%, -7%) rotate(3deg);
+  }
+
+  .project-featured-screenshot .mobile-frame.is-external-preview:hover {
+    transform: translate(-2%, -10%) rotate(3deg);
+  }
+}
+
+@media (max-width: 780px) {
+  .project-featured-screenshot {
+    min-height: clamp(255px, 46vw, 330px);
+    padding: 0.95rem clamp(1.1rem, 4vw, 1.8rem) 1.25rem 0.95rem;
+  }
+
+  .project-featured-screenshot .desktop-frame {
+    width: min(90%, 560px);
+    margin-right: clamp(0.8rem, 4vw, 1.7rem);
+  }
+
+  .project-featured-screenshot .mobile-frame {
+    top: clamp(1rem, 4vw, 1.65rem) !important;
+    right: 0.15rem !important;
+    width: clamp(88px, 18vw, 118px);
+    transform: translate(0, -5%) rotate(2.5deg);
+  }
+
+  .project-featured-screenshot .mobile-frame.is-external-preview:hover {
+    transform: translate(0, -7%) rotate(2.5deg);
+  }
+}
+
+@media (max-width: 560px) {
+  .project-featured-screenshot {
+    min-height: 228px;
+    padding: 0.75rem 0.9rem 1rem 0.75rem;
+  }
+
+  .project-featured-screenshot .desktop-frame {
+    width: 92%;
+    margin-right: 0.65rem;
+  }
+
+  .project-featured-screenshot .mobile-frame {
+    top: 0.85rem !important;
+    right: 0.1rem !important;
+    width: min(30%, 92px);
+    transform: translate(0, -2%) rotate(2deg);
+  }
+}
