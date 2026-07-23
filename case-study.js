@@ -654,6 +654,8 @@ const renderPage = () => {
 };
 
 setDocumentLanguage(currentLanguage);
+storeLanguage(currentLanguage);
+updateUrlLanguage(currentLanguage);
 renderPage();
 initMobileMenu();
 initLanguageControls();

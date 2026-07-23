@@ -250,6 +250,7 @@ const renderLanguageSwitchers = () => {
 const getHeroMockupFallback = () => {
   const fallbacks = {
     hu: {
+      ariaLabel: "CodeNest \u00e1ltal \u00e9p\u00edtett haszn\u00e1lhat\u00f3 webes rendszer el\u0151n\u00e9zete",
       publicSite: "Publikus oldal",
       newsTitle: "H\u00edrek \u00e9s inform\u00e1ci\u00f3k",
       adminArea: "Adminfel\u00fclet",
@@ -263,6 +264,7 @@ const getHeroMockupFallback = () => {
       ],
     },
     en: {
+      ariaLabel: "Preview of a usable web system built by CodeNest",
       publicSite: "Public page",
       newsTitle: "News and information",
       adminArea: "Admin area",
@@ -276,6 +278,7 @@ const getHeroMockupFallback = () => {
       ],
     },
     de: {
+      ariaLabel: "Vorschau eines nutzbaren Websystems von CodeNest",
       publicSite: "\u00d6ffentliche Seite",
       newsTitle: "Nachrichten und Informationen",
       adminArea: "Adminbereich",
@@ -293,18 +296,24 @@ const getHeroMockupFallback = () => {
 };
 
 const renderHeroMockup = () => {
-  const mockup = ui.heroMockup || getHeroMockupFallback();
+  const fallbackMockup = getHeroMockupFallback();
+  const mockup = ui.heroMockup || fallbackMockup;
   const rows = getArray(mockup.rows);
+  const heroVisual = document.querySelector(".hero-visual");
 
-  setText(".mockup-public .mockup-label", mockup.publicSite, getHeroMockupFallback().publicSite);
-  setText(".mockup-public h2", mockup.newsTitle, getHeroMockupFallback().newsTitle);
-  setText(".mockup-admin .mockup-label", mockup.adminArea, getHeroMockupFallback().adminArea);
-  setText(".mockup-admin h3", mockup.documents, getHeroMockupFallback().documents);
-  setText(".mockup-action", mockup.newPost, getHeroMockupFallback().newPost);
-  setText(".mockup-mobile .mockup-label", mockup.mobileView, getHeroMockupFallback().mobileView);
+  if (heroVisual) {
+    heroVisual.setAttribute("aria-label", fallback(mockup.ariaLabel, fallbackMockup.ariaLabel));
+  }
+
+  setText(".mockup-public .mockup-label", mockup.publicSite, fallbackMockup.publicSite);
+  setText(".mockup-public h2", mockup.newsTitle, fallbackMockup.newsTitle);
+  setText(".mockup-admin .mockup-label", mockup.adminArea, fallbackMockup.adminArea);
+  setText(".mockup-admin h3", mockup.documents, fallbackMockup.documents);
+  setText(".mockup-action", mockup.newPost, fallbackMockup.newPost);
+  setText(".mockup-mobile .mockup-label", mockup.mobileView, fallbackMockup.mobileView);
 
   document.querySelectorAll(".mockup-admin .admin-row").forEach((row, index) => {
-    const item = rows[index] || getHeroMockupFallback().rows[index] || {};
+    const item = rows[index] || fallbackMockup.rows[index] || {};
     const label = row.querySelector("span");
     const status = row.querySelector("strong");
     if (label) label.textContent = fallback(item.label, label.textContent);
@@ -1160,11 +1169,33 @@ const initSectionNavigation = () => {
     window.requestAnimationFrame(updateActiveLink);
   };
 
-  sectionLinks.forEach(({ link, id }) => {
-    const handler = () => {
+  const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const scrollToSection = (section) => {
+    const headerOffset = header?.offsetHeight || 0;
+    const targetY = Math.max(0, getSectionTop(section) - headerOffset - 14);
+    window.scrollTo({
+      top: targetY,
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+    });
+  };
+
+  const pushSectionHash = (id) => {
+    if (!window.history?.pushState) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", currentLanguage);
+    url.hash = id;
+    window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  sectionLinks.forEach(({ link, section, id }) => {
+    const handler = (event) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      event.preventDefault();
       setActiveLink(id);
       closeMobileMenu();
-      window.setTimeout(requestUpdate, 120);
+      scrollToSection(section);
+      pushSectionHash(id);
+      window.setTimeout(requestUpdate, 160);
     };
     link.addEventListener("click", handler);
     clickHandlers.push({ link, handler });
@@ -1309,6 +1340,8 @@ const renderPage = () => {
 };
 
 setDocumentLanguage(currentLanguage);
+storeLanguage(currentLanguage);
+updateUrlLanguage(currentLanguage);
 renderPage();
 initMobileMenu();
 initLanguageControls();

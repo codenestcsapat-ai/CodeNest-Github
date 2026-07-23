@@ -50,6 +50,7 @@ export const uiTranslations = {
     contactNextTitle: "Mi történik utána?",
     contactNextSteps: ["Visszaírunk, ha valamit pontosítani kell.", "Megnézzük, milyen rendszer lenne reális első körben.", "Ha van értelme, kapsz egy érthető következő lépést."],
     heroMockup: {
+      ariaLabel: "CodeNest \u00e1ltal \u00e9p\u00edtett haszn\u00e1lhat\u00f3 webes rendszer el\u0151n\u00e9zete",
       publicSite: "Publikus oldal",
       newsTitle: "H\u00edrek \u00e9s inform\u00e1ci\u00f3k",
       adminArea: "Adminfel\u00fclet",
@@ -148,6 +149,7 @@ export const uiTranslations = {
     contactNextTitle: "What happens next?",
     contactNextSteps: ["We reply if something needs clarifying.", "We look at what would make sense as a first version.", "If the project fits, you get a clear next step."],
     heroMockup: {
+      ariaLabel: "Preview of a usable web system built by CodeNest",
       publicSite: "Public page",
       newsTitle: "News and information",
       adminArea: "Admin area",
@@ -246,6 +248,7 @@ export const uiTranslations = {
     contactNextTitle: "Was passiert danach?",
     contactNextSteps: ["Wir melden uns, wenn etwas geklärt werden sollte.", "Wir schauen, welche erste Version sinnvoll wäre.", "Wenn das Projekt passt, bekommst du einen klaren nächsten Schritt."],
     heroMockup: {
+      ariaLabel: "Vorschau eines nutzbaren Websystems von CodeNest",
       publicSite: "\u00d6ffentliche Seite",
       newsTitle: "Nachrichten und Informationen",
       adminArea: "Adminbereich",
@@ -914,7 +917,9 @@ export const getBrowserLanguage = () => {
 export const resolveInitialLanguage = () => {
   const fromUrl = typeof window !== "undefined" ? getUrlLanguage(window.location.search) : "";
   const fromPath = typeof window !== "undefined" ? getPathLanguage(window.location.pathname) : "";
-  return fromUrl || fromPath || getStoredLanguage() || getBrowserLanguage() || "hu";
+  const resolvedLanguage = fromUrl || fromPath || getStoredLanguage() || getBrowserLanguage() || "hu";
+  try { window.localStorage.setItem(storageKey, resolvedLanguage); } catch (_error) {}
+  return resolvedLanguage;
 };
 
 export const storeLanguage = (language) => {
