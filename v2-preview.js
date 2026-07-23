@@ -953,38 +953,122 @@ const createWhyIcon = (index) => {
   return icon;
 };
 
+const founderPhotoAssets = {
+  shared: "Bors&David_3_laptopos.png",
+  portraits: {
+    Bors: "Bors_portrait.png",
+    "D\u00e1vid": "David_portrait.png",
+  },
+};
+
+const getFounderStoryCopy = () => {
+  const copy = {
+    hu: {
+      kicker: "Bors + D\u00e1vid",
+      title: "K\u00e9t fiatal a CodeNest m\u00f6g\u00f6tt",
+      story: "D\u00e1viddal bar\u00e1tok vagyunk, \u00e9s k\u00f6z\u00f6s projektekb\u0151l, versenyekb\u0151l n\u0151tt ki a CodeNest. A G\u00e1rdony.hu \u00fajratervez\u00e9se \u00f3ta m\u00e9g komolyabban \u00e9p\u00edtj\u00fck: haszn\u00e1lhat\u00f3, friss\u00edthet\u0151 weboldalakat szeretn\u00e9nk k\u00e9sz\u00edteni olyan v\u00e1llalkoz\u00e1soknak \u00e9s szervezeteknek, akik online is szeretn\u00e9k megmutatni azt az \u00e9rt\u00e9ket, amit a val\u00f3 \u00e9letben m\u00e1r fel\u00e9p\u00edtettek.",
+      photoAlt: "Bors \u00e9s D\u00e1vid laptop mellett dolgozik",
+      photoCaption: "K\u00f6z\u00f6s munka, r\u00f6vid kommunik\u00e1ci\u00f3s \u00fat, \u00e1tadhat\u00f3 webes alapok.",
+      trustNotes: ["K\u00f6zvetlen\u00fcl vel\u00fcnk besz\u00e9lsz", "Kevesebb k\u00f6r, gyorsabb d\u00f6nt\u00e9s", "A rendszert is \u00e1tadjuk, nem csak az oldalt"],
+      founders: {
+        Bors: "\u00c9n fogom \u00f6ssze a projektet: k\u00e9rdezek, egyeztetek, rendszerezem az \u00f6tleteket, \u00e9s figyelek arra, hogy az oldal ne csak sz\u00e9p legyen, hanem \u00e9rthet\u0151 \u00e9s haszn\u00e1lhat\u00f3 is.",
+        "D\u00e1vid": "D\u00e1vid az oldalak fel\u00fclet\u00e9n dolgozik. \u0150 \u00e9p\u00edti meg azt, amit k\u00f6z\u00f6sen kital\u00e1lunk: hogy a designb\u00f3l m\u0171k\u00f6d\u0151, gyors \u00e9s telefonon is k\u00e9nyelmes weboldal legyen.",
+      },
+    },
+    en: {
+      kicker: "Bors + D\u00e1vid",
+      title: "Two young people behind CodeNest",
+      story: "CodeNest grew out of shared projects, competitions and the way we learned to work together. Since taking on the G\u00e1rdony.hu redesign, we have been building it more seriously: clear, editable websites for businesses and organizations whose real-world value deserves a stronger online presence.",
+      photoAlt: "Bors and D\u00e1vid working together with a laptop",
+      photoCaption: "Shared work, direct communication and web foundations that can be handed over properly.",
+      trustNotes: ["You talk directly with us", "Fewer rounds, faster decisions", "We hand over the system, not only the page"],
+      founders: {
+        Bors: "I keep the project together: asking questions, organizing ideas and making sure the website is not only polished, but understandable and usable too.",
+        "D\u00e1vid": "D\u00e1vid works on the interface. He turns what we plan together into a working, fast and mobile-friendly website.",
+      },
+    },
+    de: {
+      kicker: "Bors + D\u00e1vid",
+      title: "Zwei junge Menschen hinter CodeNest",
+      story: "CodeNest ist aus gemeinsamen Projekten, Wettbewerben und unserer gemeinsamen Arbeitsweise gewachsen. Seit der Neugestaltung von G\u00e1rdony.hu bauen wir es noch ernster auf: klare, editierbare Websites f\u00fcr Unternehmen und Organisationen, deren Wert auch online sichtbar werden soll.",
+      photoAlt: "Bors und D\u00e1vid arbeiten gemeinsam am Laptop",
+      photoCaption: "Gemeinsame Arbeit, direkte Kommunikation und Web-Grundlagen, die sauber \u00fcbergeben werden k\u00f6nnen.",
+      trustNotes: ["Du sprichst direkt mit uns", "Weniger Runden, schnellere Entscheidungen", "Wir \u00fcbergeben das System, nicht nur die Seite"],
+      founders: {
+        Bors: "Ich halte das Projekt zusammen: Ich frage nach, ordne Ideen und achte darauf, dass die Website nicht nur gut aussieht, sondern verst\u00e4ndlich und nutzbar bleibt.",
+        "D\u00e1vid": "D\u00e1vid arbeitet an der Oberfl\u00e4che. Er macht aus dem gemeinsamen Plan eine funktionierende, schnelle und mobilfreundliche Website.",
+      },
+    },
+  };
+  return copy[currentLanguage] || copy.hu;
+};
+
+const createFounderImage = (src, className, alt, fallbackText = "") => {
+  const image = createElement("img", className);
+  image.src = resolveRootAssetPath(src);
+  image.alt = alt;
+  image.loading = "lazy";
+  image.decoding = "async";
+  image.onerror = () => {
+    const fallbackAvatar = createElement("span", className + " founder-image-fallback", fallbackText);
+    image.replaceWith(fallbackAvatar);
+  };
+  return image;
+};
+
+const placeFounderSection = () => {
+  const teamSection = document.getElementById("bors-david");
+  const projectsSection = document.getElementById("munkak");
+  const processSection = document.getElementById("folyamat");
+  if (!teamSection || !projectsSection || !processSection) return;
+  if (projectsSection.nextElementSibling !== teamSection) {
+    projectsSection.after(teamSection);
+  }
+};
+
 const renderTeam = () => {
-  setText('[data-render="team-title"]', teamIntro.title, "Bors + Dávid");
-  setText('[data-render="team-intro"]', teamIntro.text, "Kétfős CodeNest bemutatkozás.");
+  const shell = document.querySelector("#bors-david .team-shell");
+  const story = getFounderStoryCopy();
 
-  const fallbackTrustNotes = [
-    "Rövid kommunikációs út",
-    "Gyorsabb döntések",
-    "Kevesebb félreértés",
-    "Személyesebb együttműködés",
-  ];
-  const trustNotesData = getArray(teamIntro.trustNotes);
-  const trustNotes = (trustNotesData.length ? trustNotesData : fallbackTrustNotes).map((note) =>
-    createElement("span", "", note)
-  );
-  if (trustNotes.length) clearAndAppend('[data-render="team-notes"]', trustNotes);
+  if (!shell) return;
 
-  const cards = team.map((member) => {
-    const name = fallback(member.name, "Csapattag");
-    const card = createElement("article", "team-card");
-    const avatar = createElement("span", "team-avatar", getInitial(name));
-    const content = createElement("div", "team-card-content");
+  const copy = createElement("div", "team-copy founder-story-copy");
+  const kicker = createElement("p", "section-kicker", story.kicker);
+  const title = createElement("h2", "", story.title);
+  const intro = createElement("p", "founder-story-text", story.story);
+  const trustList = createElement("div", "team-trust-list founder-trust-list");
+  trustList.setAttribute("aria-label", story.kicker);
 
-    content.append(
-      createElement("h3", "", name),
-      createElement("p", "team-role", fallback(member.role, "Szerepkör")),
-      createElement("p", "", fallback(member.shortText, "Bemutatkozás később."))
-    );
-    card.append(avatar, content);
-    return card;
+  getArray(story.trustNotes).forEach((note) => {
+    trustList.append(createElement("span", "", note));
   });
 
-  if (cards.length) clearAndAppend('[data-render="team"]', cards);
+  copy.append(kicker, title, intro, trustList);
+
+  const photo = createElement("figure", "founder-shared-photo");
+  const sharedImage = createFounderImage(founderPhotoAssets.shared, "founder-shared-image", story.photoAlt, "B+D");
+  const caption = createElement("figcaption", "", story.photoCaption);
+  photo.append(sharedImage, caption);
+
+  const cards = createElement("div", "team-cards founder-cards");
+  team.forEach((member) => {
+    const name = fallback(member.name, "Csapattag");
+    const card = createElement("article", "team-card founder-card");
+    const portraitWrap = createElement("div", "founder-portrait-wrap");
+    const portrait = createFounderImage(founderPhotoAssets.portraits[name], "founder-portrait", name, getInitial(name));
+    const content = createElement("div", "team-card-content founder-card-content");
+
+    portraitWrap.append(portrait);
+    content.append(
+      createElement("h3", "", name),
+      createElement("p", "team-role", fallback(member.role, "CodeNest")),
+      createElement("p", "", fallback(story.founders?.[name], fallback(member.shortText, "")))
+    );
+    card.append(portraitWrap, content);
+    cards.append(card);
+  });
+
+  shell.replaceChildren(copy, photo, cards);
 };
 
 const getInitial = (name) => Array.from(fallback(name, "C").trim())[0]?.toUpperCase() || "C";
@@ -1428,6 +1512,7 @@ const renderStaticSectionLabels = () => {
   setText('#kapcsolat .section-kicker', labels.contact, labels.contact);
 };
 const renderPage = () => {
+  placeFounderSection();
   renderSeoMeta();
   renderNavigation();
   renderLanguageSwitchers();

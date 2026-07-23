@@ -8766,3 +8766,295 @@ html {
     font-size: 0.66rem;
   }
 }
+
+/* V2 founder story section: real people after proof, not a CV grid */
+#bors-david {
+  position: relative;
+  padding-top: clamp(3rem, 6vw, 5.25rem);
+  padding-bottom: clamp(3.2rem, 6vw, 5.4rem);
+}
+
+#bors-david::before {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(232, 220, 198, 0.54), transparent 20rem),
+    radial-gradient(circle at 88% 42%, rgba(230, 239, 230, 0.48), transparent 24rem),
+    linear-gradient(180deg, rgba(255, 253, 247, 0.24), rgba(242, 232, 215, 0.35));
+}
+
+#bors-david .team-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(360px, 0.78fr);
+  grid-template-areas:
+    "copy photo"
+    "cards cards";
+  gap: clamp(1.1rem, 3vw, 2rem);
+  align-items: stretch;
+  overflow: hidden;
+  padding: clamp(1.1rem, 2.4vw, 1.65rem);
+  border: 1px solid rgba(221, 210, 191, 0.5);
+  border-radius: 32px;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.92), rgba(248, 243, 233, 0.7)),
+    radial-gradient(circle at 92% 12%, rgba(174, 197, 181, 0.24), transparent 18rem);
+  box-shadow: var(--shadow-composed), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+#bors-david .team-shell::after {
+  content: "";
+  position: absolute;
+  right: -3.6rem;
+  bottom: -4rem;
+  width: clamp(190px, 20vw, 300px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(63, 113, 93, 0.1);
+  border-radius: 48% 52% 55% 45%;
+  background:
+    linear-gradient(120deg, transparent 44%, rgba(63, 113, 93, 0.09) 45%, transparent 47%),
+    linear-gradient(38deg, transparent 42%, rgba(212, 195, 165, 0.16) 43%, transparent 46%);
+  opacity: 0.68;
+  pointer-events: none;
+  transform: rotate(-14deg);
+}
+
+.founder-story-copy {
+  grid-area: copy;
+  position: relative;
+  z-index: 1;
+  align-content: center;
+  padding: clamp(0.4rem, 1.6vw, 1rem) clamp(0.2rem, 1.3vw, 0.7rem);
+}
+
+.founder-story-copy h2 {
+  max-width: 620px;
+  margin: 0;
+  font-size: clamp(2rem, 3.4vw, 3.35rem);
+  line-height: 1.06;
+}
+
+.founder-story-text {
+  max-width: 660px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.18vw, 1.1rem);
+  font-weight: 520;
+  line-height: 1.72;
+}
+
+.founder-trust-list {
+  margin-top: 0.2rem;
+}
+
+.founder-trust-list span {
+  border-color: rgba(174, 197, 181, 0.54);
+  background: rgba(230, 239, 230, 0.62);
+  box-shadow: 0 10px 20px rgba(17, 34, 53, 0.04);
+}
+
+.founder-shared-photo {
+  grid-area: photo;
+  position: relative;
+  z-index: 1;
+  min-height: clamp(310px, 27vw, 430px);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(221, 210, 191, 0.58);
+  border-radius: 26px;
+  background: var(--color-sand-soft);
+  box-shadow: 0 24px 54px rgba(17, 34, 53, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.founder-shared-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  object-position: center;
+}
+
+.founder-shared-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 54%, rgba(7, 21, 35, 0.52));
+  pointer-events: none;
+}
+
+.founder-shared-photo figcaption {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  max-width: 28rem;
+  color: rgba(255, 253, 247, 0.88);
+  font-size: 0.88rem;
+  font-weight: 680;
+  line-height: 1.45;
+}
+
+.founder-cards {
+  grid-area: cards;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.9rem, 2vw, 1.2rem);
+  margin-top: clamp(0.2rem, 1vw, 0.55rem);
+}
+
+.founder-card {
+  display: grid;
+  grid-template-columns: clamp(86px, 10vw, 122px) minmax(0, 1fr);
+  gap: clamp(0.8rem, 1.8vw, 1.15rem);
+  align-items: center;
+  min-height: 0;
+  padding: clamp(0.85rem, 1.7vw, 1.15rem);
+  border-color: rgba(221, 210, 191, 0.48);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.94), rgba(248, 243, 233, 0.78));
+  box-shadow: 0 14px 34px rgba(17, 34, 53, 0.075), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.founder-portrait-wrap {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(230, 239, 230, 0.75), rgba(242, 232, 215, 0.74));
+}
+
+.founder-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.founder-image-fallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 6rem;
+  place-items: center;
+  color: var(--forest-strong);
+  font-weight: 880;
+}
+
+.founder-card-content {
+  min-width: 0;
+}
+
+.founder-card h3 {
+  margin: 0 0 0.3rem;
+  font-size: clamp(1.25rem, 1.7vw, 1.55rem);
+}
+
+.founder-card .team-role {
+  margin-bottom: 0.58rem;
+  color: var(--forest-strong);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.founder-card p:last-child {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.94rem;
+  line-height: 1.58;
+}
+
+@media (max-width: 1024px) {
+  #bors-david .team-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "copy"
+      "photo"
+      "cards";
+  }
+
+  .founder-story-copy {
+    max-width: 760px;
+  }
+
+  .founder-shared-photo {
+    min-height: clamp(285px, 45vw, 410px);
+  }
+}
+
+@media (max-width: 768px) {
+  #bors-david {
+    padding-top: clamp(2.5rem, 9vw, 3.4rem);
+    padding-bottom: clamp(2.6rem, 9vw, 3.8rem);
+  }
+
+  #bors-david .team-shell {
+    padding: clamp(0.85rem, 3vw, 1.1rem);
+    border-radius: 24px;
+  }
+
+  .founder-story-copy h2 {
+    font-size: clamp(1.78rem, 8vw, 2.35rem);
+  }
+
+  .founder-story-text {
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .founder-shared-photo {
+    min-height: clamp(235px, 58vw, 330px);
+    border-radius: 20px;
+  }
+
+  .founder-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .founder-trust-list span:nth-child(n+3) {
+    display: none;
+  }
+
+  .founder-shared-photo figcaption {
+    left: 0.78rem;
+    right: 0.78rem;
+    bottom: 0.78rem;
+    font-size: 0.78rem;
+  }
+
+  .founder-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 0.72rem;
+    padding: 0.72rem;
+    border-radius: 18px;
+  }
+
+  .founder-portrait-wrap {
+    border-radius: 14px;
+  }
+
+  .founder-card .team-role {
+    margin-bottom: 0.4rem;
+    font-size: 0.76rem;
+  }
+
+  .founder-card p:last-child {
+    font-size: 0.86rem;
+    line-height: 1.48;
+  }
+}
+
+@media (max-width: 360px) {
+  .founder-card {
+    grid-template-columns: 1fr;
+  }
+
+  .founder-portrait-wrap {
+    width: 96px;
+    max-width: 42vw;
+  }
+}
