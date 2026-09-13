@@ -1,0 +1,11 @@
+# Override the parent site's year-long cache for mutable application URLs.
+# GitHub Pages uses the versioned loader instead; it does not read .htaccess.
+<IfModule mod_expires.c>
+    ExpiresActive Off
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|json|js|css)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+        Header unset Expires
+    </FilesMatch>
+</IfModule>

@@ -45,7 +45,7 @@ const teams = [
 ];
 function teamBrandMarkup(teamId) {
   const subtitle = teams.find((team) => team.id === teamId)?.brandLabel || "ESPORT";
-  return `<img class="holo-brand-mark" src="assets/holofyrn-logo.png" alt="" /><span class="holo-wordmark"><strong>HoloFyrn</strong><small>${subtitle}</small></span>`;
+  return `<img class="holo-brand-mark" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" /><span class="holo-wordmark"><strong>HoloFyrn</strong><small>${subtitle}</small></span>`;
 }
 
 const eventColors = {
@@ -99,7 +99,7 @@ const sortLabels = {
   contact: "Contact",
 };
 const resultTypes = ["Match", "Tournament"];
-const logoMarkup = `<img class="brand-logo" src="assets/holofyrn-logo.png" alt="HoloFyrn logo">`;
+const logoMarkup = `<img class="brand-logo" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="HoloFyrn logo">`;
 const projectVersion = "v.1.0.1";
 
 const adminUsers = [];
@@ -274,7 +274,7 @@ function applyRemoteStore() {
 async function setupFirebase() {
   try {
     const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule, firebaseAuthModule] = await Promise.all([
-      import("./firebaseConfig.js"),
+      import(`./firebaseConfig.js?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}`),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
@@ -1295,7 +1295,7 @@ function navButton(page, label) {
 
 function primaryNavButton(page, label, asset, relatedPages = [page]) {
   const active = relatedPages.includes(currentPage) ? "active" : "";
-  return `<button class="primary-nav-item ${active}" data-page="${page}"><img src="assets/Menu-UI/${asset}" alt="" /><span class="primary-nav-label">${label}</span></button>`;
+  return `<button class="primary-nav-item ${active}" data-page="${page}"><img src="assets/Menu-UI/${asset}?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" /><span class="primary-nav-label">${label}</span></button>`;
 }
 
 function pageTitle(page) {
@@ -1346,7 +1346,7 @@ function renderAuth(store) {
           <p id="auth-message" class="muted"></p>
         </form>
       </section>
-      <section class="auth-visual" aria-label="HoloFyrn Esports"><div class="auth-visual-top"><span>HOLOFYRN ESPORTS</span><span>ROCKET LEAGUE</span></div><img class="auth-hero-logo" src="assets/holofyrn-logo.png" alt="HoloFyrn Esports dragon logo" /><div class="auth-visual-copy"><p class="eyebrow">ONE TEAM. ONE FIRE.</p><h2>Built to compete.</h2><p>Train together. Rise together.</p></div></section>
+      <section class="auth-visual" aria-label="HoloFyrn Esports"><div class="auth-visual-top"><span>HOLOFYRN ESPORTS</span><span>ROCKET LEAGUE</span></div><img class="auth-hero-logo" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="HoloFyrn Esports dragon logo" /><div class="auth-visual-copy"><p class="eyebrow">ONE TEAM. ONE FIRE.</p><h2>Built to compete.</h2><p>Train together. Rise together.</p></div></section>
     </div>
   `;
 
@@ -1457,7 +1457,7 @@ function latestMatchCard(team, match) {
       ${overviewSectionTitle("&#9813;", "LATEST MATCH")}
       <div class="latest-match-content">
         <div class="match-side our-team">
-          <img src="assets/holofyrn-logo.png" alt="" />
+          <img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />
           <strong>${esc(team.name)}</strong>
           <span>${esc(team.label)} roster</span>
         </div>
@@ -1496,8 +1496,8 @@ function streakCard(streak, matches) {
 }
 
 function overviewResultIcon(outcome) {
-  if (outcome === "win") return `<img src="assets/overview-assets/icon-win-clean.png" alt="Win" />`;
-  if (outcome === "loss") return `<img src="assets/overview-assets/icon-lose-clean.png" alt="Loss" />`;
+  if (outcome === "win") return `<img src="assets/overview-assets/icon-win-clean.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Win" />`;
+  if (outcome === "loss") return `<img src="assets/overview-assets/icon-lose-clean.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Loss" />`;
   return `<span class="neutral-result" aria-label="Unclassified result">–</span>`;
 }
 
@@ -1513,7 +1513,7 @@ function recentMatchesTable(team, matches) {
               <tr>
                 <td>${esc(fmtOverviewDate(match))}</td>
                 <td><strong>${esc(match.tournament || match.title || "Match")}</strong><small>${esc(match.title || "Recorded result")}</small></td>
-                <td><span class="overview-team-cell"><img src="assets/holofyrn-logo.png" alt="" />${esc(team.name)}</span></td>
+                <td><span class="overview-team-cell"><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />${esc(team.name)}</span></td>
                 <td>${esc(match.opponent || "TBA")}</td>
                 <td><span class="result-pill result-${match.outcome}">${match.outcome === "win" ? "WIN" : match.outcome === "loss" ? "LOSS" : "–"}</span></td>
                 <td class="overview-score-cell">${esc(match.score || "-")}</td>
@@ -1611,7 +1611,7 @@ function tournamentCard(item, editable) {
     <article class="tournament-card">
       <div class="tournament-card-topline"><span class="tournament-status status-${status}">${status.toUpperCase()}</span>${editable ? `<div class="tournament-card-actions"><button data-edit="tournaments:${item.id}" aria-label="Edit ${escapeAttr(item.name)}">Edit</button><button data-delete="tournaments:${item.id}" aria-label="Delete ${escapeAttr(item.name)}">Delete</button></div>` : ""}</div>
       <div class="tournament-identity">
-        <span class="tournament-logo"><img src="assets/Menu-UI/icon-league.png" alt="Tournament" /></span>
+        <span class="tournament-logo"><img src="assets/Menu-UI/icon-league.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Tournament" /></span>
         <div><h3>${esc(item.name || "Untitled Tournament")}</h3><p>Rocket League</p></div>
       </div>
       <span class="tournament-stage">${esc(item.stage || (status === "upcoming" ? "Registration" : status === "completed" ? "Finished" : "In progress"))}</span>
@@ -1622,7 +1622,7 @@ function tournamentCard(item, editable) {
       </dl>
       <div class="tournament-roster-summary">
         <span>HOLOFYRN ROSTER</span>
-        <strong><img src="assets/holofyrn-logo.png" alt="" />${esc(teamName(item.teamId))}</strong>
+        <strong><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />${esc(teamName(item.teamId))}</strong>
         <small>${matches.length ? `${matches.length} recorded tournament matches` : "Match schedule not recorded yet"}</small>
       </div>
       <button class="view-tournament-button" data-tournament-view="${item.id}">View Tournament <span aria-hidden="true">&#8594;</span></button>
@@ -1639,7 +1639,7 @@ function tournamentDetailPage(item, editable) {
     <section class="tournament-detail-page">
       <div class="tournament-detail-nav"><button class="roster-back" data-tournament-back="true"><span aria-hidden="true">&#8592;</span> All tournaments</button>${editable ? `<div class="row-actions"><button data-tournament-detail-edit="${item.id}">Edit Tournament</button><button data-delete="tournaments:${item.id}">Delete</button></div>` : ""}</div>
       <section class="overview-card tournament-detail-hero">
-        <span class="tournament-detail-logo"><img src="assets/Menu-UI/icon-league.png" alt="Tournament" /></span>
+        <span class="tournament-detail-logo"><img src="assets/Menu-UI/icon-league.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Tournament" /></span>
         <div class="tournament-detail-title"><span class="tournament-status status-${status}">${status.toUpperCase()}</span><h2>${esc(item.name || "Untitled Tournament")}</h2><p>Rocket League · ${esc(item.stage || "Tournament")}</p></div>
         <dl class="tournament-detail-stats">
           <div><dt>Prize Pool</dt><dd>${item.prizeEur ? esc(formatEuro(item.prizeEur)) : "TBA"}</dd></div>
@@ -1715,7 +1715,7 @@ function teamSelector(store) {
           const playerCount = store.players.filter((player) => player.teamId === team.id).length;
           return `
             <button class="team-selector-card team-selector-card-${team.id}" data-roster-team="${team.id}" aria-label="View ${escapeAttr(team.name)} roster">
-              <span class="roster-art"><span class="roster-edition">HOLOFYRN / ${esc(team.label)}</span><img src="assets/holofyrn-logo.png" alt="${escapeAttr(team.name)}" /><span class="roster-art-title">${team.id === "main" ? "MAIN ROSTER" : esc(team.label).toUpperCase()}</span></span>
+              <span class="roster-art"><span class="roster-edition">HOLOFYRN / ${esc(team.label)}</span><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="${escapeAttr(team.name)}" /><span class="roster-art-title">${team.id === "main" ? "MAIN ROSTER" : esc(team.label).toUpperCase()}</span></span>
               <span class="team-card-meta"><strong>${esc(team.label)}</strong><small>${playerCount} roster member${playerCount === 1 ? "" : "s"} · View roster</small></span>
             </button>
           `;
