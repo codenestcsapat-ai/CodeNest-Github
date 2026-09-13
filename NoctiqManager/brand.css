@@ -1,0 +1,141 @@
+:root {
+  --bg: #0c0c0e;
+  --surface: #141416;
+  --surface-soft: #1c1c1f;
+  --line: rgba(218, 211, 212, .14);
+  --line-strong: rgba(218, 211, 212, .3);
+  --text: #f6f3f3;
+  --muted: #b3abad;
+  --cyan: #ff6976;
+  --green: #71dba2;
+  --pink: #f04a5e;
+  --purple: #a81027;
+  --danger: #ff6976;
+}
+
+body {
+  background: radial-gradient(ellipse at 90% 0, #36101780, transparent 48%), #0c0c0e;
+}
+::selection { background: #a81027; color: white; }
+button, a, summary { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: 2px solid #ff6976;
+  outline-offset: 4px;
+}
+button { transition: background .18s, border-color .18s, box-shadow .18s; }
+.primary {
+  border: 1px solid #ed4055;
+  border-radius: 4px;
+  background: linear-gradient(110deg, #c51b33, #971329);
+  box-shadow: 0 6px 22px #b4102526;
+  letter-spacing: .03em;
+}
+.primary:hover { background: #d3243d; box-shadow: 0 6px 26px #b4102545; }
+.eyebrow { letter-spacing: .16em; font-size: 10px; color: #d3a3aa; }
+h1 { font-weight: 800; letter-spacing: -.045em; }
+.panel, .metric, .score-card, .overview-card, .tournament-card, .routine-card {
+  border-radius: 6px;
+  background: linear-gradient(135deg, #1d1b1e, #121214 70%);
+}
+.metric { border-top: 2px solid #a91c30; }
+.chip.ok { color: #83e3ac; border-color: #43855c; background: #163222; }
+input, select, textarea { background: #101012; border-radius: 4px; }
+.site-header { border-width: 1px; border-radius: 6px; background: #141416f5; }
+.site-header::before { left: 0; top: -1px; width: 180px; background: linear-gradient(90deg, #eb2943, transparent); box-shadow: none; }
+.primary-nav .primary-nav-item { border-radius: 4px; }
+.primary-nav .primary-nav-item.active { background: #bd1b3020; }
+.primary-nav .primary-nav-item img, .tournament-logo img, .tournament-detail-logo img { filter: grayscale(1); }
+.primary-nav .primary-nav-item::after { height: 2px; background: #ef3b52; box-shadow: 0 0 12px #ef3b5244; }
+.primary-nav-label { font-size: 13px; }
+.header-account .user-pill, .nav-team-dropdown, .nav-team-dropdown button { border-radius: 5px; }
+.nav-brand { gap: 10px; }
+.nav-brand .holo-brand-mark, .nav-team-dropdown button .holo-brand-mark {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 3px;
+}
+.nav-team-dropdown button { gap: 12px; color: var(--text); }
+.nav-team-dropdown { max-height: min(560px, 70vh); overflow-y: auto; overscroll-behavior: contain; }
+.holo-wordmark { display: grid; gap: 4px; text-align: left; }
+.holo-wordmark strong { font-size: 21px; letter-spacing: -.045em; font-weight: 900; }
+.holo-wordmark small { font-size: 9px; letter-spacing: .25em; color: #d3a3aa; }
+.brand-logo { background: white; border-color: #fff; border-radius: 4px; }
+.brand strong { font-size: 17px; }
+.brand span { font-size: 12px; margin-top: 5px; }
+.auth-screen { grid-template-columns: minmax(350px, .85fr) minmax(0, 1.15fr); padding: 24px; gap: 24px; max-width: 1600px; margin: auto; }
+.auth-panel { width: min(440px, 100%); justify-self: center; padding: 36px; background: transparent; border: 0; box-shadow: none; }
+.auth-panel .brand { margin-bottom: 64px; }
+.auth-intro { margin-bottom: 30px; }
+.auth-intro h1 { font-size: clamp(32px, 4vw, 46px); margin: 12px 0; }
+.auth-intro > p:last-child { font-size: 14px; line-height: 1.6; }
+#auth-form { grid-template-columns: 1fr; gap: 18px; }
+#auth-form .primary { margin-top: 4px; min-height: 48px; }
+.auth-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  min-height: 690px;
+  padding: 32px;
+  border-radius: 5px;
+  border-color: #573038;
+  background: linear-gradient(145deg, transparent 55%, #93132a26 55.1%, transparent 80%), radial-gradient(ellipse at 50% 45%, #57212a, #191216 60%, #121214);
+}
+.auth-visual-top { display: flex; justify-content: space-between; gap: 16px; width: 100%; font-size: 9px; font-weight: 700; letter-spacing: .16em; color: #c2a9ad; }
+.auth-hero-logo { width: min(400px, 86%); border: 7px solid #fff; border-radius: 3px; box-shadow: 18px 18px 0 #09090b55, 0 0 65px #dc193426; transform: rotate(-3deg); }
+.auth-visual-copy { width: 100%; padding-top: 24px; border-top: 1px solid #ffffff20; }
+.auth-visual-copy h2 { margin: 12px 0; font-size: clamp(28px, 3vw, 42px); letter-spacing: -.035em; }
+.auth-visual-copy > p:last-child { color: var(--muted); font-size: 13px; }
+.team-selector-card { border-radius: 6px; border-color: #59303a; background: #171416; }
+.roster-art { position: relative; display: grid; justify-items: center; gap: 26px; padding: 24px; background: linear-gradient(140deg, #2f171d, #131315 65%); }
+.roster-edition { justify-self: start; color: #c6a5ab; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+.team-selector-card .roster-art img { width: 100%; aspect-ratio: 1; border: 5px solid white; border-radius: 2px; }
+.roster-art-title { justify-self: start; font-size: clamp(20px, 2.5vw, 30px); font-weight: 900; letter-spacing: -.025em; }
+.team-card-meta { background: #191719; }
+.match-side > img, .overview-team-cell img, .tournament-roster-summary img { background: white; border-radius: 3px; }
+.team-selector-card:hover, .team-selector-card-academy:hover { border-color: #ec4056; box-shadow: 0 20px 40px #740c2229; }
+@media (max-width: 900px) {
+  .auth-screen { grid-template-columns: 1fr; }
+  .auth-panel { padding: 28px 16px; }
+  .auth-panel .brand { margin-bottom: 38px; }
+  .auth-visual { min-height: 540px; }
+  .site-header { border-radius: 6px; }
+}
+@media (max-width: 560px) {
+  .auth-screen { padding: 12px; }
+  .auth-visual { padding: 22px; min-height: 470px; }
+  .auth-visual-top { font-size: 8px; letter-spacing: .08em; }
+  .site-header { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 8px; }
+  .nav-brand .holo-brand-mark { width: 36px; height: 36px; }
+  .holo-wordmark strong { font-size: 18px; }
+  .holo-wordmark small { font-size: 8px; }
+  .header-account { padding-left: 8px; }
+  .team-selector-card { border-radius: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+.availability-entry-panel > p { margin-bottom: 20px; line-height: 1.6; }
+.availability-entry-panel .row-actions { align-items: center; margin-top: 14px; }
+.availability-entry-panel .row-actions .primary { margin-top: 0; min-height: 44px; padding: 0 16px; border-color: #ed4055; background: linear-gradient(110deg, #c51b33, #971329); color: #fff; }
+.availability-entry-panel .row-actions .primary:disabled { opacity: .6; cursor: wait; }
+[data-availability-message]:not(:empty) { margin-top: 14px; }
+.availability-days { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr)); gap: 14px; }
+.availability-day-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 5px; background: #111113; }
+.availability-day-card > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
+.availability-day-card h3 { font-size: 15px; }
+.availability-day-card time { color: var(--muted); font-size: 12px; }
+.availability-day-card ul { padding: 0; margin: 0; list-style: none; }
+.availability-day-card li { display: grid; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.availability-day-card li:last-child { border-bottom: 0; }
+.availability-day-card li strong { display: block; overflow-wrap: anywhere; margin-bottom: 7px; }
+.availability-range { display: inline-block; margin-right: 10px; color: #ff8994; font-weight: 700; font-variant-numeric: tabular-nums; }
+.availability-day-card small { display: block; margin-top: 6px; }
+.availability-day-card li p { margin-top: 8px; overflow-wrap: anywhere; }
+.availability-day-card > p { font-size: 13px; }
+.availability-panel-head { gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
