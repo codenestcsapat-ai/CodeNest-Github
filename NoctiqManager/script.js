@@ -1,4 +1,3 @@
-// Legacy persistence and login identifiers intentionally survive the HoloFyrn rebrand.
 const sessionKey = "noctiq-manager-session";
 const storeKey = "noctiq-manager-store";
 const app = document.querySelector("#app");
@@ -23,9 +22,6 @@ let unsubscribeUsers = null;
 let authProfileCreationInProgress = false;
 
 let currentPage = "dashboard";
-let selectedRosterTeamId = "";
-let selectedTeamContextId = "main";
-let selectedTournamentId = "";
 let filters = {};
 let filterTimer;
 let calendarMonth = new Date();
@@ -35,18 +31,13 @@ let selectedReplayResultId = "";
 let availabilityWeekOffset = 0;
 
 const teams = [
-  { id: "main", name: "HoloFyrn Esport", label: "HoloFyrn Esport", brandLabel: "ESPORT" },
-  { id: "academy", name: "HoloFyrn Academy", label: "Academy", brandLabel: "ACADEMY" },
-  // Keep the original SYNQ id so existing players and records stay attached.
-  { id: "rls", name: "HoloFyrn SYNQ", label: "SYNQ", brandLabel: "SYNQ" },
-  { id: "rls_esport", name: "RLS HoloFyrn Esport", label: "RLS HoloFyrn Esport", brandLabel: "RLS / ESPORT" },
-  { id: "rls_academy", name: "RLS HoloFyrn Academy", label: "RLS HoloFyrn Academy", brandLabel: "RLS / ACADEMY" },
-  { id: "rls_eldr", name: "RLS HoloFyrn Eldr", label: "RLS HoloFyrn Eldr", brandLabel: "RLS / ELDR" },
+  { id: "rls-academy", name: "Rls HoloFyrn Academy", label: "RLS Academy" },
+  { id: "rls-eldr", name: "Rls HoloFyrn Eldr", label: "RLS Eldr" },
+  { id: "synq", name: "HoloFyrn Synq", label: "Synq" },
+  { id: "main", name: "HoloFyrn Esports", label: "Main Team" },
+  { id: "academy", name: "HoloFyrn Academy", label: "Academy" },
+  { id: "rls", name: "HoloFyrn Esports RLS", label: "HoloFyrn Esports RLS" },
 ];
-function teamBrandMarkup(teamId) {
-  const subtitle = teams.find((team) => team.id === teamId)?.brandLabel || "ESPORT";
-  return `<img class="holo-brand-mark" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" /><span class="holo-wordmark"><strong>HoloFyrn</strong><small>${subtitle}</small></span>`;
-}
 
 const eventColors = {
   Match: "#36d399",
@@ -75,6 +66,7 @@ const statLabels = {
   teamFit: "Team fit",
 };
 const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const availabilitySlots = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 const weekDayLabels = { Hetfo: "Monday", Kedd: "Tuesday", Szerda: "Wednesday", Csutortok: "Thursday", Pentek: "Friday", Szombat: "Saturday", Vasarnap: "Sunday" };
 const customMapOptions = ["Dribble Challenge 2", "Aim Training by Coco", "Speed Jump Rings", "Air Dribble Mele", "Hornets Nest", "Custom map"];
 const customPackOptions = ["Aerial consistency", "Shooting consistency", "Shadow defense", "Backboard reads", "Custom pack"];
@@ -99,7 +91,7 @@ const sortLabels = {
   contact: "Contact",
 };
 const resultTypes = ["Match", "Tournament"];
-const logoMarkup = `<img class="brand-logo" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="HoloFyrn logo">`;
+const logoMarkup = `<img class="brand-logo" src="assets/holofyrn-logo.png" alt="HoloFyrn logo">`;
 const projectVersion = "v.1.0.1";
 
 const adminUsers = [];
@@ -147,8 +139,8 @@ const schemas = {
   },
   tournaments: {
     title: "Tournament entry",
-    empty: { id: "", name: "", dateTime: "", durationMinutes: "180", prizeEur: "", teamsCount: "", stage: "", status: "Auto", link: "", notes: "", teamId: "main" },
-    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["prizeEur", "Prize pool EUR", "number"], ["teamsCount", "Number of teams", "number"], ["stage", "Current stage"], ["status", "Status", ["Auto", "Live", "Upcoming", "Completed"]], ["link", "Tournament link", "url"], ["teamId", "HoloFyrn roster", "team"], ["notes", "Notes", "textarea"]],
+    empty: { id: "", name: "", dateTime: "", durationMinutes: "180", prizeEur: "", link: "", notes: "", teamId: "main" },
+    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["prizeEur", "Prize pool EUR", "number"], ["link", "Registration link", "url"], ["teamId", "HoloFyrn team", "team"], ["notes", "Notes", "textarea"]],
     headers: ["Date", "Duration", "Name", "Prize", "Team", "Link", "Notes"],
     cells: (item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.name, `${item.prizeEur || "-"} EUR`, teamName(item.teamId), item.link ? `<a href="${escapeAttr(item.link)}" target="_blank">Open</a>` : "-", item.notes],
     search: (item) => `${item.name} ${item.notes}`,
@@ -204,6 +196,7 @@ function stripDemoRows(key, rows = []) {
 function cleanStoreForSave(store) {
   const cleanStore = {
     users: (store.users || []).filter((user) => !isBuiltInUser(user)).map(({ password, ...user }) => user),
+    ...(store.managerV8 ? { managerV8: store.managerV8 } : {}),
   };
   dataKeys.forEach((key) => {
     const rows = stripDemoRows(key, store[key] || []);
@@ -274,7 +267,7 @@ function applyRemoteStore() {
 async function setupFirebase() {
   try {
     const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule, firebaseAuthModule] = await Promise.all([
-      import(`./firebaseConfig.js?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}`),
+      import("./firebaseConfig.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
@@ -315,7 +308,7 @@ function initLocalStore() {
 }
 
 async function initRemoteStore() {
-  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>HoloFyrn Esports</strong><span>Loading Firebase...</span></div></div></section></div>`;
+  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Loading Firebase...</span></div></div></section></div>`;
   try {
     const firebaseReady = await setupFirebase();
     if (!firebaseReady) {
@@ -1041,6 +1034,12 @@ function normalizeAvailabilityTime(time = "") {
   return `${String(numericHour).padStart(2, "0")}:${String(Number(minute || 0)).padStart(2, "0")}`;
 }
 
+function availabilitySlotEnd(startTime) {
+  const [hour, minute] = normalizeAvailabilityTime(startTime).split(":").map(Number);
+  if (!Number.isFinite(hour)) return "";
+  return `${String(hour + 1).padStart(2, "0")}:${String(minute || 0).padStart(2, "0")}`;
+}
+
 function availabilityPlayerLabel(player) {
   return player?.rlName || player?.name || player?.discord || "Unnamed";
 }
@@ -1070,83 +1069,88 @@ function availabilityWeekLabel(weekStart) {
   return `${format.format(weekStart)} - ${format.format(weekEnd)}`;
 }
 
-function canManageAvailabilityForPlayer(user, player) {
+function availabilitySlotMatches(item, player, day, startTime, date = "") {
+  const itemPlayer = item.playerId
+    ? item.playerId === player.id
+    : String(item.playerName || "").toLowerCase() === availabilityPlayerLabel(player).toLowerCase();
+  return Boolean(
+    itemPlayer &&
+    normalizeAvailabilityDay(item.day) === day &&
+    (!date || !item.date || item.date === date) &&
+    normalizeAvailabilityTime(item.startTime) === startTime &&
+    (item.status || "Available") === "Available"
+  );
+}
+
+function canToggleAvailabilitySlot(user, player) {
   if (!user || !player) return false;
   if (isStaff(user) || isTeamCaptain(user)) return true;
   const ownPlayerId = user.playerId || "";
   return Boolean(ownPlayerId && ownPlayerId === player.id);
 }
 
-function availabilityRangeError(entry) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.date || "")) return "Choose a date.";
-  const date = new Date(`${entry.date}T12:00:00`);
-  if (!Number.isFinite(date.getTime()) || dateInputValue(date) !== entry.date) return "Choose a valid date.";
-  const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-  if (!timePattern.test(entry.startTime || "") || !timePattern.test(entry.endTime || "")) return "Enter both a start and an end time.";
-  if (entry.endTime <= entry.startTime) return "End time must be later than start time on the selected day.";
-  return "";
-}
-
-function availabilityEntryPlayer(store, item) {
-  return store.players.find((player) => item.playerId ? player.id === item.playerId :
-    player.teamId === item.teamId && availabilityPlayerLabel(player).toLowerCase() === String(item.playerName || "").toLowerCase());
-}
-
-function availabilityEntriesForDate(entries, date) {
-  const day = weekDays[(new Date(`${date}T12:00:00`).getDay() + 6) % 7];
-  return entries.filter((item) => item.date ? item.date === date : normalizeAvailabilityDay(item.day) === day)
-    .sort((a, b) => String(a.startTime || "").localeCompare(String(b.startTime || "")) || String(a.playerName || "").localeCompare(String(b.playerName || "")));
-}
-
-function availabilityRangeForm(store, user, weekStart) {
-  const scope = availabilityTeamScope(user);
-  const players = store.players.filter((player) => (scope === "all" || player.teamId === scope) && canManageAvailabilityForPlayer(user, player));
-  if (!players.length) return `<section class="panel"><p class="muted">No editable player profile in this team. Select your team from the menu to add your availability, or ask your manager to link your player profile.</p></section>`;
-  const today = dateInputValue(new Date());
-  const weekEnd = dateInputValue(addDays(weekStart, 6));
-  const date = today >= dateInputValue(weekStart) && today <= weekEnd ? today : dateInputValue(weekStart);
-  return `<section class="panel availability-entry-panel"><h2>Your availability</h2>
-    <p class="muted">Choose a date and the time you are available, from start to finish. All times are Europe/Budapest.</p>
-    <form id="availability-range-form" data-entry-id="">
-      <div class="form-grid">
-        <label><span>Player</span><select name="playerId" required>${players.map((player) => `<option value="${escapeAttr(player.id)}">${esc(availabilityPlayerLabel(player))} / ${esc(teamName(player.teamId))}</option>`).join("")}</select></label>
-        <label><span>Date</span><input type="date" name="date" value="${date}" required></label>
-        <label><span>Available from</span><input type="time" name="startTime" required></label>
-        <label><span>Available until</span><input type="time" name="endTime" required></label>
-      </div>
-      <div class="row-actions"><button class="primary" type="submit">Save availability</button><button type="button" data-availability-cancel class="hidden">Cancel editing</button></div>
-      <p class="warning" data-availability-message role="status" aria-live="polite"></p>
-    </form>
-  </section>`;
-}
-
-function availabilitySchedule(store, user, teamId, weekStart) {
+function availabilityMatrix(store, user, teamId, weekStart = startOfAvailabilityWeek()) {
+  const players = (store.players || [])
+    .filter((player) => player.teamId === teamId)
+    .sort((a, b) => availabilityPlayerLabel(a).localeCompare(availabilityPlayerLabel(b)));
   const entries = visibleAvailabilityRows(store, user).filter((item) => item.teamId === teamId);
-  return `<div class="availability-days">${weekDays.map((day, index) => {
-    const date = dateInputValue(addDays(weekStart, index));
-    const rows = availabilityEntriesForDate(entries, date);
-    return `<section class="availability-day-card"><header><h3>${esc(day)}</h3><time datetime="${date}">${date}</time></header>
-      ${rows.length ? `<ul>${rows.map((item) => {
-        const player = availabilityEntryPlayer(store, item);
-        const editable = canManageAvailabilityForPlayer(user, player);
-        return `<li><div><strong>${esc(player ? availabilityPlayerLabel(player) : item.playerName || "Unnamed")}</strong><span class="availability-range">${esc(availabilityTimeLabel(item))}</span>${availabilityStatusBadge(item.status)}${!item.date ? '<small>Weekly</small>' : ""}${item.notes ? `<p class="muted">${multiline(item.notes)}</p>` : ""}</div>
-          ${editable ? `<div class="row-actions"><button type="button" data-availability-edit="${escapeAttr(item.id)}" data-availability-date="${date}" aria-label="Edit ${escapeAttr(availabilityPlayerLabel(player))} ${date} ${escapeAttr(availabilityTimeLabel(item))}">Edit</button><button type="button" data-availability-delete="${escapeAttr(item.id)}" aria-label="Delete ${escapeAttr(availabilityPlayerLabel(player))} ${date} ${escapeAttr(availabilityTimeLabel(item))}">Delete</button></div>` : ""}</li>`;
-      }).join("")}</ul>` : '<p class="muted">No availability submitted.</p>'}</section>`;
-  }).join("")}</div>`;
-}
+  if (!players.length) return `<p class="muted">No ${teamName(teamId).toLowerCase()} players found.</p>`;
 
+  const rows = weekDays.flatMap((day, dayIndex) => availabilitySlots.map((slot, slotIndex) => {
+    const date = dateInputValue(addDays(weekStart, dayIndex));
+    const availableCount = players.filter((player) => entries.some((item) => availabilitySlotMatches(item, player, day, slot, date))).length;
+    return `
+      <tr>
+        ${slotIndex === 0 ? `<th class="availability-day" rowspan="${availabilitySlots.length}">${esc(day)}<small>${esc(date)}</small></th>` : ""}
+        <th class="availability-time">${esc(slot)}</th>
+        ${players.map((player) => {
+          const checked = entries.some((item) => availabilitySlotMatches(item, player, day, slot, date));
+          const disabled = canToggleAvailabilitySlot(user, player) ? "" : "disabled";
+          const label = `${availabilityPlayerLabel(player)} ${day} ${date} ${slot}`;
+          return `<td class="availability-cell">
+            <input
+              type="checkbox"
+              data-availability-slot="true"
+              data-player-id="${escapeAttr(player.id)}"
+              data-team-id="${escapeAttr(teamId)}"
+              data-day="${escapeAttr(day)}"
+              data-date="${escapeAttr(date)}"
+              data-start-time="${escapeAttr(slot)}"
+              aria-label="${escapeAttr(label)}"
+              ${checked ? "checked" : ""}
+              ${disabled}
+            >
+          </td>`;
+        }).join("")}
+        <td class="availability-count">${availableCount}</td>
+      </tr>
+    `;
+  })).join("");
 
-function availabilityTeamScope(user) {
-  const selected = validTeamId(selectedTeamContextId);
-  if (!isAdmin(user)) return selected;
-  const filter = filters.availability?.team;
-  return filter === "all" ? "all" : validTeamId(filter, selected);
+  return `
+    <div class="availability-table-wrap">
+      <table class="availability-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Time</th>
+            ${players.map((player) => `<th>${esc(availabilityPlayerLabel(player))}</th>`).join("")}
+            <th>Players available</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
 }
 
 function visibleAvailabilityRows(store, user) {
-  if (!user) return [];
-  const scope = availabilityTeamScope(user);
-  return (store.availability || []).filter((item) => scope === "all" || item.teamId === scope);
+  if (isStaff(user) || isTeamCaptain(user)) return store.availability || [];
+  const player = matchingPlayerForUser(store, user);
+  return (store.availability || []).filter((item) => (
+    (player?.id && item.playerId === player.id) ||
+    (player?.teamId && item.teamId === player.teamId)
+  ));
 }
 
 function notificationTargets(store, entry) {
@@ -1243,44 +1247,41 @@ function render() {
 
   app.innerHTML = `
     <div class="app-shell">
-      <header class="site-header">
-        <details class="nav-brand-menu">
-          <summary class="nav-brand" aria-label="Choose HoloFyrn team">
-            ${teamBrandMarkup(selectedTeamContextId)}
-            <span class="brand-chevron" aria-hidden="true">v</span>
-          </summary>
-          <div class="nav-team-dropdown" aria-label="HoloFyrn teams">
-            ${teams.map((team) => {
-              const teamId = team.id;
-              return `<button class="${selectedTeamContextId === teamId ? "active" : ""}" data-nav-team="${teamId}" aria-label="View ${escapeAttr(team.name)} data">${teamBrandMarkup(teamId)}<span class="nav-team-check" aria-hidden="true">&#10003;</span></button>`;
-            }).join("")}
-          </div>
-        </details>
-        <nav class="primary-nav" aria-label="Primary navigation">
-          ${primaryNavButton("dashboard", "Overview", "icon-overview.png")}
-          ${primaryNavButton("tournaments", "League", "icon-league.png", ["tournaments"])}
-          ${primaryNavButton("calendar", "Calendar", "icon-calendar.png", ["calendar", "week"])}
-          ${primaryNavButton("results", "Matches", "icon-matches.png", ["results", "scrims"])}
-          ${primaryNavButton("availability", "Availability", "icon-availability-clean.png")}
-          ${isAdmin(user) ? primaryNavButton("admin", "Admin", "icon-admin-clean.png") : ""}
+      <aside class="sidebar">
+        <div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Rocket League Team Manager</span></div></div>
+        <a class="secondary-action" href="index.html">← New Manager</a>
+        <nav>
+          ${navButton("dashboard", "Overview")}
+          ${navButton("confirmations", `Confirmations${unreadCount ? ` (${unreadCount})` : ""}`)}
+          ${navButton("calendar", "Calendar")}
+          ${navButton("availability", "Availability")}
+          ${navButton("scrims", "Scrims")}
+          ${navButton("tournaments", "Tournaments")}
+          ${navButton("results", "Results")}
+          ${navButton("players", "Players")}
+          ${navButton("tryouts", "Tryouts")}
+          ${navButton("training", "My training routine")}
+          ${navButton("week", "My week")}
+          ${navButton("partners", "Scrim partners")}
+          ${isAdmin(user) ? navButton("admin", "Admin") : ""}
         </nav>
-        <details class="account-menu header-account">
-          <summary class="user-pill">
-            <span>${esc(user.name)}</span>
-            <strong>${user.role}</strong>
-            <span class="account-chevron">v</span>
-          </summary>
-          <div class="account-dropdown">
-            <button data-page="training">My Training Routine</button>
-            <button data-page="week">My Week</button>
-            <button data-page="account">Account settings</button>
-            <button data-action="logout">Log out</button>
-          </div>
-        </details>
-      </header>
+      </aside>
       <main>
         <header class="topbar">
           <div><p class="eyebrow">HoloFyrn Esports</p><h1>${pageTitle(currentPage)}</h1></div>
+          <details class="account-menu">
+            <summary class="user-pill">
+              <span>${esc(user.name)}</span>
+              <strong>${user.role}</strong>
+              <span class="account-chevron">v</span>
+            </summary>
+            <div class="account-dropdown">
+              <button data-page="training">My Training Routine</button>
+              <button data-page="week">My Week</button>
+              <button data-page="account">Account settings</button>
+              <button data-action="logout">Log out</button>
+            </div>
+          </details>
         </header>
         ${renderPage(store, user)}
       </main>
@@ -1293,11 +1294,6 @@ function navButton(page, label) {
   return `<button class="${currentPage === page ? "active" : ""}" data-page="${page}">${label}</button>`;
 }
 
-function primaryNavButton(page, label, asset, relatedPages = [page]) {
-  const active = relatedPages.includes(currentPage) ? "active" : "";
-  return `<button class="primary-nav-item ${active}" data-page="${page}"><img src="assets/Menu-UI/${asset}?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" /><span class="primary-nav-label">${label}</span></button>`;
-}
-
 function pageTitle(page) {
   return {
     dashboard: "Overview",
@@ -1307,7 +1303,7 @@ function pageTitle(page) {
     scrims: "Scrims",
     tournaments: "Tournaments",
     results: "Results",
-    players: "Teams",
+    players: "Players",
     tryouts: "Tryouts",
     training: "My training routine",
     week: "My week",
@@ -1323,8 +1319,6 @@ function renderPage(store, user) {
   if (currentPage === "availability") return availabilityPage(store, user);
   if (currentPage === "calendar") return calendarPage(store, canManageCalendarEvent(user), canManageResults(user), user);
   if (currentPage === "results") return resultsPage(store, canManageResults(user));
-  if (currentPage === "tournaments") return tournamentsPage(store, canManageTournaments(user));
-  if (currentPage === "players") return teamsPage(store, canManageEntity(user, "players"), user);
   if (currentPage === "tryouts") return tryoutsPage(store, canManageEntity(user, "tryouts"), user);
   if (currentPage === "training") return trainingPage(store, user);
   if (currentPage === "week") return weekPage(store, user);
@@ -1337,8 +1331,7 @@ function renderAuth(store) {
   app.innerHTML = `
     <div class="auth-screen">
       <section class="auth-panel">
-        <div class="brand">${logoMarkup}<div><strong>HoloFyrn Esports</strong><span>Rocket League team manager</span></div></div>
-        <div class="auth-intro"><p class="eyebrow">TEAM OPERATIONS</p><h1>Welcome back.</h1><p class="muted">Your team. Your next victory.</p></div>
+        <div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Rocket League team manager</span></div></div>
         <form id="auth-form" data-mode="login" class="form-grid">
           <label><span>Username</span><input name="username" value="" autocomplete="username" required /></label>
           ${passwordInput("password", "current-password")}
@@ -1346,7 +1339,8 @@ function renderAuth(store) {
           <p id="auth-message" class="muted"></p>
         </form>
       </section>
-      <section class="auth-visual" aria-label="HoloFyrn Esports"><div class="auth-visual-top"><span>HOLOFYRN ESPORTS</span><span>ROCKET LEAGUE</span></div><img class="auth-hero-logo" src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="HoloFyrn Esports dragon logo" /><div class="auth-visual-copy"><p class="eyebrow">ONE TEAM. ONE FIRE.</p><h2>Built to compete.</h2><p>Train together. Rise together.</p></div></section>
+      <section class="auth-visual">
+      </section>
     </div>
   `;
 
@@ -1379,159 +1373,22 @@ function renderAuth(store) {
 }
 
 function dashboard(store, user) {
-  const team = teams.find((item) => item.id === selectedTeamContextId) || teams[0];
-  const matches = overviewMatches(store, team.id);
-  const latestMatch = matches[0];
-  const recentMatches = matches.slice(0, 5);
-  const streak = overviewStreak(matches);
+  const activePlayer = matchingPlayerForUser(store, user);
+  const broadOverview = isStaff(user) || isTeamCaptain(user);
+  const calendar = allCalendarItems(store, user).filter((item) => broadOverview || canSeeCalendarItem(user, item, store));
+  const upcomingCalendar = calendar.filter((item) => endDate(item) >= new Date());
+  const nextEvent = upcomingCalendar[0];
+  const visibleTryouts = (store.tryouts || []).filter((item) => broadOverview || !activePlayer || item.teamId === activePlayer.teamId).slice(0, 6);
+  const latestNotifications = visibleNotifications(store, user).slice(0, 4);
   return `
-    <section class="match-overview">
-      <div class="overview-hero-grid">
-        ${latestMatch ? latestMatchCard(team, latestMatch) : overviewEmptyCard("Latest match", "No recorded matches for this team yet.")}
-        ${streakCard(streak, recentMatches)}
-      </div>
-      ${recentMatchesTable(team, recentMatches)}
+    <section class="page-grid">
+      ${metric("Next Event", nextEvent?.title || "-", nextEvent ? fmtRange(nextEvent) : "no upcoming event")}
+      <section class="panel"><h2>Team focus</h2>${activePlayer ? compact(activePlayer.rlName || activePlayer.name, `${teamName(activePlayer.teamId)} / ${activePlayer.position || "Player"}`) : `<p class="muted">General club overview.</p>`}</section>
+      <section class="panel"><h2>Confirmations</h2>${latestNotifications.map((item) => compact(item.subject || "Confirmation", item.eventLabel || item.targetLabel || "Notification")).join("") || `<p class="muted">No confirmations yet.</p>`}<button class="secondary-action" data-page="confirmations">Open confirmations</button></section>
+      <section class="panel"><h2>Project version</h2><div class="version-number">${esc(projectVersion)}</div></section>
+      <section class="panel wide overview-split"><div><h2>Upcoming Schedule</h2>${eventList(upcomingCalendar.slice(0, 7))}</div><div><h2>Active Tryouts</h2>${tryoutSummaryList(visibleTryouts)}</div></section>
     </section>
   `;
-}
-
-function overviewMatches(store, teamId) {
-  return (store.results || [])
-    .filter((result) => result.teamId === teamId)
-    .flatMap((result) => {
-      const matches = normalizeTournamentMatches(result.tournamentMatches || []);
-      if (!matches.length) return [{ ...result, tournament: result.title || "Match" }];
-      return matches.map((match, index) => ({
-        ...match,
-        id: `${result.id || "result"}-${match.id || index}`,
-        teamId: result.teamId,
-        dateTime: result.dateTime,
-        startsAtUtc: result.startsAtUtc,
-        title: match.round || result.title || "Tournament match",
-        tournament: result.title || "Tournament",
-        notes: match.notes || result.notes || "",
-      }));
-    })
-    .map((match) => ({ ...match, outcome: overviewOutcome(match) }))
-    .sort((a, b) => String(eventDateValue(b) || "").localeCompare(String(eventDateValue(a) || "")));
-}
-
-function overviewOutcome(match) {
-  const explicit = `${match.result || ""} ${match.notes || ""}`.toLowerCase();
-  if (/\b(win|won|victory)\b/.test(explicit)) return "win";
-  if (/\b(loss|lost|lose|defeat)\b/.test(explicit)) return "loss";
-  const score = String(match.score || "").match(/(\d+)\s*[-:]\s*(\d+)/);
-  if (!score) return "neutral";
-  if (Number(score[1]) > Number(score[2])) return "win";
-  if (Number(score[1]) < Number(score[2])) return "loss";
-  return "neutral";
-}
-
-function overviewScoreParts(score = "") {
-  const parts = String(score).match(/(\d+)\s*[-:]\s*(\d+)/);
-  return parts ? [parts[1], parts[2]] : ["-", "-"];
-}
-
-function overviewStreak(matches) {
-  const outcome = matches.find((match) => match.outcome !== "neutral")?.outcome || "neutral";
-  if (outcome === "neutral") return { outcome, count: 0 };
-  let count = 0;
-  for (const match of matches) {
-    if (match.outcome === "neutral") continue;
-    if (match.outcome !== outcome) break;
-    count++;
-  }
-  return { outcome, count };
-}
-
-function overviewSectionTitle(icon, title) {
-  return `<div class="overview-section-title"><span aria-hidden="true">${icon}</span><h2>${title}</h2></div>`;
-}
-
-function latestMatchCard(team, match) {
-  const [ourScore, opponentScore] = overviewScoreParts(match.score);
-  const opponent = match.opponent || "Opponent TBA";
-  const outcomeLabel = match.outcome === "win" ? "WIN" : match.outcome === "loss" ? "LOSS" : "RESULT";
-  return `
-    <section class="overview-card latest-match-card">
-      ${overviewSectionTitle("&#9813;", "LATEST MATCH")}
-      <div class="latest-match-content">
-        <div class="match-side our-team">
-          <img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />
-          <strong>${esc(team.name)}</strong>
-          <span>${esc(team.label)} roster</span>
-        </div>
-        <div class="latest-score-block">
-          <span class="result-pill result-${match.outcome}">${outcomeLabel}</span>
-          <div class="latest-score"><strong>${ourScore}</strong><span>-</span><strong>${opponentScore}</strong></div>
-          <small>${esc(match.title || match.tournament || "Match")}</small>
-          <p>${esc(fmt(match))}</p>
-        </div>
-        <div class="match-side opponent-team">
-          <span class="opponent-mark" aria-hidden="true">${esc(opponent.slice(0, 2).toUpperCase())}</span>
-          <strong>${esc(opponent)}</strong>
-          <span>Opponent</span>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function streakCard(streak, matches) {
-  const label = streak.outcome === "win" ? `${streak.count}W` : streak.outcome === "loss" ? `${streak.count}L` : "–";
-  const message = streak.outcome === "win"
-    ? `You are on a ${streak.count} win streak!`
-    : streak.outcome === "loss"
-      ? `${streak.count} match losing streak — time to bounce back.`
-      : "Record match results to start tracking the streak.";
-  return `
-    <section class="overview-card streak-card">
-      <div class="streak-heading">${overviewSectionTitle("&#9737;", "CURRENT STREAK")}<span class="streak-count streak-${streak.outcome}">${label}</span></div>
-      <div class="streak-results">
-        ${matches.length ? matches.map((match) => overviewResultIcon(match.outcome)).join("") : `<span class="streak-placeholder">No matches yet</span>`}
-      </div>
-      <p>${esc(message)}</p>
-    </section>
-  `;
-}
-
-function overviewResultIcon(outcome) {
-  if (outcome === "win") return `<img src="assets/overview-assets/icon-win-clean.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Win" />`;
-  if (outcome === "loss") return `<img src="assets/overview-assets/icon-lose-clean.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Loss" />`;
-  return `<span class="neutral-result" aria-label="Unclassified result">–</span>`;
-}
-
-function recentMatchesTable(team, matches) {
-  return `
-    <section class="overview-card recent-matches-card">
-      ${overviewSectionTitle("&#9823;", "RECENT MATCHES")}
-      ${matches.length ? `
-        <div class="recent-matches-table-wrap">
-          <table class="recent-matches-table">
-            <thead><tr><th>Date</th><th>Tournament</th><th>Team</th><th>Opponent</th><th>Result</th><th>Score</th></tr></thead>
-            <tbody>${matches.map((match) => `
-              <tr>
-                <td>${esc(fmtOverviewDate(match))}</td>
-                <td><strong>${esc(match.tournament || match.title || "Match")}</strong><small>${esc(match.title || "Recorded result")}</small></td>
-                <td><span class="overview-team-cell"><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />${esc(team.name)}</span></td>
-                <td>${esc(match.opponent || "TBA")}</td>
-                <td><span class="result-pill result-${match.outcome}">${match.outcome === "win" ? "WIN" : match.outcome === "loss" ? "LOSS" : "–"}</span></td>
-                <td class="overview-score-cell">${esc(match.score || "-")}</td>
-              </tr>`).join("")}</tbody>
-          </table>
-        </div>` : `<div class="overview-empty-state"><p>No recent matches for ${esc(team.name)}.</p><button data-page="results">Open match results</button></div>`}
-    </section>
-  `;
-}
-
-function fmtOverviewDate(match) {
-  const value = eventDateValue(match);
-  if (!value) return "Date TBA";
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: viewerTimeZone() }).format(new Date(value));
-}
-
-function overviewEmptyCard(title, message) {
-  return `<section class="overview-card overview-empty-card">${overviewSectionTitle("&#9813;", title.toUpperCase())}<div class="overview-empty-state"><p>${esc(message)}</p><button data-page="results">Open match results</button></div></section>`;
 }
 
 function metric(title, value, hint) {
@@ -1570,168 +1427,12 @@ function crudPage(store, key, editable, user) {
   `;
 }
 
-function tournamentsPage(store, editable) {
-  const selected = store.tournaments.find((item) => item.id === selectedTournamentId);
-  if (selected) return tournamentDetailPage(selected, editable);
-
-  const rows = filteredRows(store.tournaments, schemas.tournaments, "tournaments")
-    .sort((a, b) => String(eventDateValue(b) || "").localeCompare(String(eventDateValue(a) || "")));
-  return `
-    <section class="crud-layout tournament-page">
-      <div class="tournament-page-head">
-        <div><p class="eyebrow">Rocket League</p><h2>Active Tournaments</h2><p class="muted">Leagues, cups and events for the selected HoloFyrn roster.</p></div>
-        ${editable ? `<button class="primary tournament-add-button" data-tournament-add="true">Add Tournament</button>` : ""}
-      </div>
-      ${editable ? entityForm("tournaments", schemas.tournaments) : ""}
-      ${toolbar("tournaments", true, false, ["dateTime", "prizeEur", "name", "teamId"])}
-      <div class="tournament-card-grid">
-        ${rows.map((tournament) => tournamentCard(tournament, editable)).join("") || `<section class="overview-card tournament-empty"><p>No tournaments found for this roster.</p>${editable ? `<span>Add the first tournament using the button above.</span>` : ""}</section>`}
-      </div>
-    </section>
-  `;
-}
-
-function tournamentStatus(item) {
-  if (item.status && item.status !== "Auto") return item.status.toLowerCase();
-  const startValue = eventDateValue(item);
-  if (!startValue) return "upcoming";
-  const start = new Date(startValue);
-  const end = endDate(item);
-  const now = new Date();
-  if (now < start) return "upcoming";
-  if (now <= end) return "live";
-  return "completed";
-}
-
-function tournamentCard(item, editable) {
-  const status = tournamentStatus(item);
-  const matches = normalizeTournamentMatches(item.tournamentMatches || []);
-  const completedMatches = matches.filter((match) => match.score || match.result).length;
-  return `
-    <article class="tournament-card">
-      <div class="tournament-card-topline"><span class="tournament-status status-${status}">${status.toUpperCase()}</span>${editable ? `<div class="tournament-card-actions"><button data-edit="tournaments:${item.id}" aria-label="Edit ${escapeAttr(item.name)}">Edit</button><button data-delete="tournaments:${item.id}" aria-label="Delete ${escapeAttr(item.name)}">Delete</button></div>` : ""}</div>
-      <div class="tournament-identity">
-        <span class="tournament-logo"><img src="assets/Menu-UI/icon-league.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Tournament" /></span>
-        <div><h3>${esc(item.name || "Untitled Tournament")}</h3><p>Rocket League</p></div>
-      </div>
-      <span class="tournament-stage">${esc(item.stage || (status === "upcoming" ? "Registration" : status === "completed" ? "Finished" : "In progress"))}</span>
-      <dl class="tournament-stats">
-        <div><dt>Prize Pool</dt><dd>${item.prizeEur ? `${esc(formatEuro(item.prizeEur))}` : "TBA"}</dd></div>
-        <div><dt>Teams</dt><dd>${esc(item.teamsCount || "TBA")}</dd></div>
-        <div><dt>${matches.length ? "Matches" : "Start Date"}</dt><dd>${matches.length ? `${completedMatches} / ${matches.length}` : esc(fmtTournamentDate(item))}</dd></div>
-      </dl>
-      <div class="tournament-roster-summary">
-        <span>HOLOFYRN ROSTER</span>
-        <strong><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="" />${esc(teamName(item.teamId))}</strong>
-        <small>${matches.length ? `${matches.length} recorded tournament matches` : "Match schedule not recorded yet"}</small>
-      </div>
-      <button class="view-tournament-button" data-tournament-view="${item.id}">View Tournament <span aria-hidden="true">&#8594;</span></button>
-    </article>
-  `;
-}
-
-function tournamentDetailPage(item, editable) {
-  const status = tournamentStatus(item);
-  const matches = normalizeTournamentMatches(item.tournamentMatches || []);
-  const wins = matches.filter((match) => overviewOutcome(match) === "win").length;
-  const losses = matches.filter((match) => overviewOutcome(match) === "loss").length;
-  return `
-    <section class="tournament-detail-page">
-      <div class="tournament-detail-nav"><button class="roster-back" data-tournament-back="true"><span aria-hidden="true">&#8592;</span> All tournaments</button>${editable ? `<div class="row-actions"><button data-tournament-detail-edit="${item.id}">Edit Tournament</button><button data-delete="tournaments:${item.id}">Delete</button></div>` : ""}</div>
-      <section class="overview-card tournament-detail-hero">
-        <span class="tournament-detail-logo"><img src="assets/Menu-UI/icon-league.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="Tournament" /></span>
-        <div class="tournament-detail-title"><span class="tournament-status status-${status}">${status.toUpperCase()}</span><h2>${esc(item.name || "Untitled Tournament")}</h2><p>Rocket League · ${esc(item.stage || "Tournament")}</p></div>
-        <dl class="tournament-detail-stats">
-          <div><dt>Prize Pool</dt><dd>${item.prizeEur ? esc(formatEuro(item.prizeEur)) : "TBA"}</dd></div>
-          <div><dt>Teams</dt><dd>${esc(item.teamsCount || "TBA")}</dd></div>
-          <div><dt>Start</dt><dd>${esc(fmtTournamentDate(item))}</dd></div>
-          <div><dt>Record</dt><dd>${wins}W - ${losses}L</dd></div>
-        </dl>
-        ${item.link ? `<a class="tournament-external-link" href="${escapeAttr(item.link)}" target="_blank" rel="noreferrer">Open tournament website &#8599;</a>` : ""}
-      </section>
-      <div class="tournament-detail-grid">
-        <section class="overview-card tournament-info-panel"><h3>Tournament details</h3><div class="compact-row"><strong>HoloFyrn roster</strong><span>${esc(teamName(item.teamId))}</span></div><div class="compact-row"><strong>Duration</strong><span>${esc(item.durationMinutes || "-")} minutes</span></div><div class="compact-row"><strong>Current stage</strong><span>${esc(item.stage || "Not specified")}</span></div><div class="tournament-notes"><strong>Notes</strong><p>${item.notes ? multiline(item.notes) : `<span class="muted">No tournament notes yet.</span>`}</p></div></section>
-        <section class="overview-card tournament-matches-panel"><h3>Matches</h3>${matches.length ? `<div class="tournament-match-list">${matches.map((match, index) => tournamentMatchRow(match, index)).join("")}</div>` : `<div class="tournament-detail-empty">No matches have been added to this tournament yet.</div>`}</section>
-      </div>
-    </section>
-  `;
-}
-
-function tournamentMatchRow(match, index) {
-  const outcome = overviewOutcome(match);
-  return `<article><span class="tournament-match-number">${index + 1}</span><div><strong>${esc(match.round || `Match ${index + 1}`)}</strong><small>vs ${esc(match.opponent || "TBA")}</small></div><span class="result-pill result-${outcome}">${outcome === "win" ? "WIN" : outcome === "loss" ? "LOSS" : "TBA"}</span><b>${esc(match.score || "-")}</b></article>`;
-}
-
-function formatEuro(value) {
-  const amount = Number(value);
-  return Number.isFinite(amount) ? new Intl.NumberFormat("en-US", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(amount) : `${value} EUR`;
-}
-
-function fmtTournamentDate(item) {
-  const value = eventDateValue(item);
-  if (!value) return "TBA";
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: viewerTimeZone() }).format(new Date(value));
-}
-
-function teamsPage(store, editable, user) {
-  const selectedTeam = teams.find((team) => team.id === selectedRosterTeamId);
-  if (!selectedTeam) return teamSelector(store);
-
-  const schema = schemas.players;
-  const coachingNotesEditable = canManagePlayerStats(user);
-  const searchSchema = coachingNotesEditable
-    ? schema
-    : { ...schema, search: (item) => `${item.rlName} ${item.discord} ${item.position} ${teamName(item.teamId)} ${item.peak1s} ${item.peak2s} ${item.peak3s}` };
-  const teamPlayers = store.players.filter((player) => player.teamId === selectedTeam.id);
-  const rows = filteredRows(teamPlayers, searchSchema, "players");
-  const form = editable
-    ? playerForm({ ...schemas.players.empty, teamId: selectedTeam.id }, coachingNotesEditable)
-    : (coachingNotesEditable ? playerStatsForm(teamPlayers) : "");
-
-  return `
-    <section class="crud-layout team-roster-view">
-      <div class="roster-heading">
-        <button class="roster-back" data-roster-back="true" aria-label="Back to team selection"><span aria-hidden="true">&#8592;</span> All teams</button>
-        <div><p class="eyebrow">Selected roster</p><h2>${esc(selectedTeam.name)}</h2></div>
-      </div>
-      ${toolbar("players", false, false, schema.sort)}
-      ${form}
-      ${playerRecords(schema, rows, editable, coachingNotesEditable, selectedTeam.id)}
-    </section>
-  `;
-}
-
-function teamSelector(store) {
-  const displayTeams = teams;
-  return `
-    <section class="team-selector-view">
-      <div class="team-selector-intro">
-        <p class="eyebrow">HoloFyrn rosters</p>
-        <h2>Choose a team</h2>
-        <p class="muted">Select which roster you would like to view.</p>
-      </div>
-      <div class="team-selector-grid">
-        ${displayTeams.map((team) => {
-          const playerCount = store.players.filter((player) => player.teamId === team.id).length;
-          return `
-            <button class="team-selector-card team-selector-card-${team.id}" data-roster-team="${team.id}" aria-label="View ${escapeAttr(team.name)} roster">
-              <span class="roster-art"><span class="roster-edition">HOLOFYRN / ${esc(team.label)}</span><img src="assets/holofyrn-logo.png?v=${encodeURIComponent(globalThis.holoBuildVersion || "local")}" alt="${escapeAttr(team.name)}" /><span class="roster-art-title">${team.id === "main" ? "MAIN ROSTER" : esc(team.label).toUpperCase()}</span></span>
-              <span class="team-card-meta"><strong>${esc(team.label)}</strong><small>${playerCount} roster member${playerCount === 1 ? "" : "s"} · View roster</small></span>
-            </button>
-          `;
-        }).join("")}
-      </div>
-    </section>
-  `;
-}
-
-function playerRecords(schema, rows, editable, showPrivateNotes, selectedTeamId = "") {
+function playerRecords(schema, rows, editable, showPrivateNotes) {
   const selectedId = (filters.players || {}).detailId;
   const selectedPlayer = rows.find((player) => player.id === selectedId);
-  const visibleTeams = selectedTeamId ? teams.filter((team) => team.id === selectedTeamId) : teams;
   return `
     ${selectedPlayer ? playerProfilePanel(selectedPlayer, editable, showPrivateNotes) : ""}
-    ${visibleTeams.map((team) => {
+    ${teams.map((team) => {
       const teamRows = captainFirst(rows.filter((item) => item.teamId === team.id));
       return `<section class="panel wide"><h2>${esc(team.label)} members</h2><div class="player-card-grid">${teamRows.map((player) => playerDetailCard(player, editable, showPrivateNotes)).join("") || `<p class="muted">No ${esc(team.label.toLowerCase())} players found.</p>`}</div></section>`;
     }).join("")}
@@ -2312,15 +2013,15 @@ function weekGrid(items, editable) {
 }
 
 function availabilityPage(store, user) {
-  const scope = availabilityTeamScope(user);
+  const f = filters.availability || {};
   const weekStart = startOfAvailabilityWeek();
-  const visibleTeams = teams.filter((team) => scope === "all" || scope === team.id);
+  const visibleTeams = teams.filter((team) => !f.team || f.team === "all" || f.team === team.id);
   return `
     <section class="crud-layout">
       <div class="toolbar">
-        ${isAdmin(user) ? `<label><span>Filter by team</span><select data-filter="availability" data-filter-kind="team">
-          ${teamFilterOptions(scope)}
-        </select></label>` : `<div><p class="eyebrow">Selected team</p><strong>${esc(teamName(scope))}</strong></div>`}
+        <label><span>Filter by team</span><select data-filter="availability" data-filter-kind="team">
+          ${teamFilterOptions(f.team || "all")}
+        </select></label>
         <div>
           <span class="muted">Week</span>
           <div class="row-actions">
@@ -2330,17 +2031,16 @@ function availabilityPage(store, user) {
           </div>
         </div>
       </div>
-      ${availabilityRangeForm(store, user, weekStart)}
       ${visibleTeams.map((team) => `
         <section class="panel wide availability-panel">
           <div class="availability-panel-head">
             <div>
               <h2>${esc(team.label)} Availability</h2>
-              <p class="muted">See who is available and when for ${esc(availabilityWeekLabel(weekStart))}.</p>
+              <p class="muted">Players can tick their own slots for ${esc(availabilityWeekLabel(weekStart))}.</p>
             </div>
-            <span class="timezone-pill">Europe/Budapest</span>
+            <span class="timezone-pill">${esc(viewerTimeZone())}</span>
           </div>
-          ${availabilitySchedule(store, user, team.id, weekStart)}
+          ${availabilityMatrix(store, user, team.id, weekStart)}
         </section>
       `).join("")}
     </section>
@@ -2845,62 +2545,7 @@ document.addEventListener("click", async (event) => {
   const button = event.target.closest("button");
   if (!button) return;
 
-  if (button.dataset.rosterTeam) {
-    if (!teams.some((team) => team.id === button.dataset.rosterTeam)) return;
-    selectedRosterTeamId = button.dataset.rosterTeam;
-    selectedTeamContextId = button.dataset.rosterTeam;
-    filters.availability = { team: button.dataset.rosterTeam };
-    filters.players = { ...(filters.players || {}), team: "all", detailId: "" };
-    render();
-    return;
-  }
-
-  if (button.dataset.tournamentView) {
-    if (!store.tournaments.some((item) => item.id === button.dataset.tournamentView)) return;
-    selectedTournamentId = button.dataset.tournamentView;
-    render();
-    return;
-  }
-
-  if (button.dataset.tournamentBack) {
-    selectedTournamentId = "";
-    render();
-    return;
-  }
-
-  if (button.dataset.tournamentDetailEdit) {
-    if (!canManageTournaments(activeUser)) return;
-    const item = store.tournaments.find((tournament) => tournament.id === button.dataset.tournamentDetailEdit);
-    selectedTournamentId = "";
-    render();
-    const formPanel = document.querySelector('.tournament-page [data-entity="tournaments"]')?.closest(".panel");
-    if (item && formPanel) formPanel.outerHTML = entityForm("tournaments", schemas.tournaments, item);
-    return;
-  }
-
-  if (button.dataset.navTeam) {
-    if (!teams.some((team) => team.id === button.dataset.navTeam)) return;
-    selectedTeamContextId = button.dataset.navTeam;
-    selectedRosterTeamId = button.dataset.navTeam;
-    ["players", "calendar", "availability", "scrims", "tournaments", "results", "tryouts"].forEach((key) => {
-      filters[key] = { ...(filters[key] || {}), team: button.dataset.navTeam };
-    });
-    filters.players.detailId = "";
-    if (currentPage !== "availability") currentPage = "players";
-    render();
-    return;
-  }
-
-  if (button.dataset.rosterBack) {
-    selectedRosterTeamId = "";
-    filters.players = { ...(filters.players || {}), detailId: "" };
-    render();
-    return;
-  }
-
   if (button.dataset.page) {
-    if (button.dataset.page === "players") selectedRosterTeamId = "";
-    if (button.dataset.page === "tournaments") selectedTournamentId = "";
     currentPage = button.dataset.page;
     render();
   }
@@ -2929,7 +2574,9 @@ document.addEventListener("click", async (event) => {
 
   if (button.dataset.tournamentAdd) {
     if (!canManageTournaments(activeUser)) return;
-    const formPanel = document.querySelector('.tournament-page [data-entity="tournaments"]')?.closest(".panel");
+    const formPanel = key === "confirmationTemplates"
+      ? [...document.querySelectorAll(".crud-layout .panel")].find((panel) => panel.querySelector('[data-entity="confirmationTemplates"]'))
+      : document.querySelector(".crud-layout .panel");
     if (formPanel) formPanel.outerHTML = entityForm("tournaments", schemas.tournaments);
   }
 
@@ -3000,42 +2647,6 @@ document.addEventListener("click", async (event) => {
   if (button.dataset.calendarToday) {
     calendarMonth = new Date();
     render();
-  }
-
-  if (button.hasAttribute("data-availability-cancel")) { render(); return; }
-  if (button.dataset.availabilityEdit) {
-    const item = store.availability.find((entry) => entry.id === button.dataset.availabilityEdit);
-    const player = item && availabilityEntryPlayer(store, item);
-    if (!item || !canManageAvailabilityForPlayer(getUser(store), player)) return;
-    const form = document.querySelector("#availability-range-form");
-    if (!form) return;
-    form.dataset.entryId = item.id;
-    form.elements.playerId.value = player.id;
-    form.elements.date.value = item.date || button.dataset.availabilityDate;
-    form.elements.startTime.value = normalizeAvailabilityTime(item.startTime);
-    form.elements.endTime.value = normalizeAvailabilityTime(item.endTime);
-    form.querySelector('[type="submit"]').textContent = "Update availability";
-    form.querySelector('[data-availability-cancel]').classList.remove("hidden");
-    form.querySelector('[data-availability-message]').className = "warning";
-    form.querySelector('[data-availability-message]').textContent = item.date ? "" : "Editing this weekly entry converts it to the selected date.";
-    form.scrollIntoView({ block: "center" });
-    form.elements.startTime.focus({ preventScroll: true });
-    return;
-  }
-  if (button.dataset.availabilityDelete) {
-    const item = store.availability.find((entry) => entry.id === button.dataset.availabilityDelete);
-    if (!item || !canManageAvailabilityForPlayer(getUser(store), availabilityEntryPlayer(store, item))) return;
-    if (!(await showConfirm(item.date ? "Delete this availability period?" : "Delete this recurring weekly availability period from every week?", { title: "Delete availability", confirmText: "Delete" }))) return;
-    try {
-      const writableStore = await loadWritableStore();
-      const existing = writableStore.availability.find((entry) => entry.id === item.id);
-      if (!existing || !canManageAvailabilityForPlayer(getUser(writableStore), availabilityEntryPlayer(writableStore, existing))) return;
-      writableStore.availability = writableStore.availability.filter((entry) => entry.id !== item.id);
-      await persistStore(writableStore);
-    } catch (error) {
-      await showAlert("Could not delete availability. Please try again.", { title: "Delete availability", tone: "warning" });
-    }
-    return;
   }
 
   if (button.dataset.availabilityWeek) {
@@ -3246,49 +2857,6 @@ document.addEventListener("submit", async (event) => {
       message.textContent = authMessage(error);
       console.error(error);
     }
-    return;
-  }
-
-  if (event.target.matches("#availability-range-form")) {
-    event.preventDefault();
-    const form = event.target;
-    const message = form.querySelector("[data-availability-message]");
-    message.className = "warning";
-    const entry = Object.fromEntries(new FormData(form));
-    const error = availabilityRangeError(entry);
-    if (error) { message.textContent = error; return; }
-    const submit = form.querySelector('[type="submit"]');
-    if (submit.disabled) return;
-    submit.disabled = true;
-    try {
-      const writableStore = await loadWritableStore();
-      const user = getUser(writableStore);
-      const player = writableStore.players.find((item) => item.id === entry.playerId);
-      const existing = (writableStore.availability || []).find((item) => item.id === form.dataset.entryId);
-      if (!canManageAvailabilityForPlayer(user, player) || (form.dataset.entryId && (!existing || !canManageAvailabilityForPlayer(user, availabilityEntryPlayer(writableStore, existing))))) {
-        message.textContent = "You can only change availability for a player you manage or your own profile.";
-        return;
-      }
-      const saved = {
-        ...existing, id: existing?.id || uid(), playerId: player.id,
-        playerName: availabilityPlayerLabel(player), teamId: player.teamId,
-        date: entry.date, day: weekDays[(new Date(`${entry.date}T12:00:00`).getDay() + 6) % 7],
-        startTime: entry.startTime, endTime: entry.endTime,
-        status: "Available", notes: existing?.notes || "",
-      };
-      writableStore.availability = [...(writableStore.availability || []).filter((item) => item.id !== saved.id), saved];
-      // Keep the saved date in view, including dates chosen outside the current week.
-      const selectedMonday = new Date(`${entry.date}T12:00:00`);
-      selectedMonday.setDate(selectedMonday.getDate() - (selectedMonday.getDay() + 6) % 7);
-      availabilityWeekOffset = Math.round((selectedMonday - startOfAvailabilityWeek(0)) / (7 * 86400000));
-      if (await persistStore(writableStore)) {
-        const feedback = document.querySelector("[data-availability-message]");
-        if (feedback) { feedback.className = "success"; feedback.textContent = "Availability saved."; }
-      }
-    } catch (error) {
-      message.textContent = "Could not save availability. Please try again.";
-      console.error(error);
-    } finally { submit.disabled = false; }
     return;
   }
 
@@ -3577,6 +3145,42 @@ document.addEventListener("change", async (event) => {
       render();
       return;
     }
+  }
+
+  if (event.target.matches("[data-availability-slot]")) {
+    const writableStore = await loadWritableStore();
+    const writableUser = getUser(writableStore);
+    const player = writableStore.players.find((item) => item.id === event.target.dataset.playerId);
+    if (!player || !canToggleAvailabilitySlot(writableUser, player)) {
+      render();
+      return;
+    }
+    const day = normalizeAvailabilityDay(event.target.dataset.day);
+    const date = event.target.dataset.date || "";
+    const startTime = normalizeAvailabilityTime(event.target.dataset.startTime);
+    const teamId = player.teamId || event.target.dataset.teamId || "main";
+    const matchesSlot = (item) => availabilitySlotMatches(item, player, day, startTime, date);
+
+    if (event.target.checked) {
+      if (!(writableStore.availability || []).some(matchesSlot)) {
+        writableStore.availability.push({
+          id: uid(),
+          playerId: player.id,
+          playerName: availabilityPlayerLabel(player),
+          teamId,
+          day,
+          date,
+          startTime,
+          endTime: availabilitySlotEnd(startTime),
+          status: "Available",
+          notes: "",
+        });
+      }
+    } else {
+      writableStore.availability = (writableStore.availability || []).filter((item) => !matchesSlot(item));
+    }
+    await persistStore(writableStore);
+    return;
   }
 
   if (event.target.matches("[data-user-role]")) {

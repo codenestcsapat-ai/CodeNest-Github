@@ -1,71 +1,22 @@
 <!doctype html>
-<html lang="hu">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0c0c0e" />
-    <title>HoloFyrn Esports | Team Manager</title>
-    <meta name="description" content="HoloFyrn Esports team manager — rosters, matches, training and tournaments." />
+    <meta name="theme-color" content="#07090f" />
+    <title>HoloFyrn Manager</title>
     <link rel="icon" href="assets/holofyrn-logo.png" />
-    <style>
-      body { margin: 0; background: #0c0c0e; color: #f6f3f3; font-family: system-ui, sans-serif; }
-      #app.app-loading > .auth-screen { padding: 24px; }
-      #app.app-loading .brand-logo { width: 56px; height: 56px; object-fit: contain; }
-    </style>
+    <link rel="stylesheet" href="concept.css" />
+    <link rel="stylesheet" href="connected.css" />
+    <script defer src="connected.js"></script>
+    <script defer src="concept.js"></script>
   </head>
   <body>
-    <div id="app" class="app-loading">
-      <div class="auth-screen">
-        <section class="auth-panel">
-          <div class="brand">
-            <img class="brand-logo" src="assets/holofyrn-logo.png" alt="HoloFyrn Esports logo">
-            <div>
-              <strong>HoloFyrn Esports | Team Manager</strong>
-              <span>Az app JavaScript modulokkal indul.</span>
-            </div>
-          </div>
-          <p class="warning">
-            Ha ezt ZIP-bol duplakattal nyitottad meg, inditsd helyi szerverrol.
-            Pelda: a mappaban futtasd a <code>.\start-local-server.ps1</code> parancsot,
-            majd nyisd meg: <code>http://localhost:8000</code>.
-          </p>
-        </section>
-      </div>
+    <div id="app">
+      <main class="login-screen"><section class="card login-card" role="status">Loading HoloFyrn Manager…</section></main>
     </div>
-    <script type="module">
-      // Keep this small loader stable: even a cached HTML page checks the current release.
-      const message = document.querySelector(".warning");
-      message.textContent = "HoloFyrn Esports betöltése…";
-      try {
-        const response = await fetch(`./version.json?check=${Date.now()}`, {
-          cache: "no-store", signal: AbortSignal.timeout(15000)
-        });
-        if (!response.ok) throw new Error(`Version check failed: ${response.status}`);
-        const { version } = await response.json();
-        if (!/^[a-f0-9]{24}$/.test(version)) throw new Error("Invalid release version");
-        globalThis.holoBuildVersion = version;
-        const versioned = (url) => `${url}?v=${version}`;
-        document.querySelector('link[rel="icon"]').href = versioned("assets/holofyrn-logo.png");
-        document.querySelector(".brand-logo").src = versioned("assets/holofyrn-logo.png");
-        await Promise.all(["style.css", "brand.css"].map((file) => new Promise((resolve, reject) => {
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = versioned(file);
-          const timeout = setTimeout(() => reject(new Error(`Stylesheet timed out: ${file}`)), 15000);
-          link.onload = () => { clearTimeout(timeout); resolve(); };
-          link.onerror = () => { clearTimeout(timeout); reject(new Error(`Stylesheet failed: ${file}`)); };
-          document.head.append(link);
-        })));
-        document.querySelector("#app").classList.remove("app-loading");
-        await import(versioned("./script.js"));
-      } catch (error) {
-        console.error("HoloFyrn startup failed", error);
-        message.textContent = "Az aktuális verzió nem tölthető be. Ellenőrizd az internetkapcsolatot, majd próbáld újra. ";
-        const retry = document.createElement("button");
-        retry.textContent = "Újrapróbálás";
-        retry.addEventListener("click", () => location.reload());
-        message.append(retry);
-      }
-    </script>
+    <div id="modal-root"></div>
+    <div id="toast-root" class="toast-root" aria-live="polite"></div>
+    <noscript>JavaScript is required to sign in and load team data.</noscript>
   </body>
 </html>
