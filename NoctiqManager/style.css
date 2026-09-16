@@ -91,7 +91,7 @@ a {
   border-radius: 8px;
   background:
     linear-gradient(rgba(7, 10, 20, 0.05), rgba(7, 10, 20, 0.82)),
-    url("assets/noctiq-logo.png") center 38% / min(440px, 62%) no-repeat,
+    url("assets/holofyrn-logo.png") center 38% / min(440px, 62%) no-repeat,
     linear-gradient(135deg, #02051a, #24073d);
 }
 
@@ -1522,4 +1522,13 @@ code {
   table {
     min-width: 760px;
   }
+}
+/* Keep specialist tools usable on narrow screens. */
+main,.main,.panel,.card,.form-grid>*{min-width:0}
+img{max-width:100%}.brand-logo{object-fit:contain;background:transparent}
+@media(max-width:600px){
+ input,select,textarea{font-size:16px;min-width:0;max-width:100%}
+ button,.button{min-height:44px}
+ .modal{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto}
+ .row-actions{flex-wrap:wrap}h1,h2,h3,.brand{overflow-wrap:anywhere}
 }

@@ -31,9 +31,12 @@ let selectedReplayResultId = "";
 let availabilityWeekOffset = 0;
 
 const teams = [
-  { id: "main", name: "Noctiq eSports", label: "Main Team" },
-  { id: "academy", name: "Noctiq eSports Academy", label: "Academy" },
-  { id: "rls", name: "Noctiq Esports RLS", label: "Noctiq Esports RLS" },
+  { id: "rls-academy", name: "Rls HoloFyrn Academy", label: "RLS Academy" },
+  { id: "rls-eldr", name: "Rls HoloFyrn Eldr", label: "RLS Eldr" },
+  { id: "synq", name: "HoloFyrn Synq", label: "Synq" },
+  { id: "main", name: "HoloFyrn Esports", label: "Main Team" },
+  { id: "academy", name: "HoloFyrn Academy", label: "Academy" },
+  { id: "rls", name: "HoloFyrn Esports RLS", label: "HoloFyrn Esports RLS" },
 ];
 
 const eventColors = {
@@ -88,7 +91,7 @@ const sortLabels = {
   contact: "Contact",
 };
 const resultTypes = ["Match", "Tournament"];
-const logoMarkup = `<img class="brand-logo" src="assets/noctiq-logo.png" alt="Noctiq logo">`;
+const logoMarkup = `<img class="brand-logo" src="assets/holofyrn-logo.png" alt="HoloFyrn logo">`;
 const projectVersion = "v.1.0.1";
 
 const adminUsers = [];
@@ -128,7 +131,7 @@ const schemas = {
   scrims: {
     title: "Scrim entry",
     empty: { id: "", dateTime: "", durationMinutes: "90", opponent: "", level: "", teamId: "main", notes: "" },
-    fields: [["dateTime", "Date and start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["opponent", "Opponent"], ["level", "Level / MMR"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
+    fields: [["dateTime", "Date and start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["opponent", "Opponent"], ["level", "Level / MMR"], ["teamId", "HoloFyrn team", "team"], ["notes", "Notes", "textarea"]],
     headers: ["Date", "Duration", "Opponent", "Level", "Team", "Notes"],
     cells: (item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.opponent, item.level, teamName(item.teamId), item.notes],
     search: (item) => `${item.opponent} ${item.level} ${item.notes}`,
@@ -137,7 +140,7 @@ const schemas = {
   tournaments: {
     title: "Tournament entry",
     empty: { id: "", name: "", dateTime: "", durationMinutes: "180", prizeEur: "", link: "", notes: "", teamId: "main" },
-    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["prizeEur", "Prize pool EUR", "number"], ["link", "Registration link", "url"], ["teamId", "Noctiq team", "team"], ["notes", "Notes", "textarea"]],
+    fields: [["name", "Tournament name"], ["dateTime", "Start time", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["prizeEur", "Prize pool EUR", "number"], ["link", "Registration link", "url"], ["teamId", "HoloFyrn team", "team"], ["notes", "Notes", "textarea"]],
     headers: ["Date", "Duration", "Name", "Prize", "Team", "Link", "Notes"],
     cells: (item) => [fmtRange(item), `${item.durationMinutes || 0} min`, item.name, `${item.prizeEur || "-"} EUR`, teamName(item.teamId), item.link ? `<a href="${escapeAttr(item.link)}" target="_blank">Open</a>` : "-", item.notes],
     search: (item) => `${item.name} ${item.notes}`,
@@ -193,6 +196,7 @@ function stripDemoRows(key, rows = []) {
 function cleanStoreForSave(store) {
   const cleanStore = {
     users: (store.users || []).filter((user) => !isBuiltInUser(user)).map(({ password, ...user }) => user),
+    ...(store.managerV8 ? { managerV8: store.managerV8 } : {}),
   };
   dataKeys.forEach((key) => {
     const rows = stripDemoRows(key, store[key] || []);
@@ -304,7 +308,7 @@ function initLocalStore() {
 }
 
 async function initRemoteStore() {
-  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Loading Firebase...</span></div></div></section></div>`;
+  app.innerHTML = `<div class="auth-screen"><section class="auth-panel"><div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Loading Firebase...</span></div></div></section></div>`;
   try {
     const firebaseReady = await setupFirebase();
     if (!firebaseReady) {
@@ -1244,7 +1248,8 @@ function render() {
   app.innerHTML = `
     <div class="app-shell">
       <aside class="sidebar">
-        <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League Team Manager</span></div></div>
+        <div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Rocket League Team Manager</span></div></div>
+        <a class="secondary-action" href="index.html">← New Manager</a>
         <nav>
           ${navButton("dashboard", "Overview")}
           ${navButton("confirmations", `Confirmations${unreadCount ? ` (${unreadCount})` : ""}`)}
@@ -1263,7 +1268,7 @@ function render() {
       </aside>
       <main>
         <header class="topbar">
-          <div><p class="eyebrow">Noctiq eSports</p><h1>${pageTitle(currentPage)}</h1></div>
+          <div><p class="eyebrow">HoloFyrn Esports</p><h1>${pageTitle(currentPage)}</h1></div>
           <details class="account-menu">
             <summary class="user-pill">
               <span>${esc(user.name)}</span>
@@ -1326,7 +1331,7 @@ function renderAuth(store) {
   app.innerHTML = `
     <div class="auth-screen">
       <section class="auth-panel">
-        <div class="brand">${logoMarkup}<div><strong>Noctiq Manager</strong><span>Rocket League team manager</span></div></div>
+        <div class="brand">${logoMarkup}<div><strong>HoloFyrn Manager</strong><span>Rocket League team manager</span></div></div>
         <form id="auth-form" data-mode="login" class="form-grid">
           <label><span>Username</span><input name="username" value="" autocomplete="username" required /></label>
           ${passwordInput("password", "current-password")}
@@ -2245,7 +2250,7 @@ function calendarEventDialog(store, canRecordResults, user) {
   if (!item) return "";
   const played = endDate(item) < new Date();
   const existingResult = resultForSource(store, resultSourceKey(item));
-  const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "both" ? "Noctiq" : teamName(item.teamId));
+  const teamLabel = item.playerId ? playerNameById(store, item.playerId) : (item.teamId === "both" ? "HoloFyrn" : teamName(item.teamId));
   const rosterMissing = needsRoster(item);
   const ownPlayers = store.players.filter((player) => (item.teamId === "both" || player.teamId === item.teamId || player.id === item.playerId) && !isCoachRole(player));
   const savedOurLineup = item.ourLineup || [];
@@ -2429,7 +2434,7 @@ function playerStatsForm(players, item = players[0]) {
 }
 
 function tryoutForm(item = { id: "", name: "", rlName: "", discord: "", rank: "", previousTeam: "", availability: "", dateTime: "", durationMinutes: "60", teamId: "main", status: "Open", nextStep: "", opinion: "", stats: emptyStats }, showPrivateNotes = false) {
-  const publicFields = [["name", "Name"], ["rlName", "RL name"], ["discord", "Discord"], ["rank", "Rank / MMR"], ["previousTeam", "Previous team"], ["availability", "Availability"], ["dateTime", "Tryout date", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["teamId", "Noctiq team", "team"], ["status", "Status", ["Open", "Scheduled", "Trial", "Accepted", "Declined"]]];
+  const publicFields = [["name", "Name"], ["rlName", "RL name"], ["discord", "Discord"], ["rank", "Rank / MMR"], ["previousTeam", "Previous team"], ["availability", "Availability"], ["dateTime", "Tryout date", "datetime-local"], ["durationMinutes", "Duration minutes", "number"], ["teamId", "HoloFyrn team", "team"], ["status", "Status", ["Open", "Scheduled", "Trial", "Accepted", "Declined"]]];
   const fields = showPrivateNotes ? [...publicFields, ["nextStep", "Next step"], ["opinion", "Staff opinion", "textarea"]] : publicFields;
   return `
     <section class="panel"><h2>Tryout entry</h2>
