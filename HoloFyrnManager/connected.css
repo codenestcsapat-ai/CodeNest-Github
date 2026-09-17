@@ -60,3 +60,39 @@
  .predictor-fixture{flex-wrap:wrap}.form-strip{flex-wrap:wrap}.card-pad{padding:14px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+.password-settings{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.password-settings summary{cursor:pointer;font-weight:700;min-height:44px;padding:10px 0}
+.password-settings form{display:grid;gap:14px;margin-top:12px;max-width:460px}
+.password-settings .field{display:grid;gap:8px}
+.password-settings p{margin:0;overflow-wrap:anywhere}
+.password-settings button:disabled{opacity:.65;cursor:wait}
+.social-label,.social-link{display:inline-flex;align-items:center;gap:8px}
+.social-icon{width:18px;height:18px;flex:0 0 18px;object-fit:contain;filter:brightness(0) invert(1)}
+.social-links{display:flex;flex-wrap:wrap;gap:8px}
+.coach-section{margin-top:28px}.coach-section h2{font-size:20px}
+.coach-list{align-items:start}.coach-row{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px;min-width:0}
+.coach-discord{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.field[hidden]{display:none!important}
+@media(max-width:600px){.coach-row{align-items:flex-start;flex-direction:column;gap:12px}}
+.roster-identity{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-width:0}
+.roster-identity-text{min-width:0;overflow-wrap:anywhere}
+.roster-identity .roster-avatar{width:44px;height:44px;flex:0 0 44px}
+.roster-identity .player-name{text-align:left;overflow-wrap:anywhere;max-width:100%}
+
+/* Give calendar invite names full rows instead of truncating them. */
+.invite-picker-grid{grid-template-columns:minmax(0,1fr);gap:18px}
+.invite-picker-grid>.field,.invite-picker-grid .multi-picker{min-width:0}
+.invite-picker-grid .picker-list{height:280px;max-height:280px;gap:10px;overflow-x:hidden;grid-auto-rows:minmax(84px,auto)}
+.invite-picker-grid .picker-option{min-height:84px;margin-top:0;padding:18px 16px;align-items:center}
+.invite-picker-grid .picker-option input[type=checkbox]{flex:0 0 18px;width:18px;height:18px;margin:2px 0 0}
+.invite-picker-grid .picker-option b,.invite-picker-grid .picker-option small{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.45}
+.invite-picker-grid .picker-option b{font-size:14px}
+.invite-picker-grid .picker-option small{font-size:12px}
+/* Priority uses both text and colour so it remains readable without colour vision. */
+.priority-low{--priority-color:#62d6ad;--priority-bg:#102b26}
+.priority-normal{--priority-color:#81b8ff;--priority-bg:#13243d}
+.priority-high{--priority-color:#ffd06a;--priority-bg:#342914}
+.priority-urgent{--priority-color:#ff8496;--priority-bg:#391923}
+.calendar-event[class*=priority-]{border-left:4px solid var(--priority-color);background:var(--priority-bg)!important}
+.event-row[class*=priority-]{border-left:4px solid var(--priority-color)}
+.priority-badge{display:inline-block;color:var(--priority-color);background:var(--priority-bg);border:1px solid var(--priority-color);border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;line-height:1.4}

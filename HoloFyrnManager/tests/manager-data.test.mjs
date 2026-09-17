@@ -62,3 +62,27 @@ test('rebranding merges saved teams and keeps league references and seed keys al
  assert.deepEqual(reloaded.leagues[0].participants,['HoloFyrn Esports','HoloFyrn Academy','Guest Team']);
  assert.equal(reloaded.leagueGames[0].played,true);
 });
+
+test('players can save, reload and clear their own TikTok link',()=>{
+ const before=fromDatabase(database,profiles,'auth-player'),after=structuredClone(before);
+ after.users.find(u=>u.id==='auth-player').tiktokUrl='https://www.tiktok.com/@player';
+ const {userWrites}=toDatabase(database,profiles,'auth-player',changesBetween(before,after));
+ assert.equal(userWrites[0].tiktokUrl,'https://www.tiktok.com/@player');
+ const updatedProfiles=profiles.map(p=>userWrites.find(w=>w.id===p.id)||p);
+ const loaded=fromDatabase(database,updatedProfiles,'auth-player'),cleared=structuredClone(loaded);
+ assert.equal(loaded.users.find(u=>u.id==='auth-player').tiktokUrl,userWrites[0].tiktokUrl);
+ cleared.users.find(u=>u.id==='auth-player').tiktokUrl='';
+ assert.equal(toDatabase(database,updatedProfiles,'auth-player',changesBetween(loaded,cleared)).userWrites[0].tiktokUrl,'');
+});
+test('league deletion removes linked records including concurrent fixtures, preserving other leagues',()=>{
+ const data=structuredClone(database);data.managerV8.leagues=[{id:'bad'},{id:'keep'}];
+ data.managerV8.leagueGames=[{id:'g1',leagueId:'bad'},{id:'g2',leagueId:'keep'}];
+ data.results.push({id:'linked',leagueId:'bad'},{id:'other',leagueId:'keep'});
+ const before=fromDatabase(data,profiles,'auth-admin'),after=structuredClone(before);
+ after.leagues=after.leagues.filter(l=>l.id!=='bad');
+ data.managerV8.leagueGames.push({id:'concurrent',leagueId:'bad'});
+ const changes=changesBetween(before,after),{patch}=toDatabase(data,profiles,'auth-admin',changes);
+ assert.deepEqual(patch.managerV8.leagues,[{id:'keep'}]);assert.deepEqual(patch.managerV8.leagueGames,[{id:'g2',leagueId:'keep'}]);
+ assert.deepEqual(patch.results,data.results.filter(r=>r.leagueId!=='bad'));
+ assert.throws(()=>validateChanges(changes,{id:'coach',role:'coach'},[]),/Administrator/);
+});

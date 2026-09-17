@@ -1,3 +1,4 @@
+
 // Loaded before concept.js. The imported UI calls these production services.
 let services, model, authenticatedUser, baseline, remoteData = {}, remoteProfiles = [];
 let subscriptions = [], pendingWrites = 0, writeQueue = Promise.resolve(), syncMessage = '';
@@ -67,6 +68,50 @@ function applyDatabase(){
   baseline=structuredClone(state);render();
 }
 function showAccessError(message){liveReady=false;document.getElementById('modal-root').innerHTML='';document.getElementById('app').innerHTML=`<main class="login-screen"><section class="card login-card"><h1>HoloFyrn Manager</h1><p role="alert">${esc(message)}</p><button class="btn primary" id="access-logout">Log out</button><button class="btn" id="access-reload">Retry</button></section></main>`;document.getElementById('access-logout').onclick=()=>services.authApi.signOut(services.auth);document.getElementById('access-reload').onclick=()=>location.reload();}
+function passwordChangeMarkup(){
+  return `<details class="password-settings"><summary>Change password</summary><form id="password-change-form"><input type="text" name="username" autocomplete="username" value="${esc(services?.auth?.currentUser?.email || '')}" hidden><label class="field">Current password<input class="input" name="currentPassword" type="password" autocomplete="current-password" required></label><label class="field">New password<input class="input" name="newPassword" type="password" autocomplete="new-password" minlength="6" required></label><label class="field">Confirm new password<input class="input" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required></label><p class="profile-note">Use at least 6 characters.</p><p id="password-change-message" role="status" aria-live="polite"></p><button class="btn primary" type="submit">Update password</button></form></details>`;
+}
+function bindPasswordChange(){
+  const form=document.getElementById('password-change-form');
+  if(!form)return;
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const button=form.querySelector('button[type=submit]'),message=form.querySelector('[role=status]');
+    if(button.disabled || !form.reportValidity())return;
+    message.textContent='';
+    const current=form.elements.currentPassword.value,next=form.elements.newPassword.value;
+    if(next!==form.elements.confirmPassword.value){message.textContent='The new passwords do not match.';return;}
+    if(current===next){message.textContent='Choose a different password from your current one.';return;}
+    const user=services?.auth?.currentUser;
+    if(!user?.email || user.uid!==authenticatedUser?.uid){message.textContent='Please sign in again before changing your password.';return;}
+    button.disabled=true;button.textContent='Updating…';
+    try{
+      const {authApi,auth}=services;
+      const credential=authApi.EmailAuthProvider.credential(user.email,current);
+      await authApi.reauthenticateWithCredential(user,credential);
+      if(auth.currentUser?.uid!==user.uid)throw {code:'auth/user-mismatch'};
+      await authApi.updatePassword(user,next);
+      form.reset();
+      message.textContent='Password updated successfully. Use your new password next time you sign in.';
+    }catch(error){
+      const messages={
+        'auth/invalid-credential':'The current password is incorrect.',
+        'auth/wrong-password':'The current password is incorrect.',
+        'auth/too-many-requests':'Too many attempts. Please try again later.',
+        'auth/weak-password':'Choose a stronger password with at least 6 characters.',
+        'auth/password-does-not-meet-requirements':'This password does not meet the account password requirements. Choose a stronger password.',
+        'auth/network-request-failed':'Connection failed. Check your connection and try again.',
+        'auth/requires-recent-login':'Please sign in again before changing your password.',
+        'auth/user-mismatch':'Your session changed. Please sign in again.',
+        'auth/user-token-expired':'Your session expired. Please sign in again.'
+      };
+      message.textContent=messages[error.code] || 'Unable to update your password. Please try again.';
+    }finally{
+      form.elements.currentPassword.value='';
+      button.disabled=false;button.textContent='Update password';
+    }
+  };
+}
 function showLogin(message=''){
   document.getElementById('app').innerHTML=`<main class="login-screen"><section class="card login-card"><div class="brand"><img src="assets/holofyrn-logo.png" alt="HoloFyrn"><div><div class="brand-title">HOLOFYRN</div><div class="brand-sub">Esports Management</div></div></div><h1>Welcome back.</h1><p class="page-sub">Sign in to your team workspace.</p><form id="login-form"><label class="field"><span>Username or email</span><input class="input" name="username" autocomplete="username" required></label><label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="current-password" required></label><button class="btn primary" type="submit">Log in</button><p id="login-message" role="alert">${esc(message)}</p></form></section></main>`;
   document.getElementById('login-form').onsubmit=async event=>{
@@ -117,9 +162,38 @@ function bindConnectedActions(){
   if(search){search.setAttribute('aria-label','Search players, events and leagues');search.onkeydown=event=>{if(event.key!=='Enter')return;event.preventDefault();const q=search.value.trim().toLowerCase();if(!q)return;const players=state.players.filter(p=>`${p.name} ${p.rl}`.toLowerCase().includes(q));const events=visibleEventsForCurrentUser().filter(e=>e.title.toLowerCase().includes(q));const leagues=state.leagues.filter(l=>l.name.toLowerCase().includes(q));openModal('Search results',`<div class="search-results">${players.map(p=>`<button class="btn" data-found-player="${esc(p.id)}">Player · ${esc(p.name)}</button>`).join('')}${events.map(e=>`<button class="btn" data-found-event="${esc(e.id)}">Calendar · ${esc(e.title)}</button>`).join('')}${leagues.map(l=>`<button class="btn" data-found-league="${esc(l.id)}">League · ${esc(l.name)}</button>`).join('')}${!players.length&&!events.length&&!leagues.length?'<p class="empty">No results.</p>':''}</div>`,null);document.querySelectorAll('[data-found-player]').forEach(b=>b.onclick=()=>viewPlayer(playerById(b.dataset.foundPlayer)));document.querySelectorAll('[data-found-event]').forEach(b=>b.onclick=()=>eventDetailModal(state.events.find(e=>String(e.id)===b.dataset.foundEvent)));document.querySelectorAll('[data-found-league]').forEach(b=>b.onclick=()=>{state.selectedLeagueId=state.leagues.find(l=>String(l.id)===b.dataset.foundLeague).id;state.view='league';closeModal();render();});};}
 }
 function bindAdmin(){
+  if(!isAdmin())return;
+  document.querySelectorAll('[data-account-delete]').forEach(b=>b.onclick=()=>deleteAccountModal(userById(b.dataset.accountDelete)));
   document.getElementById('add-account')?.addEventListener('click',()=>accountModal());
   document.querySelectorAll('[data-account-edit]').forEach(b=>b.onclick=()=>accountModal(userById(b.dataset.accountEdit)));
-  document.querySelectorAll('[data-account-delete]').forEach(b=>{const user=userById(b.dataset.accountDelete);b.textContent=user.approved===false?'Enable':'Disable';b.disabled=user.id===state.currentUserId;b.onclick=()=>confirmModal(`${user.approved===false?'Enable':'Disable'} account?`,'This changes access to the manager. The Firebase login is retained.',()=>{user.approved=user.approved===false;save();render();});});
+  document.querySelectorAll('[data-account-toggle]').forEach(b=>{const user=userById(b.dataset.accountToggle);b.textContent=user.approved===false?'Enable':'Disable';b.disabled=user.id===state.currentUserId||user.deletionPending===true;b.onclick=()=>confirmModal(`${user.approved===false?'Enable':'Disable'} account?`,'This changes access to the manager. The Firebase login is retained.',()=>{user.approved=user.approved===false;save();render();});});
+}
+async function requestAccountDeletion(userId){
+  const api=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-functions.js');
+  const functions=api.getFunctions(services.auth.app,'europe-west1');
+  return api.httpsCallable(functions,'deleteManagerAccount')({userId});
+}
+function deleteAccountModal(user){
+  if(!isAdmin()||!user||user.id===state.currentUserId)return;
+  openModal('Permanently delete account?',`<p>Delete <b>${esc(user.displayName)}</b> (@${esc(user.username)}) and their login permanently? This cannot be undone. Player records and competition history will remain.</p><label class="field" for="delete-account-confirm">Type the username to confirm<input class="input" id="delete-account-confirm" autocomplete="off" spellcheck="false"></label><p id="delete-account-error" role="alert"></p>`,async()=>{
+    const button=document.getElementById('modal-save'),message=document.getElementById('delete-account-error');
+    if(button.disabled)return;
+    if(value('delete-account-confirm')!==user.username){message.textContent='Enter the exact username to confirm.';return;}
+    if(pendingWrites){message.textContent='Wait for current changes to finish saving, then try again.';return;}
+    if(!isAdmin()||user.id===state.currentUserId)return;
+    button.disabled=true;button.textContent='Deleting…';message.textContent='';
+    try{
+      await requestAccountDeletion(user.id);
+      remoteProfiles=remoteProfiles.filter(p=>p.id!==user.id);
+      state.users=state.users.filter(p=>p.id!==user.id);
+      for(const player of state.players)if(player.accountId===user.id)player.accountId=null;
+      closeModal();render();toast('Account deleted',user.displayName);
+    }catch(error){
+      message.textContent=error.code==='functions/permission-denied'?'Account deletion permission must be enabled for your administrator account in Firebase.':error.code==='functions/not-found'||error.code==='functions/internal'?'The deletion service is unavailable. Check that the Firebase function has been deployed.':error.message||'Deletion failed. Please retry.';
+      button.disabled=false;button.textContent='Delete permanently';
+    }
+  },'Delete permanently');
+  document.getElementById('modal-save').classList.add('danger');
 }
 function accountModal(user=null){
   if(!isAdmin())return;
