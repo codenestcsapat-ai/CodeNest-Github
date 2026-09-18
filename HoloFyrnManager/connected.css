@@ -96,3 +96,5 @@
 .calendar-event[class*=priority-]{border-left:4px solid var(--priority-color);background:var(--priority-bg)!important}
 .event-row[class*=priority-]{border-left:4px solid var(--priority-color)}
 .priority-badge{display:inline-block;color:var(--priority-color);background:var(--priority-bg);border:1px solid var(--priority-color);border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;line-height:1.4}
+.avatar img,.profile-circle img,.avatar-editor-stage img{object-fit:cover;object-position:center;transform:translate(-50%,-50%)!important}
+.avatar-editor-stage{cursor:default}

@@ -209,6 +209,8 @@ body::after{content:"";position:fixed;inset:0;background:
 .link-btn,.section-head .link-btn{color:#ff8198}
 .input,.select,.textarea,.searchbar{background:rgba(10,14,20,.82);border-color:rgba(120,135,155,.16);color:#eef3fb}
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:rgba(205,91,118,.34);box-shadow:0 0 0 3px rgba(157,34,63,.12)}
+#e-date,#e-time{color-scheme:dark}
+#e-date::-webkit-calendar-picker-indicator,#e-time::-webkit-calendar-picker-indicator{filter:brightness(0) invert(1);opacity:1;cursor:pointer}
 .field label,.profile-note,.event-meta,.subtle,.muted-date,.metric-secondary,.team-code,.user-role,small{color:var(--muted)}
 .tag{background:rgba(14,20,29,.92);border-color:rgba(120,135,155,.16)}
 .tag.red,.seg-btn.active,.user-option.active,.team-option.active{background:linear-gradient(180deg,rgba(117,22,45,.70),rgba(84,17,32,.60));border-color:rgba(193,88,116,.28)}

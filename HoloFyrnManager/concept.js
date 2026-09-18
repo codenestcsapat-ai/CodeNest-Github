@@ -122,7 +122,7 @@ function leagueDetail(l){
   return appShell(`<div class="page-head"><div><button class="link-btn" id="league-back">← Back to leagues</button><div class="eyebrow">${esc(l.status)}</div><h1 class="page-title small">${esc(l.name)}</h1><p class="page-sub">${esc(l.stage)} · ${l.participants.length} participants</p></div>${isAdmin()?'<div class="card-actions"><button class="btn danger" id="delete-league">Delete league</button><button class="btn" id="add-league-fixture">+ Add fixture</button><button class="btn primary" id="add-league-match">+ Add played match</button></div>':''}</div><div class="card card-pad league-tabs">${tabs.map(([id,label])=>`<button class="seg-btn ${state.leagueTab===id?'active':''}" data-league-tab="${id}">${label}</button>`).join('')}</div><div style="margin-top:16px">${leagueTabContent(l,standings)}</div>`);
 }
 function leagueTabContent(l,standings){
-  if(state.leagueTab==='standings')return standingsTable(l,standings);
+  if(state.leagueTab==='standings')return `${isAdmin()?'<div class="card-actions" style="margin-bottom:12px"><button class="btn primary" id="add-league-team">+ Add team</button></div>':''}${standingsTable(l,standings)}`;
   if(state.leagueTab==='matches')return leagueMatchesTab(l);
   if(state.leagueTab==='fixtures')return leagueFixturesTab(l);
   if(state.leagueTab==='scenario')return leagueScenarioTab(l,standings);
@@ -302,12 +302,19 @@ function deleteLeagueModal(l){
   });
   document.getElementById('modal-save').classList.add('danger');
 }
-function leagueTeamModal(l,name){
-  if(!isAdmin()||!l.participants.includes(name))return;
-  openModal('Edit league team',`<label class="field" for="league-team-name">Team name<input class="input" id="league-team-name" value="${esc(name)}"></label><p id="league-team-error" role="alert"></p>`,()=>{
+function leagueTeamModal(l,name=null){
+  const adding=name===null;
+  if(!isAdmin()||(!adding&&!l.participants.includes(name)))return;
+  openModal(adding?'Add league team':'Edit league team',`<label class="field" for="league-team-name">Team name<input class="input" id="league-team-name" value="${esc(name??'')}"></label><p id="league-team-error" role="alert"></p>`,()=>{
     if(!isAdmin())return;
     const next=value('league-team-name').trim();
     if(!next||l.participants.some(t=>t!==name&&t.toLowerCase()===next.toLowerCase())){document.getElementById('league-team-error').textContent='Enter a unique team name.';return;}
+    if(adding){
+      l.participants.push(next);
+      l.config.seeds??={};
+      Object.defineProperty(l.config.seeds,next,{value:l.participants.length,writable:true,enumerable:true,configurable:true});
+      save();closeModal();render();return;
+    }
     l.participants=l.participants.map(t=>t===name?next:t);
     const seeds=l.config?.seeds;if(seeds&&Object.hasOwn(seeds,name)){const seed=seeds[name];delete seeds[name];Object.defineProperty(seeds,next,{value:seed,writable:true,enumerable:true,configurable:true});}
     for(const g of state.leagueGames.filter(g=>String(g.leagueId)===String(l.id)))for(const side of ['home','away'])if(g[side]===name)g[side]=next;
@@ -334,6 +341,7 @@ function bindLeague(){
   document.querySelectorAll('[data-league-tab]').forEach(b=>b.onclick=()=>{state.leagueTab=b.dataset.leagueTab;save();render();});
   document.getElementById('add-league')?.addEventListener('click',leagueModal);
   const l=state.leagues.find(x=>x.id==state.selectedLeagueId);if(!l)return;
+  document.getElementById('add-league-team')?.addEventListener('click',()=>leagueTeamModal(l));
   document.querySelectorAll('[data-team-edit]').forEach(b=>b.onclick=()=>leagueTeamModal(l,l.participants[Number(b.dataset.teamEdit)]));
   document.querySelectorAll('[data-team-remove]').forEach(b=>b.onclick=()=>removeLeagueTeam(l,l.participants[Number(b.dataset.teamRemove)]));
   document.getElementById('delete-league')?.addEventListener('click',()=>deleteLeagueModal(l));
@@ -431,20 +439,15 @@ function openUserPublicProfile(u){
 function openProfileModal(tab='profile',selectedNotificationId=null){const u=currentUser(),ns=currentNotifications();openModal('My profile',`<div class="profile-tabs"><button class="profile-tab ${tab==='profile'?'active':''}" data-profile-tab="profile">Profile</button><button class="profile-tab ${tab==='notifications'?'active':''}" data-profile-tab="notifications">Notification inbox ${unreadNotifications().length?`(${unreadNotifications().length})`:''}</button></div><div id="profile-tab-body">${tab==='profile'?profileTabMarkup(u)+passwordChangeMarkup():profileNotificationsMarkup(ns,selectedNotificationId)}</div>`,null,'Close');document.querySelectorAll('[data-profile-tab]').forEach(b=>b.onclick=()=>openProfileModal(b.dataset.profileTab));bindProfileBody(tab,u);}
 function profileTabMarkup(u){
   const scale=Number(u.avatarScale||1),x=Number(u.avatarX||0),y=Number(u.avatarY||0);
-  return `<div class="profile-layout profile-layout-v6"><div class="profile-avatar-wrap"><div class="avatar-editor-stage" id="avatar-stage">${u.avatarData?`<img id="avatar-editor-img" src="${esc(safeUrl(u.avatarData, true))}" style="transform:translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${scale})">`:`<span id="avatar-editor-placeholder">${esc(u.initials)}</span>`}</div><input id="profile-image" class="file-input wide-file" type="file" accept="image/*,.gif"><p class="profile-note">PNG, JPG, WEBP and animated GIF are supported. Drag the preview or use the controls to frame it.</p><div class="crop-controls"><label>Zoom <input id="avatar-scale" type="range" min="0.55" max="3" step="0.05" value="${scale}"></label><label>Left / right <input id="avatar-x" type="range" min="-90" max="90" step="1" value="${x}"></label><label>Up / down <input id="avatar-y" type="range" min="-90" max="90" step="1" value="${y}"></label></div></div><div><div class="form-grid"><div class="field"><label>Display name</label><input id="profile-name" class="input" value="${esc(u.displayName)}"></div><div class="field"><label>Discord name</label><input id="profile-discord" class="input" value="${esc(u.discord||'')}"></div>${profileSocialFields(u)}</div><div class="field" style="margin-top:10px"><label>Bio</label><textarea id="profile-bio" class="textarea">${esc(u.bio||'')}</textarea></div><div class="card-actions" style="margin-top:12px"><button class="btn primary" id="profile-save">Save profile</button>${profileSocialLinks(u)}</div></div></div>`;
+  return `<div class="profile-layout profile-layout-v6"><div class="profile-avatar-wrap"><div class="avatar-editor-stage" id="avatar-stage">${u.avatarData?`<img id="avatar-editor-img" src="${esc(safeUrl(u.avatarData, true))}" style="transform:translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${scale})">`:`<span id="avatar-editor-placeholder">${esc(u.initials)}</span>`}</div><input id="profile-image" class="file-input wide-file" type="file" accept="image/*,.gif"><p class="profile-note">PNG, JPG, WEBP and animated GIF are supported. Your photo is automatically centered and fitted.</p></div><div><div class="form-grid"><div class="field"><label>Display name</label><input id="profile-name" class="input" value="${esc(u.displayName)}"></div><div class="field"><label>Discord name</label><input id="profile-discord" class="input" value="${esc(u.discord||'')}"></div>${profileSocialFields(u)}</div><div class="field" style="margin-top:10px"><label>Bio</label><textarea id="profile-bio" class="textarea">${esc(u.bio||'')}</textarea></div><div class="card-actions" style="margin-top:12px"><button class="btn primary" id="profile-save">Save profile</button>${profileSocialLinks(u)}</div></div></div>`;
 }
 function profileNotificationsMarkup(ns,selectedNotificationId=null){const selected=ns.find(n=>n.id==selectedNotificationId)||ns[0];return`<div class="mailbox"><aside class="mailbox-list"><div class="mailbox-toolbar"><div><b>Inbox</b><small>${ns.length} messages · ${unreadNotifications().length} unread</small></div><button class="link-btn" id="profile-mark-all-read">Mark all read</button></div><div class="mailbox-scroll">${ns.length?ns.map(n=>`<button class="mail-row ${n.read?'':'unread'} ${selected?.id===n.id?'selected':''}" data-mail-open="${n.id}"><span class="notification-dot"></span><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small><em>${esc(n.created||'')}</em></span></button>`).join(''):'<div class="empty">No notifications.</div>'}</div></aside><section class="mailbox-reader">${selected?`<div class="mail-reader-head"><span class="tag ${selected.read?'':'red'}">${selected.read?'Read':'Unread'}</span><small>${esc(selected.created||'')}</small></div><h2>${esc(selected.title)}</h2><p>${esc(selected.text)}</p><div class="card-actions"><button class="btn primary" data-mail-go="${selected.id}">Open related page</button><button class="btn" data-mail-toggle="${selected.id}">${selected.read?'Mark unread':'Mark read'}</button></div>`:'<div class="empty">Select a notification.</div>'}</section></div>`;}
 function bindProfileBody(tab,u){
   if(tab==='profile'){
     bindPasswordChange();
-    let pendingAvatar=u.avatarData||'',pendingScale=Number(u.avatarScale||1),pendingX=Number(u.avatarX||0),pendingY=Number(u.avatarY||0),drag=null;
-    const stage=document.getElementById('avatar-stage'),scaleEl=document.getElementById('avatar-scale'),xEl=document.getElementById('avatar-x'),yEl=document.getElementById('avatar-y');
-    const redraw=()=>{const img=document.getElementById('avatar-editor-img');if(img)img.style.transform=`translate(calc(-50% + ${pendingX}px),calc(-50% + ${pendingY}px)) scale(${pendingScale})`;if(scaleEl)scaleEl.value=pendingScale;if(xEl)xEl.value=pendingX;if(yEl)yEl.value=pendingY;};
-    document.getElementById('profile-image')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>200*1024){toast('Image too large','Use a PNG, JPEG, WebP or GIF smaller than 200 KB.');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{pendingAvatar=String(reader.result);stage.innerHTML=`<img id="avatar-editor-img" src="${esc(safeUrl(pendingAvatar, true))}">`;pendingScale=1;pendingX=0;pendingY=0;redraw();};reader.readAsDataURL(file);});
-    scaleEl?.addEventListener('input',()=>{pendingScale=Number(scaleEl.value);redraw();});xEl?.addEventListener('input',()=>{pendingX=Number(xEl.value);redraw();});yEl?.addEventListener('input',()=>{pendingY=Number(yEl.value);redraw();});
-    stage?.addEventListener('pointerdown',e=>{if(!pendingAvatar)return;drag={x:e.clientX,y:e.clientY,startX:pendingX,startY:pendingY};stage.setPointerCapture?.(e.pointerId);stage.classList.add('dragging');});
-    stage?.addEventListener('pointermove',e=>{if(!drag)return;pendingX=Math.max(-90,Math.min(90,drag.startX+(e.clientX-drag.x)));pendingY=Math.max(-90,Math.min(90,drag.startY+(e.clientY-drag.y)));redraw();});
-    const stop=()=>{drag=null;stage?.classList.remove('dragging');};stage?.addEventListener('pointerup',stop);stage?.addEventListener('pointercancel',stop);
+    let pendingAvatar=u.avatarData||'',pendingScale=1,pendingX=0,pendingY=0;
+    const stage=document.getElementById('avatar-stage');
+    document.getElementById('profile-image')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>200*1024){toast('Image too large','Use a PNG, JPEG, WebP or GIF smaller than 200 KB.');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{pendingAvatar=String(reader.result);stage.innerHTML=`<img id="avatar-editor-img" src="${esc(safeUrl(pendingAvatar, true))}">`;pendingScale=1;pendingX=0;pendingY=0;};reader.readAsDataURL(file);});
     document.getElementById('profile-save')?.addEventListener('click',()=>{u.displayName=value('profile-name')||u.displayName;u.initials=initials(u.displayName);u.discord=value('profile-discord');for(const social of PROFILE_SOCIALS)u[social.key]=value('profile-'+social.id).trim();u.bio=value('profile-bio');u.avatarData=pendingAvatar;u.avatarScale=pendingScale;u.avatarX=pendingX;u.avatarY=pendingY;save();closeModal();render();toast('Saving profile');});
   }else{
     document.getElementById('profile-mark-all-read')?.addEventListener('click',()=>{state.notifications.filter(n=>n.userId===state.currentUserId).forEach(n=>n.read=true);save();openProfileModal('notifications');});
