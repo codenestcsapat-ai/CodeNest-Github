@@ -214,12 +214,9 @@ async function saveStore(store) {
       // True field-level privacy needs private staff data in separate documents guarded by role-based Firestore rules.
       await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() });
       if (usersRef) {
-        const userIds = new Set(cleanStore.users.map((user) => user.id));
-        await Promise.all(cleanStore.users.map((user) => remoteApi.setDoc(remoteApi.doc(db, "users", user.id), user)));
-        const existingUsers = await remoteApi.getDocs(usersRef);
-        await Promise.all(existingUsers.docs
-          .filter((docSnap) => !userIds.has(docSnap.id))
-          .map((docSnap) => remoteApi.deleteDoc(remoteApi.doc(db, "users", docSnap.id))));
+        // A browser's list can be incomplete or stale. Missing profiles must
+        // never be treated as account deletions during an ordinary save.
+        await Promise.all(cleanStore.users.map((user) => remoteApi.setDoc(remoteApi.doc(db, "users", user.id), user, { merge: true })));
       }
       return true;
     } catch (error) {
@@ -2765,10 +2762,20 @@ document.addEventListener("click", async (event) => {
     if (!isAdmin(activeUser)) return;
     const user = store.users.find((item) => item.id === button.dataset.userDelete);
     if (!user || isBuiltInUser(user)) return;
-    if (!(await showConfirm(`Are you sure you want to delete ${user.username}?`, { title: "Delete account", confirmText: "Delete", tone: "danger" }))) return;
-    store.users = store.users.filter((item) => item.id !== button.dataset.userDelete);
-    if (localStorage.getItem(sessionKey) === button.dataset.userDelete) localStorage.removeItem(sessionKey);
-    await persistStore(store);
+    if (user.id === currentAuthUser?.uid || user.authUid === currentAuthUser?.uid) return;
+    if (!(await showConfirm(`Permanently delete ${user.username} and their Firebase login?`, { title: "Delete account", confirmText: "Delete", tone: "danger" }))) return;
+    button.disabled = true;
+    try {
+      const api = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-functions.js");
+      await api.httpsCallable(api.getFunctions(auth.app, "europe-west1"), "deleteManagerAccount")({ userId: user.id });
+      // The server updates both stores; do not save this stale browser copy.
+    } catch (error) {
+      await showAlert(error.code === "functions/permission-denied"
+        ? "Account deletion permission must be enabled for this administrator in Firebase."
+        : "Account deletion did not finish. Check that deleteManagerAccount is deployed, then retry.", { title: "Delete failed", tone: "warning" });
+    } finally {
+      button.disabled = false;
+    }
   }
 
   if (button.dataset.weekDelete) {
