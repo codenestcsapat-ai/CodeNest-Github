@@ -46,11 +46,12 @@ test('disabled accounts cannot save and source calendar entries cannot be overwr
 });
 test('rebranding merges saved teams and keeps league references and seed keys aligned',()=>{
  const data=structuredClone(database);
- data.managerV8.teams=[{id:'main',name:'Noctiq eSports'},{id:'academy',name:'Noctiq eSports Academy'},{id:'custom',name:'Guest Team'}];
+ data.managerV8.teams=[{id:'main',name:'Noctiq eSports'},{id:'academy',name:'Noctiq eSports Academy'},{id:'custom',name:'Guest Team'},{id:'synq',name:'HoloFyrn Synq'}];
  data.managerV8.leagues=[{id:'league',participants:['Noctiq eSports','Noctiq eSports Academy','Guest Team'],config:{seeds:{'Noctiq eSports':1,'Noctiq eSports Academy':2}},playoffs:{rounds:[{matches:[{home:'Noctiq eSports Academy'}]}]}}];
  data.managerV8.leagueGames=[{id:'game',home:'Noctiq eSports',away:'Noctiq eSports Academy'}];
  const before=fromDatabase(data,profiles,'auth-admin');
- assert.equal(before.teams.length,7);assert.equal(new Set(before.teams.map(t=>t.id)).size,7);
+ assert.equal(before.teams.length,6);assert.equal(new Set(before.teams.map(t=>t.id)).size,6);
+ assert.equal(before.teams.some(t=>t.id==='synq'),false);
  assert.equal(before.teams.find(t=>t.id==='academy').name,'HoloFyrn Academy');
  assert.equal(before.leagues[0].config.seeds['HoloFyrn Esports'],1);
  assert.equal(before.leagues[0].playoffs.rounds[0].matches[0].home,'HoloFyrn Academy');

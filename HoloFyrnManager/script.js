@@ -33,7 +33,6 @@ let availabilityWeekOffset = 0;
 const teams = [
   { id: "rls-academy", name: "Rls HoloFyrn Academy", label: "RLS Academy" },
   { id: "rls-eldr", name: "Rls HoloFyrn Eldr", label: "RLS Eldr" },
-  { id: "synq", name: "HoloFyrn Synq", label: "Synq" },
   { id: "main", name: "HoloFyrn Esports", label: "Main Team" },
   { id: "academy", name: "HoloFyrn Academy", label: "Academy" },
   { id: "rls", name: "HoloFyrn Esports RLS", label: "HoloFyrn Esports RLS" },

@@ -139,7 +139,7 @@ html,body{background:#05070a}
 }
 html,body{background:#07090d;color:var(--text)}
 body{position:relative;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;background:url('assets/concept/62056410c1fec7c4.png') center center/cover no-repeat;opacity:.68;z-index:-3;pointer-events:none}
+body::before{content:"";position:fixed;inset:0;background:url('assets/concept/HoloBG.png') center center/cover no-repeat;opacity:.68;z-index:-3;pointer-events:none}
 body::after{content:"";position:fixed;inset:0;background:
  radial-gradient(circle at 78% 16%, rgba(121,16,36,.18), transparent 19%),
  linear-gradient(90deg, rgba(5,7,10,.82) 0 16.8%, rgba(5,7,10,.58) 16.8%, rgba(4,7,10,.68) 41%, rgba(4,7,10,.78) 100%);
@@ -147,7 +147,7 @@ body::after{content:"";position:fixed;inset:0;background:
 .app-shell{background:transparent;grid-template-columns:290px 1fr}
 .sidebar{background:
  linear-gradient(180deg,rgba(6,8,12,.90),rgba(6,8,12,.94) 34%,rgba(7,9,13,.87) 67%,rgba(7,9,13,.95) 100%),
- url('assets/concept/62056410c1fec7c4.png') left center/cover no-repeat;
+ url('assets/concept/HoloBG.png') left center/cover no-repeat;
  border-right:1px solid rgba(255,255,255,.05);box-shadow:inset -1px 0 0 rgba(255,255,255,.04)}
 .brand{position:relative;z-index:2;gap:14px;padding:6px 6px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
 .brand img{width:54px;height:54px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.45))}
@@ -168,7 +168,7 @@ body::after{content:"";position:fixed;inset:0;background:
 .main::before{content:"";position:fixed;left:290px;right:0;top:0;bottom:0;background:
  linear-gradient(180deg,rgba(6,8,12,.30),rgba(6,8,12,.36)),
  radial-gradient(circle at 77% 16%, rgba(150,19,43,.18), transparent 23%),
- url('assets/concept/62056410c1fec7c4.png') right top/cover no-repeat;
+ url('assets/concept/HoloBG.png') right top/cover no-repeat;
  opacity:1;z-index:-1;pointer-events:none}
 .topbar{background:rgba(6,9,14,.72);border-bottom:1px solid rgba(255,255,255,.055);backdrop-filter:blur(14px)}
 .crumb{color:#bfc7d5}
@@ -185,7 +185,7 @@ body::after{content:"";position:fixed;inset:0;background:
 .banner-art{min-height:162px;border-color:rgba(120,135,155,.16);background:
  linear-gradient(180deg, rgba(8,11,16,.70), rgba(8,11,16,.80)),
  radial-gradient(circle at 82% 44%, rgba(142,25,49,.16), transparent 26%),
- url('assets/concept/62056410c1fec7c4.png') 84% 18%/cover no-repeat}
+ url('assets/concept/HoloBG.png') 84% 18%/cover no-repeat}
 .banner-art::after{background:linear-gradient(120deg,transparent 54%,rgba(137,23,48,.10) 62%,transparent 78%)}
 .banner-quote{left:34px;top:34px;color:#d6a8b1;font-size:16px;letter-spacing:.18em;text-shadow:0 2px 12px rgba(0,0,0,.65)}
 .card,.metric,.day-card,.league-card,.config-box,.calendar-day,.calendar-shell,.modal,.table-wrap,.standings-config .config-box,.predictor-main,.predictor-output-card,.fixture-card,.event-row,.kpi{background:var(--panel)!important;border-color:var(--line)!important;box-shadow:var(--shadow)}
@@ -274,7 +274,7 @@ body{
   background:
     linear-gradient(90deg,rgba(5,7,10,.58) 0 16.8%,rgba(5,7,10,.28) 16.8%,rgba(5,7,10,.42) 48%,rgba(5,7,10,.56) 100%),
     linear-gradient(180deg,rgba(4,6,9,.12),rgba(4,6,9,.24)),
-    url('assets/concept/62056410c1fec7c4.png') center top/cover fixed no-repeat !important;
+    url('assets/concept/HoloBG.png') center top/cover fixed no-repeat !important;
   background-color:#05070a !important;
 }
 body::before,body::after{display:none!important}
@@ -297,7 +297,7 @@ body::before,body::after{display:none!important}
 .sidebar{
   background:
     linear-gradient(180deg,rgba(4,6,9,.76),rgba(4,6,9,.82) 44%,rgba(4,6,9,.68) 72%,rgba(4,6,9,.90) 100%),
-    url('assets/concept/62056410c1fec7c4.png') left top/auto 100% no-repeat!important;
+    url('assets/concept/HoloBG.png') left top/auto 100% no-repeat!important;
   background-color:#06080b!important;
 }
 .card,.metric,.league-card,.calendar-shell,.config-box,.predictor-main,.predictor-output-card,.fixture-card,.day-card,.kpi{
@@ -306,7 +306,7 @@ body::before,body::after{display:none!important}
 .banner-art{
   background:
     linear-gradient(180deg,rgba(7,10,15,.52),rgba(7,10,15,.70)),
-    url('assets/concept/62056410c1fec7c4.png') right 12%/cover no-repeat!important;
+    url('assets/concept/HoloBG.png') right 12%/cover no-repeat!important;
 }
 @media(max-width:900px){
   body{background-position:68% top!important;background-attachment:scroll!important}

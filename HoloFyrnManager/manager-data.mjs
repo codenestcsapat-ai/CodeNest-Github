@@ -5,7 +5,6 @@ export const defaultTeams = [
   { id: 'rls', name: 'HoloFyrn Esports RLS', code: 'RLS' },
   { id: 'rls-academy', name: 'Rls HoloFyrn Academy', code: 'RLS Academy' },
   { id: 'rls-eldr', name: 'Rls HoloFyrn Eldr', code: 'RLS Eldr' },
-  { id: 'synq', name: 'HoloFyrn Synq', code: 'Synq' },
 ];
 // League team names also occur as seed-map keys and in playoff fixtures.
 function rebrand(value) {
@@ -53,7 +52,7 @@ export function fromDatabase(data = {}, profiles = [], uid = '') {
   const extension = data.managerV8 || {};
   return {
     currentUserId: users.find(u=>u.authUid===uid || u.id===uid)?.id || uid,
-    teams: [...defaultTeams.map(t=>({...list(extension.teams).find(saved=>saved.id===t.id),...t})), ...list(extension.teams).filter(t=>!defaultTeams.some(known=>known.id===t.id)).map(rebrand)], users, players, events,
+    teams: [...defaultTeams.map(t=>({...list(extension.teams).find(saved=>saved.id===t.id),...t})), ...list(extension.teams).filter(t=>t.id!=='synq'&&!defaultTeams.some(known=>known.id===t.id)).map(rebrand)], users, players, events,
     results: list(data.results).map(r=>({id:str(r.id), team:r.teamId || 'main', type:r.managerType || (r.type === 'League match' ? 'league' : 'tournament'), date:dateParts(r).date, event:r.title || r.event || '', stage:r.stage || '', placement:r.placement || r.score || '', prizeMoney:Number(r.prizeEur || r.prizeMoney || 0), result:r.result || 'pending', ...(r.leagueId != null ? {leagueId:r.leagueId} : {})})),
     availability: list(data.availability).map(a=>({id:str(a.id), playerId:str(a.playerId), date:a.date || '', from:a.startTime || a.from || '', until:a.endTime || a.until || '', status:a.status || 'Available'})),
     leagues: rebrand(list(extension.leagues)), leagueGames: rebrand(list(extension.leagueGames)), notifications: list(extension.notifications),
