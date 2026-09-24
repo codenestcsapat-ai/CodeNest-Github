@@ -5,8 +5,26 @@ const teamRoutes = {
   '/teams/rls-holofyrn-academy/': 'rls-academy',
   '/teams/rls-holofyrn-elet/': 'rls-eldr',
 };
+const teamNames = {
+  main: 'HoloFyrn Esport', academy: 'HoloFyrn Academy',
+  rls: 'RLS HoloFyrn Esport', 'rls-academy': 'RLS HoloFyrn Academy',
+  'rls-eldr': 'RLS HoloFyrn Élet',
+};
+const portraits = {kenz: 'kenz.webp', eggy: 'eggy.webp', interz: 'interz.webp'};
 let publicData = null;
 let loadError = false;
+
+function teamLink(team) {
+  return Object.entries(teamRoutes).find(([, id]) => id === team)?.[0] || '/teams/';
+}
+
+function playerLink(player) {
+  return `#/players/${encodeURIComponent(player.team)}/${encodeURIComponent(player.name)}/`;
+}
+
+function portrait(player) {
+  return player.team === 'main' ? portraits[player.name.toLowerCase()] : null;
+}
 
 function translated(en, hu) {
   const span = document.createElement('span');
@@ -23,10 +41,16 @@ function emptyMessage(en, hu) {
 }
 
 function playerCard(player, index) {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = 'player-card';
+  card.href = playerLink(player);
   const image = document.createElement('div');
   image.className = 'player-image public-player-image';
+  const photo = portrait(player);
+  if (photo) {
+    image.classList.add('has-portrait');
+    image.style.backgroundImage = `linear-gradient(0deg,#131010,transparent 35%),url('assets/${photo}')`;
+  }
   const label = document.createElement('span');
   label.className = 'player-index';
   label.textContent = `${String(index + 1).padStart(2, '0')} / HF`;
@@ -40,9 +64,91 @@ function playerCard(player, index) {
   const name = document.createElement('h3');
   name.textContent = player.name;
   copy.append(small, name);
-  info.append(copy);
+  const arrow = document.createElement('span');
+  arrow.setAttribute('aria-hidden', 'true');
+  arrow.textContent = '↗';
+  info.append(copy, arrow);
   card.append(image, info);
   return card;
+}
+
+function profilePlayer(route, players) {
+  const match = route.match(/^\/players\/([^/]+)\/(.+)\/$/);
+  if (match) return players.find(player => player.team === match[1] && player.name === match[2]);
+  const legacy = route.match(/^\/players\/(kenz|eggy|interz)\/$/i);
+  return legacy && players.find(player => player.team === 'main' && player.name.toLowerCase() === legacy[1].toLowerCase());
+}
+
+function renderProfile(route, players) {
+  const player = profilePlayer(route, players);
+  const target = document.querySelector('#main .player-profile');
+  if (!target || !route.startsWith('/players/')) return;
+  if (!player) {
+    if (target.id === 'public-player-profile') target.replaceChildren(emptyMessage(loadError ? 'Player data is temporarily unavailable.' : 'Player not found.', loadError ? 'A játékosadatok átmenetileg nem érhetők el.' : 'A játékos nem található.'));
+    return;
+  }
+  const team = teamNames[player.team] || player.team;
+  const back = `#${teamLink(player.team)}`;
+  const breadcrumbs = document.createElement('div');
+  breadcrumbs.className = 'breadcrumbs';
+  const teamAnchor = document.createElement('a');
+  teamAnchor.href = back;
+  teamAnchor.textContent = team;
+  breadcrumbs.append(teamAnchor, document.createTextNode(' / ' + player.name));
+  const grid = document.createElement('div');
+  grid.className = 'profile-grid';
+  const photo = document.createElement('div');
+  photo.className = 'profile-photo public-profile-photo';
+  const photoFile = portrait(player);
+  if (photoFile) {
+    photo.classList.add('has-portrait');
+    photo.style.backgroundImage = `linear-gradient(0deg,#131010,transparent 35%),url('assets/${photoFile}')`;
+    const illustration = document.createElement('em');
+    illustration.className = 'concept-label';
+    illustration.append(translated('Illustrative portrait', 'Illusztráció'));
+    photo.append(illustration);
+  }
+  const photoLabel = document.createElement('span');
+  photoLabel.textContent = 'HF / ' + team;
+  photo.append(photoLabel);
+  const copy = document.createElement('div');
+  copy.className = 'profile-copy';
+  const eyebrow = document.createElement('div');
+  eyebrow.className = 'eyebrow';
+  eyebrow.append(document.createElement('i'), translated('PLAYER PROFILE', 'JÁTÉKOSPROFIL'));
+  const title = document.createElement('h1');
+  title.textContent = player.name;
+  const role = document.createElement('p');
+  role.className = 'profile-role';
+  role.append(translated('Rocket League player', 'Rocket League játékos'), document.createTextNode(' · ' + team));
+  const divider = document.createElement('div');
+  divider.className = 'profile-divider';
+  const facts = document.createElement('div');
+  facts.className = 'profile-facts';
+  for (const [en, hu, value] of [['TEAM', 'CSAPAT', team], ['ROLE', 'SZEREPKÖR', player.role || null]]) {
+    const fact = document.createElement('div');
+    const label = document.createElement('span');
+    label.append(translated(en, hu));
+    const content = document.createElement('strong');
+    if (value) content.textContent = value;
+    else content.append(translated('Player', 'Játékos'));
+    fact.append(label, content);
+    facts.append(fact);
+  }
+  const aboutTitle = document.createElement('h2');
+  aboutTitle.append(translated('About the player', 'A játékosról'));
+  const about = document.createElement('p');
+  about.className = 'profile-bio';
+  if (player.bio) about.textContent = player.bio;
+  else about.append(translated('A personal introduction is coming soon.', 'A személyes bemutatkozás hamarosan érkezik.'));
+  const backLink = document.createElement('a');
+  backLink.className = 'text-link';
+  backLink.href = back;
+  backLink.append(translated('Back to team', 'Vissza a csapathoz'), document.createTextNode(' ↗'));
+  copy.append(eyebrow, title, role, divider, facts, aboutTitle, about, backLink);
+  grid.append(photo, copy);
+  target.replaceChildren(breadcrumbs, grid);
+  document.title = `${player.name} | HoloFyrn Esport`;
 }
 
 function renderPlayers(grid, players) {
@@ -81,6 +187,10 @@ function render() {
   }
   const players = publicData?.players || [];
   const results = publicData?.results || [];
+  if (route.startsWith('/players/')) {
+    renderProfile(route, players);
+    return;
+  }
   if (team) {
     renderPlayers(document.querySelector('#main .players-grid'), players.filter(player => player.team === team));
     const panels = document.querySelectorAll('#main .two-column .info-panel');
