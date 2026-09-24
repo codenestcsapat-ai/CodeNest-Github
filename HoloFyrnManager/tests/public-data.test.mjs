@@ -1,8 +1,8 @@
-const {test} = require('node:test');
-const assert = require('node:assert/strict');
-const {publicHoloFyrnData} = require('./public-data.cjs');
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {publicHoloFyrnData} from '../public-data.mjs';
 
-test('public feed includes team names and results but excludes private manager fields', () => {
+test('public projection contains team players and results without private fields', () => {
   const feed = publicHoloFyrnData({
     players:[{id:'private-id',name:'Kenz',teamId:'main',discord:'secret',notes:'private',authUid:'secret'}],
     users:[{email:'private@example.com'}],
@@ -10,8 +10,16 @@ test('public feed includes team names and results but excludes private manager f
     managerV8:{leagueGames:[{played:true,home:'HoloFyrn Esports',away:'Rival',homeSeries:3,awaySeries:1,date:'2026-09-21'}]},
   });
   assert.deepEqual(feed.players,[{name:'Kenz',team:'main'}]);
-  assert.equal(feed.results.length,2);
   assert.deepEqual(feed.results[0],{team:'main',type:'tournament',date:'2026-09-20',event:'Autumn Cup',stage:'',placement:'1st'});
   assert.deepEqual(feed.results[1],{team:'main',type:'league',date:'2026-09-21',event:'HoloFyrn Esports vs Rival',stage:'',placement:'3–1'});
   assert.doesNotMatch(JSON.stringify(feed),/private|secret|authUid|prizeEur/);
+});
+
+test('a played game between two HoloFyrn teams appears on both team pages', () => {
+  const feed = publicHoloFyrnData({managerV8:{leagueGames:[{
+    played:true,home:'HoloFyrn Esports',away:'HoloFyrn Academy',
+    homeSeries:2,awaySeries:3,date:'2026-09-24',
+  }]}});
+  assert.deepEqual(feed.results.map(row => row.team), ['main','academy']);
+  assert.equal(feed.results[0].placement, '2–3');
 });

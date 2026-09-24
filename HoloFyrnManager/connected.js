@@ -1,8 +1,8 @@
 
 // Loaded before concept.js. The imported UI calls these production services.
-let services, model, authenticatedUser, baseline, remoteData = {}, remoteProfiles = [];
+let services, model, publicModel, authenticatedUser, baseline, remoteData = {}, remoteProfiles = [];
 let subscriptions = [], pendingWrites = 0, writeQueue = Promise.resolve(), syncMessage = '';
-let availabilityOffset = 0, connectionEpoch = 0, liveReady = false, refreshDeferred = false;
+let availabilityOffset = 0, connectionEpoch = 0, liveReady = false, refreshDeferred = false, publicPublishStarted = false;
 function today(){return model ? model.localDate() : new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);}
 function emptyState(){return {currentUserId:'',activeTeam:'main',view:'overview',resultTab:'tournament',selectedLeagueId:null,leagueTab:'standings',calendarCursor:today().slice(0,7),sidebarOpen:!matchMedia("(max-width: 900px)").matches,teams:[],users:[],players:[],results:[],leagues:[],leagueGames:[],events:[],availability:[],notifications:[]};}
 function currentUser(){return authenticatedUser ? state.users.find(u=>u.id===state.currentUserId && (u.authUid===authenticatedUser.uid || u.id===authenticatedUser.uid)) : null;}
@@ -39,6 +39,7 @@ function queueSave(){
       if(Object.keys(patch).length){
         if(new TextEncoder().encode(JSON.stringify({...latest,...patch})).length>900000)throw new Error('The shared database document is nearly full. Export/archive old records before adding more.');
         transaction.set(storeRef,{...patch,updatedAt:fire.serverTimestamp()},{merge:true});
+        if(['players','results','managerV8'].some(key=>key in patch)) transaction.set(services.publicRef,{...publicModel.publicHoloFyrnData({...latest,...patch}),publishedAt:fire.serverTimestamp()});
       }
       for(const profile of userWrites)transaction.set(fire.doc(db,'users',profile.id),profile,{merge:true});
     });
@@ -66,6 +67,17 @@ function applyDatabase(){
   state=normalizeState({...state,...mapped});
   if(!state.teams.some(t=>t.id===state.activeTeam))state.activeTeam=state.teams[0].id;
   baseline=structuredClone(state);render();
+  if(!publicPublishStarted && ['admin','coach','manager','captain'].includes(me.role)){
+    publicPublishStarted=true;
+    publishPublicData().catch(error=>console.error('Public data publication failed',error));
+  }
+}
+async function publishPublicData(){
+  const {fire,db,storeRef,publicRef}=services;
+  await fire.runTransaction(db,async transaction=>{
+    const main=await transaction.get(storeRef);
+    transaction.set(publicRef,{...publicModel.publicHoloFyrnData(main.exists()?main.data():{}),publishedAt:fire.serverTimestamp()});
+  });
 }
 function showAccessError(message){liveReady=false;document.getElementById('modal-root').innerHTML='';document.getElementById('app').innerHTML=`<main class="login-screen"><section class="card login-card"><h1>HoloFyrn Manager</h1><p role="alert">${esc(message)}</p><button class="btn primary" id="access-logout">Log out</button><button class="btn" id="access-reload">Retry</button></section></main>`;document.getElementById('access-logout').onclick=()=>services.authApi.signOut(services.auth);document.getElementById('access-reload').onclick=()=>location.reload();}
 function passwordChangeMarkup(){
@@ -123,33 +135,27 @@ function showLogin(message=''){
 }
 async function startManager(){
   try{
-    const [data,{firebaseConfig},appApi,fire,authApi]=await Promise.all([import('./manager-data.mjs'),import('./firebaseConfig.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js')]);
-    model=data;
+    const [data,publicData,{firebaseConfig},appApi,fire,authApi]=await Promise.all([import('./manager-data.mjs'),import('./public-data.mjs'),import('./firebaseConfig.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'),import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js')]);
+    model=data;publicModel=publicData;
     const app=appApi.initializeApp(firebaseConfig),db=fire.initializeFirestore(app,{experimentalAutoDetectLongPolling:true,useFetchStreams:false}),auth=authApi.getAuth(app);
-    services={appApi,fire,authApi,db,auth,firebaseConfig,storeRef:fire.doc(db,'noctiqManager','main')};
+    services={appApi,fire,authApi,db,auth,firebaseConfig,storeRef:fire.doc(db,'noctiqManager','main'),publicRef:fire.doc(db,'holofyrnPublic','main')};
     authApi.onAuthStateChanged(auth,async user=>{
       const epoch=++connectionEpoch;subscriptions.forEach(fn=>fn());subscriptions=[];
-      liveReady=false;syncMessage='';authenticatedUser=user;remoteData={};remoteProfiles=[];baseline=null;state=emptyState();
+      liveReady=false;syncMessage='';authenticatedUser=user;remoteData={};remoteProfiles=[];baseline=null;state=emptyState();publicPublishStarted=false;
       document.getElementById('modal-root').innerHTML='';
       if(!user){showLogin();return;}
       document.getElementById('app').innerHTML='<main class="login-screen"><section class="card login-card" role="status">Loading team data…</section></main>';
       try{
         const ownRef=fire.doc(db,'users',user.uid),own=await fire.getDoc(ownRef);
         if(epoch!==connectionEpoch)return;
-        if(!own.exists()){
-          const main=await fire.getDoc(services.storeRef);
-          const legacy=(main.data()?.users || []).find(p=>p.id===user.uid || p.authUid===user.uid);
-          if(!legacy){showAccessError('No team profile is linked to this login. Ask an administrator to create the account.');return;}
-          const {password,...profile}=legacy;
-          await fire.setDoc(ownRef,{...profile,id:user.uid,authUid:user.uid});
-        }
+        if(!own.exists()){showAccessError('No team profile is linked to this login. Ask an administrator to create the account.');return;}
         try{const prefs=JSON.parse(localStorage.getItem('noctiq-manager-view') || '{}');for(const key of ['activeTeam','view','resultTab','selectedLeagueId','leagueTab','calendarCursor','sidebarOpen'])if(key in prefs && key!=='sidebarOpen')state[key]=prefs[key];}catch{/* Ignore invalid preferences. */}
         let gotData=false,gotUsers=false;
         const ready=()=>{if(epoch!==connectionEpoch || syncMessage==='Not saved')return;if(gotData&&gotUsers){liveReady=true;applyDatabase();}};
         const fail=error=>{if(epoch===connectionEpoch){console.error(error);showAccessError('The database could not be loaded. Check your connection and Firestore access.');}};
         subscriptions.push(fire.onSnapshot(services.storeRef,snap=>{if(epoch!==connectionEpoch)return;remoteData=snap.exists()?snap.data():{};gotData=true;ready();},fail));
         subscriptions.push(fire.onSnapshot(fire.collection(db,'users'),snap=>{if(epoch!==connectionEpoch)return;remoteProfiles=snap.docs.map(d=>({...d.data(),id:d.id}));gotUsers=true;ready();},fail));
-      }catch(error){if(epoch===connectionEpoch)showAccessError(error.message);}
+      }catch(error){if(epoch===connectionEpoch)showAccessError(error.code==='permission-denied'?'This login has no approved team profile or Firestore access. Ask an administrator to check the account.':error.message);}
     });
   }catch(error){console.error(error);document.getElementById('app').innerHTML='<main class="login-screen"><section class="card login-card"><h1>Connection unavailable</h1><p>Firebase could not be loaded. Open this page through the local server or the website, check your connection, then reload.</p><button class="btn primary" onclick="location.reload()">Retry</button></section></main>';}
 }

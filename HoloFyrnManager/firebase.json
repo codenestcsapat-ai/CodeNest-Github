@@ -1,3 +1,4 @@
 {
-  "functions": [{"source":"functions","codebase":"holofyrn-accounts","ignore":["node_modules","*.log"]}]
+  "functions": [{"source":"functions","codebase":"holofyrn-accounts","ignore":["node_modules","*.log"]}],
+  "firestore": {"rules":"firestore.rules"}
 }

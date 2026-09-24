@@ -5,6 +5,8 @@ let firebaseApp = null;
 let db = null;
 let auth = null;
 let storeRef = null;
+let publicRef = null;
+let publicModel = null;
 let usersRef = null;
 let remoteApi = null;
 let authApi = null;
@@ -15,6 +17,7 @@ let accountCreationAuth = null;
 let currentStore = null;
 let currentRemoteData = null;
 let currentRemoteUsers = [];
+let publicPublishStarted = false;
 let storageMode = "local";
 let currentAuthUser = null;
 let unsubscribeStore = null;
@@ -211,8 +214,14 @@ async function saveStore(store) {
     try {
       // UI hides private staff notes, but this single-document Firestore model still sends the whole app object to authenticated clients.
       // True field-level privacy needs private staff data in separate documents guarded by role-based Firestore rules.
-      await remoteApi.setDoc(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() });
-      if (usersRef) {
+      const batch = remoteApi.writeBatch(db);
+      batch.set(storeRef, { ...cleanStore, updatedAt: remoteApi.serverTimestamp() });
+      const publisher = currentRemoteUsers.find(user => user.id === currentAuthUser?.uid || user.authUid === currentAuthUser?.uid);
+      if (publicRef && publicModel && ["Admin", "Coach", "Manager", "Captain", "admin", "coach", "manager", "captain"].includes(publisher?.role)) {
+        batch.set(publicRef, { ...publicModel.publicHoloFyrnData(cleanStore), publishedAt: remoteApi.serverTimestamp() });
+      }
+      await batch.commit();
+      if (usersRef && publisher?.role?.toLowerCase() === "admin") {
         // A browser's list can be incomplete or stale. Missing profiles must
         // never be treated as account deletions during an ordinary save.
         await Promise.all(cleanStore.users.map((user) => remoteApi.setDoc(remoteApi.doc(db, "users", user.id), user, { merge: true })));
@@ -239,6 +248,19 @@ async function persistStore(store) {
   }
 }
 
+async function publishPublicDataOnce() {
+  if (publicPublishStarted || !currentRemoteData || !publicRef || !currentAuthUser) return;
+  const publisher = currentRemoteUsers.find(user => user.id === currentAuthUser.uid || user.authUid === currentAuthUser.uid);
+  if (!["Admin", "Coach", "Manager", "Captain", "admin", "coach", "manager", "captain"].includes(publisher?.role)) return;
+  publicPublishStarted = true;
+  try {
+    await remoteApi.runTransaction(db, async transaction => {
+      const snapshot = await transaction.get(storeRef);
+      transaction.set(publicRef, { ...publicModel.publicHoloFyrnData(snapshot.exists() ? snapshot.data() : {}), publishedAt: remoteApi.serverTimestamp() });
+    });
+  } catch (error) { console.error("Public data publication failed.", error); }
+}
+
 async function saveUserProfile(profile) {
   if (storageMode !== "remote" || !remoteApi || !db) return;
   try {
@@ -262,8 +284,9 @@ function applyRemoteStore() {
 
 async function setupFirebase() {
   try {
-    const [{ firebaseConfig }, firebaseAppModule, firebaseFirestoreModule, firebaseAuthModule] = await Promise.all([
+    const [{ firebaseConfig }, publicData, firebaseAppModule, firebaseFirestoreModule, firebaseAuthModule] = await Promise.all([
       import("./firebaseConfig.js"),
+      import("./public-data.mjs"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"),
@@ -281,6 +304,8 @@ async function setupFirebase() {
       : firebaseFirestoreModule.getFirestore(firebaseApp);
     auth = firebaseAuthModule.getAuth(firebaseApp);
     storeRef = firebaseFirestoreModule.doc(db, "noctiqManager", "main");
+    publicRef = firebaseFirestoreModule.doc(db, "holofyrnPublic", "main");
+    publicModel = publicData;
     usersRef = firebaseFirestoreModule.collection(db, "users");
     remoteApi = firebaseFirestoreModule;
     authApi = firebaseAuthModule;
@@ -314,6 +339,7 @@ async function initRemoteStore() {
     storageMode = "remote";
     authApi.onAuthStateChanged(auth, async (firebaseUser) => {
       currentAuthUser = firebaseUser;
+      publicPublishStarted = false;
       if (unsubscribeStore) {
         unsubscribeStore();
         unsubscribeStore = null;
@@ -335,6 +361,7 @@ async function initRemoteStore() {
         unsubscribeStore = remoteApi.onSnapshot(storeRef, (snapshot) => {
           currentRemoteData = snapshot.exists() ? snapshot.data() : structuredClone(seedStore);
           applyRemoteStore();
+          publishPublicDataOnce();
         }, (error) => {
           console.error(error);
           initLocalStore();
@@ -342,6 +369,7 @@ async function initRemoteStore() {
         unsubscribeUsers = remoteApi.onSnapshot(usersRef, (snapshot) => {
           currentRemoteUsers = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
           applyRemoteStore();
+          publishPublicDataOnce();
         }, (error) => {
           console.error(error);
         });

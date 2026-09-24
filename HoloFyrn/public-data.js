@@ -1,4 +1,3 @@
-const endpoint = 'https://europe-west1-noctiq-d1020.cloudfunctions.net/publicHoloFyrnData';
 const teamRoutes = {
   '/teams/holofyrn-esport/': 'main',
   '/teams/holofyrn-academy/': 'academy',
@@ -97,11 +96,31 @@ function render() {
 document.addEventListener('holofyrn:route', render);
 render();
 try {
-  const response = await fetch(endpoint);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const data = await response.json();
-  if (!Array.isArray(data.players) || !Array.isArray(data.results)) throw new Error('Invalid public data');
-  publicData = data;
+  const [{firebaseConfig}, appApi, authApi, fire] = await Promise.all([
+    import('../HoloFyrnManager/firebaseConfig.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js'),
+  ]);
+  const app = appApi.initializeApp(firebaseConfig);
+  const auth = authApi.getAuth(app);
+  const existingUser = await new Promise((resolve, reject) => {
+    const unsubscribe = authApi.onAuthStateChanged(auth, user => { unsubscribe(); resolve(user); }, reject);
+  });
+  if (!existingUser) await authApi.signInAnonymously(auth);
+  const db = fire.initializeFirestore(app, {experimentalAutoDetectLongPolling:true,useFetchStreams:false});
+  fire.onSnapshot(fire.doc(db, 'holofyrnPublic', 'main'), snapshot => {
+    const data = snapshot.data();
+    if (!snapshot.exists() || !Array.isArray(data.players) || !Array.isArray(data.results)) {
+      publicData = {players:[],results:[]};
+    } else publicData = data;
+    loadError = false;
+    render();
+  }, error => {
+    console.error('HoloFyrn public data could not be loaded', error);
+    loadError = true;
+    render();
+  });
 } catch (error) {
   console.error('HoloFyrn public data could not be loaded', error);
   loadError = true;

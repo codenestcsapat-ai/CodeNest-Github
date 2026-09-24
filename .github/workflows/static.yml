@@ -36,8 +36,11 @@ jobs:
       - name: Verify HoloFyrn
         run: |
           node --check HoloFyrn/public-data.js
+          node --check HoloFyrnManager/connected.js
+          node --check HoloFyrnManager/script.js
+          node --check HoloFyrnManager/public-data.mjs
           node --check HoloFyrnManager/functions/index.cjs
-          node --test HoloFyrnManager/functions/public-data.test.cjs HoloFyrnManager/tests/manager-data.test.mjs
+          node --test HoloFyrnManager/tests/public-data.test.mjs HoloFyrnManager/tests/manager-data.test.mjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

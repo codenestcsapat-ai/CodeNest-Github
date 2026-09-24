@@ -1,12 +1,53 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedInMember() {
+      return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+
+    function managerProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isMember() {
+      return signedInMember()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && managerProfile().get('approved', true) == true;
+    }
+
+    function isAdmin() {
+      return isMember()
+        && managerProfile().role in ['Admin', 'admin'];
+    }
+
+    function isPublisher() {
+      return isMember()
+        && managerProfile().role in ['Admin', 'admin', 'Coach', 'coach', 'Manager', 'manager', 'Captain', 'captain'];
+    }
+
     match /noctiqManager/main {
-      allow read, write: if request.auth != null;
+      allow read, write: if isMember();
+    }
+
+    match /holofyrnPublic/main {
+      allow read: if request.auth != null;
+      allow create, update: if isPublisher()
+        && request.resource.data.keys().hasOnly(['players', 'results', 'publishedAt'])
+        && request.resource.data.players is list
+        && request.resource.data.results is list;
+      allow delete: if false;
     }
 
     match /users/{userId} {
-      allow read, write: if request.auth != null;
+      allow read: if isMember();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (isMember() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'displayName', 'initials', 'discord', 'discordUrl',
+          'instagramUrl', 'xUrl', 'tiktokUrl', 'bio', 'avatarData',
+          'avatarScale', 'avatarX', 'avatarY'
+        ]));
+      allow delete: if false;
     }
   }
 }
