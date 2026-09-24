@@ -8,6 +8,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 .concept-label{position:absolute;right:12px;bottom:11px;color:#eee;background:rgba(0,0,0,.78);border:1px solid #62494a;padding:2px 7px;font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;font-style:normal}.profile-photo .concept-label{bottom:20px;right:20px}
 
+.public-player-image{background:radial-gradient(circle at 50% 42%,#59171d,#1a1012 68%);height:260px}.public-player-image:after{content:'H/F';position:absolute;inset:0;display:grid;place-items:center;color:#a44b51;font:900 110px 'Barlow Condensed',sans-serif;opacity:.55}.public-player-image .player-index{z-index:1}.public-results{list-style:none;margin:0;padding:0}.public-results li{padding:13px 0;border-top:1px solid #493336;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 20px}.public-results strong{color:#f3eeee}.public-results span{color:#ba9b9d;font-size:14px}
 </style></head><body>
 <a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="#/" aria-label="HoloFyrn Esport home"><img src="assets/brand-mark.png" alt=""><span class="brand-type">HOLOFYRN<small>ESPORT</small></span></a><button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button><nav id="main-nav" class="main-nav" aria-label="Main navigation"><a href="#/teams/" class=""><span data-en="Teams" data-hu="Csapatok">Teams</span></a><a href="#/divisions/" class=""><span data-en="Divisions" data-hu="Szakosztályok">Divisions</span></a><a href="#/news/" class=""><span data-en="News" data-hu="Hírek">News</span></a><a href="#/sponsors/" class=""><span data-en="Sponsors" data-hu="Szponzorok">Sponsors</span></a><a href="#/staff/" class=""><span data-en="Staff" data-hu="Stáb">Staff</span></a><a href="#/about/" class=""><span data-en="About" data-hu="Rólunk">About</span></a><a href="#/socials" class=""><span data-en="Socials" data-hu="Közösség">Socials</span></a></nav><div class="header-actions"><button class="language-toggle" type="button" aria-label="Switch language" title="Switch language"><span class="lang-active">EN</span><span class="lang-divider">/</span><span>HU</span></button><a href="#/join/" class="button button-small"><span data-en="Join HoloFyrn" data-hu="Csatlakozz">Join HoloFyrn</span></a></div></div></header>
 <main id="main"><section class="hero"><div class="hero-art"></div><div class="hero-grid"></div><div class="container hero-content"><div class="hero-copy"><div class="eyebrow"><i></i><span data-en="THE FUTURE IS OURS" data-hu="A JÖVŐ A MIÉNK">THE FUTURE IS OURS</span></div><h1>HOLO<span>FYRN</span><small>ESPORT</small></h1><p class="hero-tag"><span data-en="Built to compete. Built to evolve." data-hu="Versenyre építve. Fejlődésre építve.">Built to compete. Built to evolve.</span></p><div class="hero-buttons"><a class="button" href="#/teams/"><span data-en="Explore teams" data-hu="Csapatok">Explore teams</span> <span>↗</span></a><a class="button button-outline" href="#/join/"><span data-en="Join HoloFyrn" data-hu="Csatlakozz">Join HoloFyrn</span> <span>↗</span></a></div></div><div class="hero-bottom"><span>01 / 05 — HOLOFYRN ESPORT</span><span>ROCKET LEAGUE <i></i> 2026</span></div></div></section>
@@ -93,6 +94,7 @@
     menuButton.setAttribute('aria-expanded', 'false');
     menuButton.setAttribute('aria-label', 'Open menu');
     setLanguage(language);
+    document.dispatchEvent(new Event('holofyrn:route'));
     requestAnimationFrame(() => {
       if (socials) document.getElementById('socials')?.scrollIntoView();
       else scrollTo(0, 0);
@@ -113,4 +115,5 @@
   route();
 })();
 </script>
+<script type="module" src="public-data.js"></script>
 </body></html>

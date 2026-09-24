@@ -1,8 +1,17 @@
 const {initializeApp}=require('firebase-admin/app');
 const {getAuth}=require('firebase-admin/auth');
 const {getFirestore}=require('firebase-admin/firestore');
-const {onCall,HttpsError}=require('firebase-functions/v2/https');
+const {onCall,onRequest,HttpsError}=require('firebase-functions/v2/https');
+const {publicHoloFyrnData}=require('./public-data.cjs');
 initializeApp();
+exports.publicHoloFyrnData=onRequest({region:'europe-west1',cors:true,maxInstances:2},async(req,res)=>{
+  res.set('Cache-Control','public, max-age=60, s-maxage=60');
+  if(req.method!=='GET'){res.set('Allow','GET');res.status(405).send('Method not allowed');return;}
+  try{
+    const snapshot=await getFirestore().doc('noctiqManager/main').get();
+    res.json(publicHoloFyrnData(snapshot.exists?snapshot.data():{}));
+  }catch(error){console.error('Public HoloFyrn data failed',error);res.status(503).json({error:'Data temporarily unavailable'});}
+});
 // An independently assigned Auth claim is required: legacy Firestore rules let
 // clients write profile roles, so a profile role alone cannot authorize deletion.
 exports.deleteManagerAccount=onCall({region:'europe-west1',maxInstances:2},async request=>{

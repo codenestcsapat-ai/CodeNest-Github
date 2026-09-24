@@ -33,11 +33,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Verify HoloFyrn and generate release version
+      - name: Verify HoloFyrn
         run: |
-          node --check NoctiqManager/script.js
-          node --test NoctiqManager/*.test.cjs
-          node NoctiqManager/build-version.cjs
+          node --check HoloFyrn/public-data.js
+          node --check HoloFyrnManager/functions/index.cjs
+          node --test HoloFyrnManager/functions/public-data.test.cjs HoloFyrnManager/tests/manager-data.test.mjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
