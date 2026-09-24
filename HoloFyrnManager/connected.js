@@ -172,7 +172,17 @@ function bindAdmin(){
   document.querySelectorAll('[data-account-delete]').forEach(b=>b.onclick=()=>deleteAccountModal(userById(b.dataset.accountDelete)));
   document.getElementById('add-account')?.addEventListener('click',()=>accountModal());
   document.querySelectorAll('[data-account-edit]').forEach(b=>b.onclick=()=>accountModal(userById(b.dataset.accountEdit)));
+  document.querySelectorAll('[data-player-rename]').forEach(b=>b.onclick=()=>playerNameModal(playerById(b.dataset.playerRename)));
   document.querySelectorAll('[data-account-toggle]').forEach(b=>{const user=userById(b.dataset.accountToggle);b.textContent=user.approved===false?'Enable':'Disable';b.disabled=user.id===state.currentUserId||user.deletionPending===true;b.onclick=()=>confirmModal(`${user.approved===false?'Enable':'Disable'} account?`,'This changes access to the manager. The Firebase login is retained.',()=>{user.approved=user.approved===false;save();render();});});
+}
+function playerNameModal(player){
+  if(!isAdmin()||!player)return;
+  openModal('Edit player profile name',`<label class="field" for="admin-player-name">Player profile name<input class="input" id="admin-player-name" value="${esc(player.name)}" maxlength="100" autocomplete="off"></label><p class="profile-note">This changes the player profile and public roster name. The linked account display name stays the same.</p><p id="admin-player-name-error" role="alert"></p>`,()=>{
+    const name=value('admin-player-name').trim();
+    if(!name){document.getElementById('admin-player-name-error').textContent='Enter a player profile name.';return;}
+    if(name!==player.name){player.name=name;if(!save())return;}
+    closeModal();render();
+  });
 }
 async function requestAccountDeletion(userId){
   const api=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-functions.js');
